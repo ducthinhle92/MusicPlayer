@@ -36,9 +36,9 @@
                         <HBox maxHeight="-Infinity" minHeight="38.0" prefHeight="38.0" prefWidth="766.0" />
                         <StackPane maxHeight="2000.0">
                            <children>
-                              <SplitPane dividerPositions="0.23167539267015708, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                              <SplitPane dividerPositions="0.19843342036553524, 0.7767624020887729" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                  <items>
-                                    <StackPane maxWidth="300.0" minWidth="100.0" prefWidth="200.0">
+                                    <StackPane maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
                                        <children>
                                           <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="300.0" minWidth="100.0">
                                              <content>
@@ -47,7 +47,7 @@
                                           </ScrollPane>
                                        </children>
                                     </StackPane>
-                                    <StackPane minWidth="300.0" prefWidth="420.0">
+                                    <StackPane minWidth="300.0">
                                        <children>
                                           <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" minWidth="300.0">
                                              <content>
@@ -61,7 +61,7 @@
                                           </ScrollPane>
                                        </children>
                                     </StackPane>
-                                    <AnchorPane maxWidth="300.0" minWidth="250.0" prefWidth="250.0" />
+                                    <AnchorPane maxWidth="400.0" minWidth="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
                                  </items>
                               </SplitPane>
                            </children>
@@ -88,15 +88,15 @@
                         </StackPane>
                         <StackPane maxWidth="2000.0" minWidth="500.0">
                            <children>
-                              <SplitPane dividerPositions="0.3185378590078329, 0.6357702349869452" prefHeight="160.0" prefWidth="200.0">
+                              <SplitPane dividerPositions="0.3185, 0.6358" focusTraversable="false" prefHeight="160.0" prefWidth="200.0">
                                 <items>
-                                  <AnchorPane maxWidth="300.0" minWidth="100.0" prefHeight="60.0" prefWidth="150.0">
+                                  <AnchorPane minWidth="100.0">
                                        <children>
                                           <Label layoutX="14.0" layoutY="22.0" text="Thông tin bài hát" AnchorPane.leftAnchor="10.0" />
                                        </children>
                                     </AnchorPane>
-                                    <StackPane />
-                                    <AnchorPane maxWidth="300.0" minWidth="100.0" prefHeight="200.0" prefWidth="150.0">
+                                    <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false" />
+                                    <AnchorPane minWidth="100.0">
                                        <children>
                                           <Button layoutX="160.0" layoutY="18.0" mnemonicParsing="false" text="Go to Play Screen" AnchorPane.rightAnchor="10.0" />
                                        </children>
