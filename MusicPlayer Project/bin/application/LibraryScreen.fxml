@@ -36,7 +36,7 @@
                         <HBox maxHeight="-Infinity" minHeight="38.0" prefHeight="38.0" prefWidth="766.0" />
                         <StackPane maxHeight="2000.0">
                            <children>
-                              <SplitPane dividerPositions="0.19843342036553524, 0.7767624020887729" maxHeight="2000.0" prefHeight="350.0" VBox.vgrow="ALWAYS">
+                              <SplitPane dividerPositions="0.23167539267015708, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                  <items>
                                     <StackPane maxWidth="300.0" minWidth="100.0" prefWidth="200.0">
                                        <children>
@@ -47,7 +47,7 @@
                                           </ScrollPane>
                                        </children>
                                     </StackPane>
-                                    <StackPane maxWidth="1000.0" minWidth="300.0" prefHeight="351.0" prefWidth="420.0">
+                                    <StackPane minWidth="300.0" prefWidth="420.0">
                                        <children>
                                           <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" minWidth="300.0">
                                              <content>
@@ -61,7 +61,7 @@
                                           </ScrollPane>
                                        </children>
                                     </StackPane>
-                                    <StackPane minWidth="100.0" />
+                                    <AnchorPane maxWidth="300.0" minWidth="250.0" prefWidth="250.0" />
                                  </items>
                               </SplitPane>
                            </children>
