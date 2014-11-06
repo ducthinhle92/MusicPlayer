@@ -11,7 +11,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			Parent root = (Parent) FXMLLoader
-					.load(getClass().getResource("PlayScreen.fxml"));
+					.load(getClass().getResource("LibraryScreen.fxml"));
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(
 					getClass().getResource("application.css").
