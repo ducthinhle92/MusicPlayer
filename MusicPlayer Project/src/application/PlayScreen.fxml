@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<StackPane prefHeight="500.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="500.0" prefWidth="768.0">
+         <children>
+            <StackPane maxHeight="1000.0" prefHeight="1000.0">
+               <children>
+                  <SplitPane dividerPositions="0.06698564593301436" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                    <items>
+                        <MenuBar prefHeight="25.0" prefWidth="758.0" style="-fx-background-color: #0099ff;">
+                           <menus>
+                              <Menu mnemonicParsing="false" text="File">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Open" />
+                                    <MenuItem mnemonicParsing="false" text="Close" />
+                                    <MenuItem mnemonicParsing="false" text="Exit" />
+                                 </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Play">
+                                <items>
+                                    <MenuItem mnemonicParsing="false" text="Play All" />
+                                  <MenuItem mnemonicParsing="false" text="Repeat" />
+                                </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Edit">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Add Playlist" />
+                                    <MenuItem mnemonicParsing="false" text="Delete" />
+                                 </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Help">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="About" />
+                                 </items>
+                              </Menu>
+                           </menus>
+                        </MenuBar>
+                        <StackPane alignment="BOTTOM_CENTER" maxHeight="2000.0" prefHeight="418.0" prefWidth="766.0" style="-fx-background-color: #000000;">
+                           <effect>
+                              <DropShadow color="#369447" height="71.41" radius="34.4625" width="68.44" />
+                           </effect>
+                           <children>
+                              <Slider>
+                                 <effect>
+                                    <DropShadow color="#33e103" height="44.72" radius="30.015" width="77.34" />
+                                 </effect>
+                              </Slider>
+                           </children>
+                        </StackPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </StackPane>
+            <StackPane maxHeight="80.0" maxWidth="2000.0" minHeight="60.0" minWidth="500.0" prefHeight="60.0" prefWidth="768.0">
+               <children>
+                  <VBox maxWidth="2000.0" minWidth="500.0" prefHeight="77.0" prefWidth="2000.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <StackPane maxWidth="2000.0" minWidth="500.0" prefWidth="2000.0" />
+                        <StackPane maxWidth="2000.0" minWidth="500.0">
+                           <children>
+                              <SplitPane dividerPositions="0.1462140992167102, 0.8028720626631853" focusTraversable="false" prefHeight="60.0" prefWidth="676.0">
+                                <items>
+                                  <AnchorPane minWidth="91.0" prefHeight="58.0" prefWidth="96.0" />
+                                    <StackPane maxWidth="497.0" minWidth="226.0" prefHeight="58.0" prefWidth="497.0" SplitPane.resizableWithParent="false">
+                                       <children>
+                                          <Ellipse radiusX="247.0" radiusY="29.0" stroke="BLACK" strokeType="INSIDE" />
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <Button layoutX="230.0" layoutY="17.0" mnemonicParsing="false" style="-fx-background-color: #000000;" text="Play">
+                                                   <effect>
+                                                      <DropShadow color="#f80000" height="35.83" radius="17.415" width="35.83" />
+                                                   </effect>
+                                                </Button>
+                                                <Button layoutX="163.0" layoutY="17.0" mnemonicParsing="false" style="-fx-background-color: #000000;" text="Previous">
+                                                   <effect>
+                                                      <DropShadow color="#f80000eb" height="32.86" radius="12.2225" width="18.03" />
+                                                   </effect>
+                                                </Button>
+                                                <Button layoutX="274.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="61.0" style="-fx-background-color: #000000;" text="Next">
+                                                   <effect>
+                                                      <DropShadow color="#f80000" height="29.9" radius="15.932499999999997" width="35.83" />
+                                                   </effect>
+                                                </Button>
+                                                <Button layoutX="96.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="61.0" style="-fx-background-color: #000000;" text="Stop">
+                                                   <effect>
+                                                      <DropShadow color="#e80d0d" radius="15.19" width="41.76" />
+                                                   </effect>
+                                                </Button>
+                                                <CheckBox layoutX="25.0" layoutY="21.0" mnemonicParsing="false" text="Repeat ">
+                                                   <effect>
+                                                      <DropShadow color="#12ee0a" height="145.53" radius="50.0275" spread="0.57" width="56.58" />
+                                                   </effect>
+                                                </CheckBox>
+                                                <Button layoutX="343.0" layoutY="17.0" mnemonicParsing="false" style="-fx-background-color: #000000;" text="Volume">
+                                                   <effect>
+                                                      <DropShadow color="#f80000" height="35.83" radius="18.8975" width="41.76" />
+                                                   </effect>
+                                                </Button>
+                                                <Slider layoutX="398.0" layoutY="23.0" prefHeight="14.0" prefWidth="101.0">
+                                                   <effect>
+                                                      <DropShadow color="#eb0d0d" height="44.48" radius="15.869999999999997" spread="0.07" />
+                                                   </effect>
+                                                </Slider>
+                                             </children>
+                                          </AnchorPane>
+                                       </children></StackPane>
+                                    <AnchorPane minWidth="100.0" prefHeight="58.0" prefWidth="108.0">
+                                       <children>
+                                          <Button layoutX="160.0" layoutY="18.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="129.0" style="-fx-background-color: #0099ff;" text="Go to Library Screen" AnchorPane.rightAnchor="2.0">
+                                             <effect>
+                                                <DropShadow color="#36312b" height="41.76" radius="23.345" spread="0.09" width="53.62" />
+                                             </effect></Button>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+   </children>
+</StackPane>
