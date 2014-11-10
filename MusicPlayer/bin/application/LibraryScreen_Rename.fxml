@@ -42,7 +42,7 @@
                                  <items>
                                     <StackPane maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <ScrollPane  fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="300.0" minWidth="100.0">
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="300.0" minWidth="100.0">
                                              <content>
                                                 <TreeView />
                                              </content>
@@ -54,19 +54,16 @@
                                           <Pane fx:id="view" prefHeight="200.0" prefWidth="200.0" />
                                        </children>
                                     </StackPane>
-                                    <AnchorPane maxWidth="400.0" minWidth="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
+                                    <StackPane maxWidth="400.0" minWidth="200.0">
                                        <children>
                                           <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0">
                                             <items>
-                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
-                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="108.0" prefWidth="165.0">
-                                                   <children>
-                                                      <ListView fx:id="listFile" prefHeight="166.0" prefWidth="194.0" onMouseClicked="#selectItem"/>
-                                                   </children>
-                                                </AnchorPane>
+                                              <AnchorPane maxHeight="120.0" minHeight="120.0" prefHeight="120.0" prefWidth="160.0" />
+                                                <ListView fx:id="listFile" onMouseClicked="#selectItem" prefWidth="200.0" />
                                             </items>
                                           </SplitPane>
-                                       </children></AnchorPane>
+                                       </children>
+                                    </StackPane>
                                  </items>
                               </SplitPane>
                            </children>

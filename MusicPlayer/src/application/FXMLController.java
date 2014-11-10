@@ -64,28 +64,34 @@ public class FXMLController {
 	private Label playTime;
 	@FXML
 	private Pane view;
+
 	/**
 	 * Initializes the controller class. This method is automatically called
 	 * after the fxml file has been loaded.
 	 */
-	@FXML private void initialize() {
+	@FXML
+	private void initialize() {
 		timeSlider.valueProperty().addListener(new InvalidationListener() {
-		    public void invalidated(Observable ov) {
-		       if (timeSlider.isValueChanging()) {
-		       // multiply duration by percentage calculated by slider position
-		          mediaView.getMediaPlayer().seek(duration.multiply(timeSlider.getValue() / 100.0));
-		       }
-		    }
+			public void invalidated(Observable ov) {
+				if (timeSlider.isValueChanging()) {
+					// multiply duration by percentage calculated by slider
+					// position
+					mediaView.getMediaPlayer().seek(
+							duration.multiply(timeSlider.getValue() / 100.0));
+				}
+			}
 		});
 		volumeSlider.valueProperty().addListener(new InvalidationListener() {
-		    public void invalidated(Observable ov) {
-		       if (volumeSlider.isValueChanging()) {
-		           mediaView.getMediaPlayer().setVolume(volumeSlider.getValue() / 100.0);
-		       }
-		    }
+			public void invalidated(Observable ov) {
+				if (volumeSlider.isValueChanging()) {
+					mediaView.getMediaPlayer().setVolume(
+							volumeSlider.getValue() / 100.0);
+				}
+			}
 		});
 	}
-	@FXML 
+
+	@FXML
 	protected void openFile(ActionEvent event) {
 		processOpenFile();
 	}
@@ -170,7 +176,6 @@ public class FXMLController {
 				play(mediaView.getMediaPlayer());
 			}
 		});
-
 	}
 
 	protected void play(MediaPlayer play) {
