@@ -12,7 +12,7 @@
          <children>
             <StackPane maxHeight="1000.0" prefHeight="1000.0">
                <children>
-                  <SplitPane dividerPositions="0.06698564593301436, 0.16507177033492823" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                  <SplitPane dividerPositions="0.06698564593301436, 0.16507177033492823" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" stylesheets="@application.css">
                     <items>
                         <MenuBar prefHeight="25.0" prefWidth="758.0">
                            <menus>
@@ -35,8 +35,8 @@
                               </Menu>
                            </menus>
                         </MenuBar>
-                        <HBox maxHeight="-Infinity" minHeight="38.0" prefHeight="38.0" prefWidth="766.0" />
-                        <StackPane maxHeight="2000.0">
+                        <HBox maxHeight="-Infinity" minHeight="38.0" prefHeight="38.0" prefWidth="766.0" style="-fx-background-color: #ffffdd;" />
+                        <StackPane maxHeight="2000.0" styleClass=".split-pane">
                            <children>
                               <SplitPane dividerPositions="0.17801047120418848, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                  <items>
@@ -51,22 +51,14 @@
                                     </StackPane>
                                     <StackPane minWidth="300.0">
                                        <children>
-                                          <TableView fx:id="libraryTable" prefHeight="200.0" prefWidth="200.0">
-                                            <columns>
-                                              <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Title" />
-                                              <TableColumn fx:id="lengthColoumn" prefWidth="75.0" text="Length" />
-                                              <TableColumn fx:id="artistColumn" prefWidth="75.0" text="Artist" />
-                                              <TableColumn fx:id="albumColumn" prefWidth="75.0" text="Album" />
-                                                <TableColumn fx:id="ratingCol" prefWidth="75.0" text="Rating" />
-                                            </columns>
-                                          </TableView>
+                                          <Pane fx:id="view" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffdddd;" />
                                        </children>
                                     </StackPane>
                                     <StackPane maxWidth="400.0" minWidth="200.0">
                                        <children>
-                                          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0">
+                                          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0" stylesheets="@application.css">
                                             <items>
-                                              <AnchorPane maxHeight="120.0" minHeight="120.0" prefHeight="120.0" prefWidth="160.0" />
+                                              <AnchorPane maxHeight="120.0" minHeight="120.0" prefHeight="120.0" prefWidth="160.0" style="-fx-background-color: #ffddff;" />
                                                 <ListView fx:id="listFile" onMouseClicked="#selectItem" prefWidth="200.0" />
                                             </items>
                                           </SplitPane>
@@ -91,23 +83,24 @@
                         </StackPane>
                         <StackPane focusTraversable="true" maxWidth="2000.0" minWidth="500.0">
                            <children>
-                              <SplitPane dividerPositions="0.21018276762402088, 0.7402088772845953" focusTraversable="false" prefHeight="160.0" prefWidth="200.0">
+                              <SplitPane dividerPositions="0.21018276762402088, 0.7402088772845953" focusTraversable="false" prefHeight="160.0" prefWidth="200.0" stylesheets="@application.css">
                                 <items>
                                   <AnchorPane minWidth="100.0">
                                        <children>
-                                          <HBox>
-                                             <children>
-                                              <Label layoutX="14.0" layoutY="22.0" text="Thông tin bài hát" AnchorPane.leftAnchor="10.0" />
-                                              <Label fx:id="playTime" text="Time" />
-                                             </children>
-                                          </HBox>
+                                          <HBox />
+                                        <Label layoutX="14.0" layoutY="25.0" text="Thông tin bài hát" AnchorPane.leftAnchor="14.0" />
                                          
                                        </children>
                                     </AnchorPane>
                                     <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                          <HBox alignment="CENTER">
                                              <children>
+                                              <Label fx:id="playTime" alignment="CENTER_RIGHT" maxWidth="100.0" minWidth="81.0" prefHeight="14.0" prefWidth="81.0" text="Time" textAlignment="RIGHT">
+                                                   <padding>
+                                                      <Insets right="20.0" />
+                                                   </padding>
+                                                </Label>
                                                 <Button fx:id="stop" mnemonicParsing="false" onAction="#btnStop" text="Stop" />
                                                 <Button fx:id="prev" mnemonicParsing="false" onAction="#btnPrev" text="Prev" />
                                                 <Button fx:id="play" mnemonicParsing="false" onAction="#btnPlay" text="Pause" />
