@@ -6,15 +6,15 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<StackPane prefHeight="500.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXMLController">
+<StackPane minWidth="500.0" prefHeight="500.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXMLController">
    <children>
       <VBox prefHeight="500.0" prefWidth="768.0">
          <children>
-            <StackPane maxHeight="1000.0" prefHeight="1000.0">
+            <StackPane maxHeight="2000.0" prefHeight="2000.0">
                <children>
                   <SplitPane dividerPositions="0.06698564593301436, 0.16507177033492823" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" stylesheets="@application.css">
                     <items>
-                        <MenuBar prefHeight="25.0" prefWidth="758.0">
+                        <MenuBar minWidth="500.0" prefHeight="25.0" prefWidth="758.0">
                            <menus>
                               <Menu mnemonicParsing="false" text="File">
                                  <items>
@@ -38,7 +38,7 @@
                         <HBox maxHeight="-Infinity" minHeight="38.0" prefHeight="38.0" prefWidth="766.0" style="-fx-background-color: #ffffdd;" />
                         <StackPane maxHeight="2000.0" styleClass=".split-pane">
                            <children>
-                              <SplitPane dividerPositions="0.17801047120418848, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                              <SplitPane dividerPositions="0.17763157894736842, 0.7" VBox.vgrow="ALWAYS">
                                  <items>
                                     <StackPane maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
                                        <children>
@@ -51,15 +51,18 @@
                                     </StackPane>
                                     <StackPane minWidth="300.0">
                                        <children>
-                                          <Pane fx:id="view" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffdddd;" />
+                                          <Pane fx:id="view" style="-fx-background-color: #ffdddd;" />
                                        </children>
+                                       <padding>
+                                          <Insets top="-2.0" />
+                                       </padding>
                                     </StackPane>
-                                    <StackPane maxWidth="400.0" minWidth="200.0">
+                                    <StackPane maxWidth="400.0" minWidth="250.0" prefWidth="250.0">
                                        <children>
-                                          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0" stylesheets="@application.css">
+                                          <SplitPane dividerPositions="0.5" maxWidth="400.0" minWidth="200.0" orientation="VERTICAL" stylesheets="@application.css">
                                             <items>
-                                              <AnchorPane maxHeight="120.0" minHeight="120.0" prefHeight="120.0" prefWidth="160.0" style="-fx-background-color: #ffddff;" />
-                                                <ListView fx:id="listFile" onMouseClicked="#selectItem" prefWidth="200.0" />
+                                              <AnchorPane maxHeight="120.0" minHeight="120.0" style="-fx-background-color: #ffddff;" />
+                                                <ListView fx:id="listFile" onMouseClicked="#selectItem" />
                                             </items>
                                           </SplitPane>
                                        </children>
@@ -72,7 +75,7 @@
                   </SplitPane>
                </children>
             </StackPane>
-            <StackPane maxHeight="80.0" maxWidth="2000.0" minHeight="80.0" minWidth="500.0">
+            <StackPane maxHeight="80.0" maxWidth="4000.0" minHeight="80.0" minWidth="500.0">
                <children>
                   <VBox maxWidth="2000.0" minWidth="500.0" prefHeight="77.0" prefWidth="2000.0" VBox.vgrow="ALWAYS">
                      <children>
