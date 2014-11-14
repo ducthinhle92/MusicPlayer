@@ -8,6 +8,7 @@ import java.util.Random;
 
 import org.omg.CORBA.INITIALIZE;
 
+import model.MediaFile;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -23,10 +24,16 @@ import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumnBase;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -41,6 +48,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 
 public class FXMLController {
@@ -51,6 +59,7 @@ public class FXMLController {
 	List<MediaPlayer> players = new ArrayList<MediaPlayer>();
 	MediaView mediaView = null;
 	ObservableList<String> items = FXCollections.observableArrayList();
+	ObservableList<MediaFile> mediaFiles = FXCollections.observableArrayList();
 	private Duration duration;
 	@FXML
 	private ListView<String> listFile;
@@ -64,6 +73,14 @@ public class FXMLController {
 	private Label playTime;
 	@FXML
 	private Pane view;
+	
+	@FXML
+	private TableView<MediaFile> libraryTable;
+	
+	@FXML
+	private TableColumn titleColumn, lengthColoumn, artistColumn, albumColumn, ratingCol;
+	
+	final ObservableList<Integer> ratingSample = FXCollections.observableArrayList(1,2,3,4,5);
 
 	/**
 	 * Initializes the controller class. This method is automatically called
@@ -180,11 +197,11 @@ public class FXMLController {
 
 	protected void play(MediaPlayer play) {
 		// TODO Auto-generated method stub
-		view.setStyle("-fx-background-color: #000033;");
+//		view.setStyle("-fx-background-color: #000033;");
 		play.play();
-		view.getChildren().clear();
-		Group phaseNodes = new Group();
-		view.getChildren().add(phaseNodes);
+//		view.getChildren().clear();
+//		Group phaseNodes = new Group();
+//		view.getChildren().add(phaseNodes);
 		play.currentTimeProperty().addListener(new InvalidationListener() {
 			public void invalidated(Observable ov) {
 				updateValues();
@@ -212,7 +229,7 @@ public class FXMLController {
 			public void spectrumDataUpdate(double timestamp, double duration,
 					float[] magnitudes, float[] phases) {
 				// TODO Auto-generated method stub
-				phaseNodes.getChildren().clear();
+//				phaseNodes.getChildren().clear();
 				int i = 0;
 				int x = 10;
 				int y = 150;
@@ -226,7 +243,7 @@ public class FXMLController {
 					circle.setCenterX(x + i);
 					circle.setCenterY(y + (phase * 100));
 					circle.setFill(Color.rgb(red, green, blue, .70));
-					phaseNodes.getChildren().add(circle);
+//					phaseNodes.getChildren().add(circle);
 					i += 5;
 				}
 			}
@@ -275,19 +292,55 @@ public class FXMLController {
 		resetAll();
 		configureFileChooser(fileChooser);
 		list = fileChooser.showOpenMultipleDialog(stage);
+		
 		if (list != null) {
 			// get list items,players
 			for (int i = 0; i < list.size(); i++) {
 				items.add(list.get(i).getName());
+				mediaFiles.add(new MediaFile(list.get(i)));
 				Media media = new Media(list.get(i).toURI().toString());
 				MediaPlayer mediaPlayer = new MediaPlayer(media);
 				players.add(mediaPlayer);
 			}
 		}
 		mediaView = new MediaView(players.get(0));
-		// mediaView.getMediaPlayer().setVolume(0.5);
+//		 mediaView.getMediaPlayer().setVolume(0.5);
 		play(mediaView.getMediaPlayer());
 		listFile.setItems(items);
+//		titleColumn = new TableColumn("Title");
+		titleColumn.setCellValueFactory(new PropertyValueFactory<MediaFile, String>("title"));
+//		lengthColoumn = new TableColumn("Length");
+		lengthColoumn.setCellValueFactory(new PropertyValueFactory<MediaFile, String>("length"));
+//		albumColumn = new TableColumn("Album");
+		albumColumn.setCellValueFactory(new PropertyValueFactory<MediaFile, String>("album"));
+//		artistColumn = new TableColumn("Artist");
+		artistColumn.setCellValueFactory(new PropertyValueFactory<MediaFile, String>("artist"));
+		
+		ratingCol.setCellValueFactory(new PropertyValueFactory<MediaFile, Integer>("rating"));
+		
+		 ratingCol.setCellFactory(new Callback<TableColumn<MediaFile,Integer>,TableCell<MediaFile,Integer>>(){        
+	            @Override
+	            public TableCell<MediaFile, Integer> call(TableColumn<MediaFile, Integer> param) {                
+	                TableCell<MediaFile, Integer> cell = new TableCell<MediaFile, Integer>(){
+	                    @Override
+	                    public void updateItem(Integer item, boolean empty) {
+	                        if(item!=null){
+	                            
+	                           ChoiceBox choice = new ChoiceBox(ratingSample);                                                      
+	                           choice.getSelectionModel().select(ratingSample.indexOf(item));
+	                           //SETTING ALL THE GRAPHICS COMPONENT FOR CELL
+	                           setGraphic(choice);
+	                        } 
+	                    }
+	                };                           
+	                return cell;
+	            }
+	            
+	        });    
+//		
+//		
+		libraryTable.setItems(mediaFiles);
+//		libraryTable.getColumns().addAll(titleColumn, lengthColoumn, artistColumn, albumColumn);
 	}
 
 	public MediaPlayer createPlayer(String src) {

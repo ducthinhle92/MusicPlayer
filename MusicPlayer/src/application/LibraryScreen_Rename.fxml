@@ -51,7 +51,15 @@
                                     </StackPane>
                                     <StackPane minWidth="300.0">
                                        <children>
-                                          <Pane fx:id="view" prefHeight="200.0" prefWidth="200.0" />
+                                          <TableView fx:id="libraryTable" prefHeight="200.0" prefWidth="200.0">
+                                            <columns>
+                                              <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Title" />
+                                              <TableColumn fx:id="lengthColoumn" prefWidth="75.0" text="Length" />
+                                              <TableColumn fx:id="artistColumn" prefWidth="75.0" text="Artist" />
+                                              <TableColumn fx:id="albumColumn" prefWidth="75.0" text="Album" />
+                                                <TableColumn fx:id="ratingCol" prefWidth="75.0" text="Rating" />
+                                            </columns>
+                                          </TableView>
                                        </children>
                                     </StackPane>
                                     <StackPane maxWidth="400.0" minWidth="200.0">
