@@ -18,7 +18,7 @@ public class DataControler {
 	private Connection c;
 	public DataControler() throws ClassNotFoundException, SQLException{
 		Class.forName("org.sqlite.JDBC");
-		c = DriverManager.getConnection("jdbc:sqlite:audio3.db");
+		c = DriverManager.getConnection("jdbc:sqlite:audio.db");
 	}
 
 	public List<String> getListNames() throws SQLException {
