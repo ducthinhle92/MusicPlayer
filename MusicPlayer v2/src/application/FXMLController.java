@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,20 +10,24 @@ import java.util.Random;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioSpectrumListener;
@@ -36,25 +41,30 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import model.ListFile;
 import model.MediaFile;
+import model.PlayList;
 
 @SuppressWarnings({"unchecked", "deprecation", "rawtypes"})
 public class FXMLController {
 	FileChooser fileChooser = new FileChooser();
 	DirectoryChooser folderChooser = new DirectoryChooser();
-	List<File> list = null;
+	List<File> list = new ArrayList<File>();
 	Stage stage;
 	List<MediaPlayer> players = new ArrayList<MediaPlayer>();
 	MediaView mediaView = null;
 	ObservableList<String> items = FXCollections.observableArrayList();
-	ObservableList<MediaFile> mediaFiles = FXCollections.observableArrayList();
+	ObservableList<PlayList> items2 = FXCollections.observableArrayList();
+	ObservableList<ListFile> mediaFiles = FXCollections.observableArrayList();
 	private Duration duration;
 	@FXML
 	private ListView<String> listFile;
 	@FXML
 	private Label fileDetail;
 	@FXML
-	private Button play, prev, next;
+	private Button play, prev, next, btn_saveList, btn_clearList;
+	@FXML
+	private TextField tf_listName;
 	@FXML
 	private Slider volumeSlider, timeSlider;
 	@FXML
@@ -63,21 +73,29 @@ public class FXMLController {
 	private Pane view;
 
 	@FXML
-	private TableView<MediaFile> libraryTable;
+	private TableView<ListFile> libraryTable;
 	
 	@FXML
+	private TableView<PlayList> playlistTable;
+
+	@FXML
 	private TableColumn titleColumn, lengthColoumn, artistColumn, albumColumn,
-			ratingCol;
+			ratingCol, playlistCol;
 
 	final ObservableList<Integer> ratingSample = FXCollections
 			.observableArrayList(1, 2, 3, 4, 5);
 
+	DataControler control;
+
 	/**
 	 * Initializes the controller class. This method is automatically called
 	 * after the fxml file has been loaded.
+	 * 
+	 * @throws SQLException
+	 * @throws ClassNotFoundException
 	 */
 	@FXML
-	private void initialize() {
+	private void initialize() throws ClassNotFoundException, SQLException {
 		timeSlider.valueProperty().addListener(new InvalidationListener() {
 			public void invalidated(Observable ov) {
 				if (timeSlider.isValueChanging()) {
@@ -96,11 +114,124 @@ public class FXMLController {
 				}
 			}
 		});
+
+		control = new DataControler();
+		
+
+//		List<ListFile> lf = getPlaylist();
+//		updateTable(lf);
+		
+		List<PlayList> lf = getListPlay();
+		if(lf != null){
+			updateListPlay(lf);
+		}
+		
+		
+
+
+	}
+
+
+	public List<PlayList> getListPlay() throws SQLException{
+		List<PlayList> pl = new ArrayList<PlayList>();
+		List<String> ls = control.getListNames();
+		
+			for(int i = 0; i< ls.size(); i ++){
+				pl.add(new PlayList(ls.get(i)));
+			}
+			
+			return pl;
+		
+		
+	}
+	
+	public void updateListPlay(List<PlayList> pl) throws SQLException{
+		// Create a MenuItem and place it in a ContextMenu
+		items2.clear();
+		if(pl != null){
+			for(int i = 0; i < pl.size(); i ++){
+				items2.add(pl.get(i));
+			}
+		}
+		
+	
+		playlistCol.setCellValueFactory(new PropertyValueFactory<PlayList, String>(
+				"name"));
+		
+		
+		playlistTable.setRowFactory(new Callback<TableView<PlayList>, TableRow<PlayList>>() {
+
+			@Override
+			public TableRow<PlayList> call(TableView<PlayList> p) {
+				final TableRow<PlayList> row = new TableRow<PlayList>();
+				row.setOnDragEntered(new EventHandler<DragEvent>() {
+					@Override
+					public void handle(DragEvent t) {
+
+					}
+				});
+
+				final ContextMenu contextMenu = new ContextMenu();
+				final MenuItem removeMenuItem = new MenuItem(
+						"Remove");
+				removeMenuItem
+						.setOnAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent event) {
+								String select = row.getItem().getName();
+						        try {
+									control.deletePlaylist(select);
+									
+									
+								} catch (SQLException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+						        
+						        playlistTable.getItems().remove(
+										row.getItem());
+							}
+						});
+				contextMenu.getItems().add(removeMenuItem);
+				final MenuItem playMenuItem = new MenuItem("Play");
+				playMenuItem
+						.setOnAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent event) {
+								String select = row.getItem().getName();
+						    	try {
+									updateTable(control.getPlaylist(select));
+								} catch (SQLException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+
+							}
+						});
+				contextMenu.getItems().add(playMenuItem);
+				// Set context menu on row, but use a binding to
+				// make it only show for non-empty rows:
+				row.contextMenuProperty().bind(
+						Bindings.when(row.emptyProperty())
+								.then((ContextMenu) null)
+								.otherwise(contextMenu));
+
+			
+				return row;
+			}
+		}
+
+		);
+		
+		playlistTable.setItems(items2);
+		
 	}
 
 	@FXML
-	protected void openFile(ActionEvent event) {
+	protected void openFile(ActionEvent event) throws ClassNotFoundException,
+			SQLException {
 		processOpenFile();
+
 	}
 
 	@FXML
@@ -142,6 +273,164 @@ public class FXMLController {
 	}
 
 	@FXML
+	protected void onSaveList(ActionEvent event) throws ClassNotFoundException,
+			SQLException {
+		String title;
+		String artist;
+		String length;
+		String album;
+		String listName;
+		String url;
+		MediaFile file;
+
+		if (list != null) {
+			for (int i = 0; i < list.size(); i++) {
+
+				listName = tf_listName.getText();
+				file = new MediaFile(list.get(i));
+				title = file.getTitle();
+				artist = file.getArtist();
+				album = file.getAlbum();
+				length = file.getLength();
+				url = file.getPath();
+				control.insertData(listName, title, artist, length, url, album);
+				
+			}
+
+		}
+		List<PlayList> lf = getListPlay();
+		updateListPlay(lf);
+
+	}
+
+	@FXML
+	protected void onClearList(ActionEvent event) {
+		listFile.setItems(null);
+		mediaView.getMediaPlayer()
+		.stop();
+
+	}
+
+	public List<ListFile> getPlaylist() throws ClassNotFoundException,
+			SQLException {
+
+		return control.getData();
+
+	}
+
+	public void updateTable(List<ListFile> lt) {
+		mediaFiles.clear();
+		if (lt != null) {
+			for (int i = 0; i < lt.size(); i++) {
+
+				mediaFiles.add(lt.get(i));
+
+			}
+
+			titleColumn
+					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+							"title"));
+			// lengthColoumn = new TableColumn("Length");
+			lengthColoumn
+					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+							"length"));
+			// albumColumn = new TableColumn("Album");
+			albumColumn
+					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+							"album"));
+			// artistColumn = new TableColumn("Artist");
+			artistColumn
+					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+							"artist"));
+
+			//
+			//
+
+			libraryTable
+					.setRowFactory(new Callback<TableView<ListFile>, TableRow<ListFile>>() {
+
+						@Override
+						public TableRow<ListFile> call(TableView<ListFile> p) {
+							final TableRow<ListFile> row = new TableRow<ListFile>();
+							row.setOnDragEntered(new EventHandler<DragEvent>() {
+								@Override
+								public void handle(DragEvent t) {
+
+								}
+							});
+
+							final ContextMenu contextMenu = new ContextMenu();
+							final MenuItem removeMenuItem = new MenuItem(
+									"Remove");
+							removeMenuItem
+									.setOnAction(new EventHandler<ActionEvent>() {
+										@Override
+										public void handle(ActionEvent event) {
+											String id = row.getItem().getId();
+											try {
+												control.deleteData(id);
+											} catch (SQLException e) {
+												// TODO Auto-generated catch
+												// block
+												e.printStackTrace();
+											}
+
+											libraryTable.getItems().remove(
+													row.getItem());
+										}
+									});
+							contextMenu.getItems().add(removeMenuItem);
+							final MenuItem playMenuItem = new MenuItem("Play");
+							playMenuItem
+									.setOnAction(new EventHandler<ActionEvent>() {
+										@Override
+										public void handle(ActionEvent event) {
+											if (mediaView != null) {
+												if (mediaView.getMediaPlayer() != null) {
+													mediaView.getMediaPlayer()
+															.stop();
+												}
+											}
+
+											// mediaView.setMediaPlayer(players.get(listFile
+											// .getSelectionModel().getSelectedIndex()));
+											Media m1 = new Media(row.getItem()
+													.getUrl());
+											MediaPlayer mp1 = new MediaPlayer(
+													m1);
+											items.clear();
+											items.add(row.getItem().getTitle());
+											listFile.setItems(items);
+
+											players.add(mp1);
+											mediaView = new MediaView(mp1);
+											// mediaView.setMediaPlayer(mp1);
+											play(mediaView.getMediaPlayer());
+
+										}
+									});
+							contextMenu.getItems().add(playMenuItem);
+							// Set context menu on row, but use a binding to
+							// make it only show for non-empty rows:
+							row.contextMenuProperty().bind(
+									Bindings.when(row.emptyProperty())
+											.then((ContextMenu) null)
+											.otherwise(contextMenu));
+
+						
+							return row;
+						}
+					}
+
+					);
+			libraryTable.setItems(mediaFiles);
+//			mediaFiles.clear();
+
+		}
+
+	}
+
+	@FXML
 	protected void btnNext(ActionEvent event) {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
@@ -174,6 +463,7 @@ public class FXMLController {
 
 			@Override
 			public void handle(MouseEvent arg0) {
+				// TODO Auto-generated method stub
 				if (mediaView.getMediaPlayer() != null) {
 					mediaView.getMediaPlayer().stop();
 				}
@@ -185,6 +475,7 @@ public class FXMLController {
 	}
 
 	protected void play(MediaPlayer play) {
+		// TODO Auto-generated method stub
 		// view.setStyle("-fx-background-color: #000033;");
 		play.play();
 		// view.getChildren().clear();
@@ -206,6 +497,7 @@ public class FXMLController {
 
 			@Override
 			public void run() {
+				// TODO Auto-generated method stub
 
 			}
 		});
@@ -215,6 +507,7 @@ public class FXMLController {
 			@Override
 			public void spectrumDataUpdate(double timestamp, double duration,
 					float[] magnitudes, float[] phases) {
+				// TODO Auto-generated method stub
 				// phaseNodes.getChildren().clear();
 				int i = 0;
 				int x = 10;
@@ -238,7 +531,7 @@ public class FXMLController {
 	}
 
 	/*
-	 * protected void processOpenFile() {
+	 * protected void processOpenFile() { // TODO Auto-generated method stub
 	 * configureFileChooser(fileChooser); File file =
 	 * fileChooser.showOpenDialog(stage); }
 	 */
@@ -250,6 +543,7 @@ public class FXMLController {
 
 			@Override
 			public boolean accept(File dir, String name) {
+				// TODO Auto-generated method stub
 				if (name.endsWith(".mp3"))
 					return true;
 				else {
@@ -273,16 +567,19 @@ public class FXMLController {
 
 	// Xu li khi mo Open File
 	protected void processOpenFile() {
+		// TODO Auto-generated method stub
 		resetAll();
 		configureFileChooser(fileChooser);
 		list = fileChooser.showOpenMultipleDialog(stage);
 
 		if (list != null) {
+
 			// get list items,players
 			for (int i = 0; i < list.size(); i++) {
 				items.add(list.get(i).getName());
-				mediaFiles.add(new MediaFile(list.get(i)));
+
 				Media media = new Media(list.get(i).toURI().toString());
+				System.out.println(list.get(i).toURI().toString());
 				MediaPlayer mediaPlayer = new MediaPlayer(media);
 				players.add(mediaPlayer);
 			}
@@ -292,53 +589,7 @@ public class FXMLController {
 		play(mediaView.getMediaPlayer());
 		listFile.setItems(items);
 		// titleColumn = new TableColumn("Title");
-		titleColumn
-				.setCellValueFactory(new PropertyValueFactory<MediaFile, String>(
-						"title"));
-		// lengthColoumn = new TableColumn("Length");
-		lengthColoumn
-				.setCellValueFactory(new PropertyValueFactory<MediaFile, String>(
-						"length"));
-		// albumColumn = new TableColumn("Album");
-		albumColumn
-				.setCellValueFactory(new PropertyValueFactory<MediaFile, String>(
-						"album"));
-		// artistColumn = new TableColumn("Artist");
-		artistColumn
-				.setCellValueFactory(new PropertyValueFactory<MediaFile, String>(
-						"artist"));
 
-		ratingCol
-				.setCellValueFactory(new PropertyValueFactory<MediaFile, Integer>(
-						"rating"));
-
-		ratingCol
-				.setCellFactory(new Callback<TableColumn<MediaFile, Integer>, TableCell<MediaFile, Integer>>() {
-					@Override
-					public TableCell<MediaFile, Integer> call(
-							TableColumn<MediaFile, Integer> param) {
-						TableCell<MediaFile, Integer> cell = new TableCell<MediaFile, Integer>() {
-							@Override
-							public void updateItem(Integer item, boolean empty) {
-								if (item != null) {
-
-									ChoiceBox choice = new ChoiceBox(
-											ratingSample);
-									choice.getSelectionModel().select(
-											ratingSample.indexOf(item));
-									// SETTING ALL THE GRAPHICS COMPONENT FOR
-									// CELL
-									setGraphic(choice);
-								}
-							}
-						};
-						return cell;
-					}
-
-				});
-		//
-		//
-		libraryTable.setItems(mediaFiles);
 		// libraryTable.getColumns().addAll(titleColumn, lengthColoumn,
 		// artistColumn, albumColumn);
 	}
@@ -374,6 +625,7 @@ public class FXMLController {
 	}
 
 	protected void updateValues() {
+		// TODO Auto-generated method stub
 		if (playTime != null && timeSlider != null && volumeSlider != null) {
 			Platform.runLater(new Runnable() {
 				public void run() {
