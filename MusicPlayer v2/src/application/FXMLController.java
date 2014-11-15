@@ -45,7 +45,7 @@ import model.ListFile;
 import model.MediaFile;
 import model.PlayList;
 
-@SuppressWarnings({"unchecked", "deprecation", "rawtypes"})
+@SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
 public class FXMLController {
 	FileChooser fileChooser = new FileChooser();
 	DirectoryChooser folderChooser = new DirectoryChooser();
@@ -74,7 +74,7 @@ public class FXMLController {
 
 	@FXML
 	private TableView<ListFile> libraryTable;
-	
+
 	@FXML
 	private TableView<PlayList> playlistTable;
 
@@ -116,115 +116,107 @@ public class FXMLController {
 		});
 
 		control = new DataControler();
-		
 
-//		List<ListFile> lf = getPlaylist();
-//		updateTable(lf);
-		
+		// List<ListFile> lf = getPlaylist();
+		// updateTable(lf);
+
 		List<PlayList> lf = getListPlay();
-		if(lf != null){
+		if (lf != null) {
 			updateListPlay(lf);
 		}
-		
-		
-
 
 	}
 
-
-	public List<PlayList> getListPlay() throws SQLException{
+	public List<PlayList> getListPlay() throws SQLException {
 		List<PlayList> pl = new ArrayList<PlayList>();
 		List<String> ls = control.getListNames();
-		
-			for(int i = 0; i< ls.size(); i ++){
-				pl.add(new PlayList(ls.get(i)));
-			}
-			
-			return pl;
-		
-		
+
+		for (int i = 0; i < ls.size(); i++) {
+			pl.add(new PlayList(ls.get(i)));
+		}
+
+		return pl;
+
 	}
-	
-	public void updateListPlay(List<PlayList> pl) throws SQLException{
+
+	public void updateListPlay(List<PlayList> pl) throws SQLException {
 		// Create a MenuItem and place it in a ContextMenu
 		items2.clear();
-		if(pl != null){
-			for(int i = 0; i < pl.size(); i ++){
+		if (pl != null) {
+			for (int i = 0; i < pl.size(); i++) {
 				items2.add(pl.get(i));
 			}
 		}
-		
-	
-		playlistCol.setCellValueFactory(new PropertyValueFactory<PlayList, String>(
-				"name"));
-		
-		
-		playlistTable.setRowFactory(new Callback<TableView<PlayList>, TableRow<PlayList>>() {
 
-			@Override
-			public TableRow<PlayList> call(TableView<PlayList> p) {
-				final TableRow<PlayList> row = new TableRow<PlayList>();
-				row.setOnDragEntered(new EventHandler<DragEvent>() {
+		playlistCol
+				.setCellValueFactory(new PropertyValueFactory<PlayList, String>(
+						"name"));
+
+		playlistTable
+				.setRowFactory(new Callback<TableView<PlayList>, TableRow<PlayList>>() {
+
 					@Override
-					public void handle(DragEvent t) {
+					public TableRow<PlayList> call(TableView<PlayList> p) {
+						final TableRow<PlayList> row = new TableRow<PlayList>();
+						row.setOnDragEntered(new EventHandler<DragEvent>() {
+							@Override
+							public void handle(DragEvent t) {
 
+							}
+						});
+
+						final ContextMenu contextMenu = new ContextMenu();
+						final MenuItem removeMenuItem = new MenuItem("Remove");
+						removeMenuItem
+								.setOnAction(new EventHandler<ActionEvent>() {
+									@Override
+									public void handle(ActionEvent event) {
+										String select = row.getItem().getName();
+										try {
+											control.deletePlaylist(select);
+
+										} catch (SQLException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+
+										playlistTable.getItems().remove(
+												row.getItem());
+									}
+								});
+						contextMenu.getItems().add(removeMenuItem);
+						final MenuItem playMenuItem = new MenuItem("Play");
+						playMenuItem
+								.setOnAction(new EventHandler<ActionEvent>() {
+									@Override
+									public void handle(ActionEvent event) {
+										String select = row.getItem().getName();
+										try {
+											updateTable(control
+													.getPlaylist(select));
+										} catch (SQLException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+
+									}
+								});
+						contextMenu.getItems().add(playMenuItem);
+						// Set context menu on row, but use a binding to
+						// make it only show for non-empty rows:
+						row.contextMenuProperty().bind(
+								Bindings.when(row.emptyProperty())
+										.then((ContextMenu) null)
+										.otherwise(contextMenu));
+
+						return row;
 					}
-				});
+				}
 
-				final ContextMenu contextMenu = new ContextMenu();
-				final MenuItem removeMenuItem = new MenuItem(
-						"Remove");
-				removeMenuItem
-						.setOnAction(new EventHandler<ActionEvent>() {
-							@Override
-							public void handle(ActionEvent event) {
-								String select = row.getItem().getName();
-						        try {
-									control.deletePlaylist(select);
-									
-									
-								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-						        
-						        playlistTable.getItems().remove(
-										row.getItem());
-							}
-						});
-				contextMenu.getItems().add(removeMenuItem);
-				final MenuItem playMenuItem = new MenuItem("Play");
-				playMenuItem
-						.setOnAction(new EventHandler<ActionEvent>() {
-							@Override
-							public void handle(ActionEvent event) {
-								String select = row.getItem().getName();
-						    	try {
-									updateTable(control.getPlaylist(select));
-								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
+				);
 
-							}
-						});
-				contextMenu.getItems().add(playMenuItem);
-				// Set context menu on row, but use a binding to
-				// make it only show for non-empty rows:
-				row.contextMenuProperty().bind(
-						Bindings.when(row.emptyProperty())
-								.then((ContextMenu) null)
-								.otherwise(contextMenu));
-
-			
-				return row;
-			}
-		}
-
-		);
-		
 		playlistTable.setItems(items2);
-		
+
 	}
 
 	@FXML
@@ -294,7 +286,7 @@ public class FXMLController {
 				length = file.getLength();
 				url = file.getPath();
 				control.insertData(listName, title, artist, length, url, album);
-				
+
 			}
 
 		}
@@ -306,8 +298,7 @@ public class FXMLController {
 	@FXML
 	protected void onClearList(ActionEvent event) {
 		listFile.setItems(null);
-		mediaView.getMediaPlayer()
-		.stop();
+		mediaView.getMediaPlayer().stop();
 
 	}
 
@@ -417,14 +408,13 @@ public class FXMLController {
 											.then((ContextMenu) null)
 											.otherwise(contextMenu));
 
-						
 							return row;
 						}
 					}
 
 					);
 			libraryTable.setItems(mediaFiles);
-//			mediaFiles.clear();
+			// mediaFiles.clear();
 
 		}
 
