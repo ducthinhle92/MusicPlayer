@@ -1,9 +1,12 @@
 package model;
 
 import java.io.File;
+import java.util.Timer;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.Label;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -16,6 +19,8 @@ public class MediaFile {
 	private SimpleStringProperty length;
 	private SimpleStringProperty album;
 	private SimpleIntegerProperty rating;
+
+	private String url;
 
 	// private SimpleListProperty<Label> rating;
 
@@ -31,6 +36,8 @@ public class MediaFile {
 					FieldKey.ALBUM));
 			rating = new SimpleIntegerProperty(4);
 
+			url = file.toURI().toString();
+
 			int duration = audioFile.getAudioHeader().getTrackLength();
 
 			length = new SimpleStringProperty(duration / 60 + ":"
@@ -40,6 +47,10 @@ public class MediaFile {
 
 		}
 
+	}
+
+	public String getPath() {
+		return url;
 	}
 
 	public Integer getRating() {
