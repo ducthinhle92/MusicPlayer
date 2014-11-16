@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<StackPane prefHeight="500.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane prefHeight="500.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXMLController">
    <children>
       <VBox prefHeight="500.0" prefWidth="768.0">
          <children>
@@ -18,7 +18,9 @@
                            <menus>
                               <Menu mnemonicParsing="false" text="File">
                                  <items>
-                                    <MenuItem mnemonicParsing="false" text="Close" />
+                                     <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open File" />
+                                     <MenuItem mnemonicParsing="false" onAction="#openFiles" text="Open Files" />
+                                     <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
                                  </items>
                               </Menu>
                               <Menu mnemonicParsing="false" text="Edit">
@@ -36,7 +38,7 @@
                         <HBox maxHeight="-Infinity" minHeight="38.0" prefHeight="38.0" prefWidth="766.0" />
                         <StackPane maxHeight="2000.0">
                            <children>
-                              <SplitPane dividerPositions="0.19843342036553524, 0.7767624020887729" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                              <SplitPane dividerPositions="0.17801047120418848, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                  <items>
                                     <StackPane maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
                                        <children>
@@ -61,7 +63,19 @@
                                           </ScrollPane>
                                        </children>
                                     </StackPane>
-                                    <AnchorPane maxWidth="400.0" minWidth="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
+                                    <AnchorPane maxWidth="400.0" minWidth="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
+                                       <children>
+                                          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0">
+                                            <items>
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="108.0" prefWidth="165.0">
+                                                   <children>
+                                                      <ListView fx:id="listFile" prefHeight="166.0" prefWidth="194.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                            </items>
+                                          </SplitPane>
+                                       </children></AnchorPane>
                                  </items>
                               </SplitPane>
                            </children>
@@ -76,26 +90,35 @@
                      <children>
                         <StackPane maxWidth="2000.0" minWidth="500.0" prefWidth="2000.0">
                            <children>
-                              <ProgressBar maxWidth="-Infinity" prefHeight="18.0" prefWidth="2000.0" progress="0.0">
-                                 <VBox.margin>
-                                    <Insets left="10.0" right="10.0" />
-                                 </VBox.margin>
-                                 <StackPane.margin>
-                                    <Insets left="10.0" right="10.0" />
-                                 </StackPane.margin>
-                              </ProgressBar>
+                              <Slider fx:id="timeSlider" max="100"/>
                            </children>
                         </StackPane>
-                        <StackPane maxWidth="2000.0" minWidth="500.0">
+                        <StackPane focusTraversable="true" maxWidth="2000.0" minWidth="500.0">
                            <children>
-                              <SplitPane dividerPositions="0.3185, 0.6358" focusTraversable="false" prefHeight="160.0" prefWidth="200.0">
+                              <SplitPane dividerPositions="0.21018276762402088, 0.7402088772845953" focusTraversable="false" prefHeight="160.0" prefWidth="200.0">
                                 <items>
                                   <AnchorPane minWidth="100.0">
                                        <children>
-                                          <Label layoutX="14.0" layoutY="22.0" text="Thông tin bài hát" AnchorPane.leftAnchor="10.0" />
+                                          <HBox>
+                                           <Label layoutX="14.0" layoutY="22.0" text="Thông tin bài hát" AnchorPane.leftAnchor="10.0" />
+                                           <Label fx:id="playTime" text="Time"/>
+                                          </HBox>
+                                         
                                        </children>
                                     </AnchorPane>
-                                    <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false" />
+                                    <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Button fx:id="stop" mnemonicParsing="false" onAction="#btnStop" text="Stop" />
+                                                <Button fx:id="prev" mnemonicParsing="false" onAction="#btnPrev" text="Prev" />
+                                                <Button fx:id="play" mnemonicParsing="false" onAction="#btnPlay" text="Pause" />
+                                                <Button fx:id="next" mnemonicParsing="false" onAction="#btnNext" text="Next" />
+                                                <Button fx:id="mute" mnemonicParsing="false" onAction="#btnMute" text="Mute" />
+                                                <Slider fx:id="volumeSlider" max="100" prefWidth="70.0" />
+                                             </children>
+                                          </HBox>
+                                       </children></StackPane>
                                     <AnchorPane minWidth="100.0">
                                        <children>
                                           <Button layoutX="160.0" layoutY="18.0" mnemonicParsing="false" text="Go to Play Screen" AnchorPane.rightAnchor="10.0" />
