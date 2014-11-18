@@ -1,11 +1,11 @@
 package application;
 
+import application.resource.Resources;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Launcher extends Application {
@@ -31,7 +31,8 @@ public class Launcher extends Application {
 					"LibraryScreen.fxml"));
 			Parent root = (Parent) loader.load();
 			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getStyleSheet("appliccation.css"));			
+			scene.getStylesheets().add(
+					Resources.getStyleSheet("application"));	
 			FXMLController controller = loader.getController();
 			controller.setStage(primaryStage);
 
@@ -63,11 +64,6 @@ public class Launcher extends Application {
 			bodyPane.getChildren().add(libraryPane);
 			currentScene = LIBRARY_SCENE;
 		}
-	}
-
-	public static String getStyleSheet(String string) {
-		return instance.getClass().getResource("application.css")
-				.toExternalForm();
 	}
 
 	public static void main(String[] args) {
