@@ -1,7 +1,5 @@
 package application;
 
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,10 +8,10 @@ import javafx.stage.Stage;
 
 public class Launcher extends Application {
 	public static final int PLAY_SCENE = 0;
-	public static final int LIBRARY_SCENE = 1;
+	public static final int LIBRARY_SCENE = 1;	
+	public static final double MIN_WIDTH = 500;
+	public static final double MIN_HEIGHT = 400;
 	
-	private static final double MIN_WIDTH = 500;
-	private static final double MIN_HEIGHT = 400;
 	private static Launcher instance = null;
 	private Scene libraryScene;
 	private Scene playScene;
@@ -37,6 +35,13 @@ public class Launcher extends Application {
 			primaryStage.setScene(libraryScene);
 			primaryStage.show();
 			
+			loader = new FXMLLoader(getClass().getResource(
+					"PlayScreen.fxml"));
+			root = (Parent) loader.load();
+			playScene = new Scene(root);
+			playScene.getStylesheets().add(Launcher.getStyleSheet(
+					"application.css"));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -44,18 +49,7 @@ public class Launcher extends Application {
 	
 	public void setScene(int sceneId) {
 		if(sceneId == PLAY_SCENE) {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(
-					"PlayScreen.fxml"));
-			Parent root;
-			try {
-				root = (Parent) loader.load();
-
-				playScene = new Scene(root);
-				playScene.getStylesheets().add(Launcher.getStyleSheet("application.css"));
-				stage.setScene(playScene);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			stage.setScene(playScene);
 		}
 		else if(sceneId == LIBRARY_SCENE) {
 			stage.setScene(libraryScene);

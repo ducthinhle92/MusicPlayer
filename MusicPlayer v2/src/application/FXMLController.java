@@ -89,7 +89,7 @@ public class FXMLController {
 	final ObservableList<Integer> ratingSample = FXCollections
 			.observableArrayList(1, 2, 3, 4, 5);
 
-	DataControler control;
+	DatabaseController control;
 
 	/**
 	 * Initializes the controller class. This method is automatically called
@@ -119,7 +119,7 @@ public class FXMLController {
 			}
 		});
 
-		control = new DataControler();
+		control = new DatabaseController();
 
 		// List<ListFile> lf = getPlaylist();
 		// updateTable(lf);
