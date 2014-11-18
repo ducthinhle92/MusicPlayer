@@ -62,7 +62,7 @@ public class FXMLController {
 	@FXML
 	private Label fileDetail;
 	@FXML
-	private Button play, prev, next, btn_saveList, btn_clearList;
+	private Button play, prev, next, btn_saveList, btn_clearList, btnGoPlayScene;
 	@FXML
 	private TextField tf_listName;
 	@FXML
@@ -249,7 +249,11 @@ public class FXMLController {
 			mediaView.setMediaPlayer(prevPlayer);
 			play(prevPlayer);
 		}
-
+	}
+	
+	@FXML
+	protected void onGotoPlayScene(ActionEvent event) {
+		
 	}
 
 	@FXML

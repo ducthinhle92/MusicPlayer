@@ -6,17 +6,21 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Launcher extends Application {
 	private static final double MIN_WIDTH = 500;
 	private static final double MIN_HEIGHT = 400;
+	private static Launcher instance = null;
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			 FXMLLoader loader = new FXMLLoader(getClass().getResource("LibraryScreen.fxml"));
+			instance = this;
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(
+					"LibraryScreen.fxml"));
 			Parent root = (Parent) loader.load();
 			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getStyleSheet("appliccation.css"));
+					
 			FXMLController controller = loader.getController();
 			controller.setStage(primaryStage);
 
@@ -27,6 +31,11 @@ public class Main extends Application {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static String getStyleSheet(String string) {		
+		return instance.getClass().getResource("application.css")
+				.toExternalForm();
 	}
 
 	public static void main(String[] args) {
