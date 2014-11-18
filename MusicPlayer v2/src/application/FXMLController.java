@@ -256,8 +256,15 @@ public class FXMLController {
 	}
 	
 	@FXML
-	protected void onGotoPlayScene(ActionEvent event) {		
-		Launcher.getInstance().setScene(Launcher.PLAY_SCENE);
+	protected void onChangeScene(ActionEvent event) {
+		if(Launcher.getInstance().currentScene == Launcher.LIBRARY_SCENE) {
+			btnGoPlayScene.setText(Resources.Strings.goPlayScene);			
+			Launcher.getInstance().setScene(Launcher.PLAY_SCENE);
+		}
+		else {
+			btnGoPlayScene.setText(Resources.Strings.goLibraryScene);			
+			Launcher.getInstance().setScene(Launcher.LIBRARY_SCENE);
+		}
 	}
 
 	@FXML
