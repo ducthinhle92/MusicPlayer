@@ -2,6 +2,7 @@ package application;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -252,8 +256,8 @@ public class FXMLController {
 	}
 	
 	@FXML
-	protected void onGotoPlayScene(ActionEvent event) {
-		
+	protected void onGotoPlayScene(ActionEvent event) {		
+		Launcher.getInstance().setScene(Launcher.PLAY_SCENE);
 	}
 
 	@FXML
