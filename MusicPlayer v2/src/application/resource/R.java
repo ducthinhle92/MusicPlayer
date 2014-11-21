@@ -1,10 +1,16 @@
 package application.resource;
 
-public class Resources {
+import java.net.URL;
 
-	public static class Strings {
+public class R {
+
+	public static class strings {
 		public static final String goPlayScene = "To play scene";
 		public static final String goLibraryScene = "To library scene";		
+	}
+	
+	public static URL getLayoutFXML(String fileLayout ) {		
+		return R.class.getResource("layout/" + fileLayout + ".fxml");
 	}
 	
 	/**
@@ -13,12 +19,12 @@ public class Resources {
 	 * @return
 	 */
 	public static String getStyleSheet(String styleSheetFile) {
-		return Resources.class.getResource("css/" + styleSheetFile
+		return R.class.getResource("css/" + styleSheetFile
 				+ ".css").toExternalForm();
 	}
 	
 	public static String getImage(String imageFile) {
-		return Resources.class.getResource("image/" + imageFile)
+		return R.class.getResource("image/" + imageFile)
 				.toExternalForm();
 	}
 }

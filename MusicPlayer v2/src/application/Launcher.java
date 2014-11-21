@@ -1,6 +1,6 @@
 package application;
 
-import application.resource.Resources;
+import application.resource.R;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,12 +27,12 @@ public class Launcher extends Application {
 		try {
 			instance = this;
 			this.stage = primaryStage;
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(
-					"LibraryScreen.fxml"));
+			FXMLLoader loader = new FXMLLoader(
+					R.getLayoutFXML("LibraryScreen"));
 			Parent root = (Parent) loader.load();
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(
-					Resources.getStyleSheet("application"));	
+					R.getStyleSheet("application"));	
 			FXMLController controller = loader.getController();
 			controller.setStage(primaryStage);
 
@@ -44,8 +44,7 @@ public class Launcher extends Application {
 			bodyPane = (StackPane) scene.lookup("#bodyPane");
 			libraryPane = (Parent) scene.lookup("#libraryPane");
 			
-			loader = new FXMLLoader(getClass().getResource(
-					"PlayPane.fxml"));
+			loader = new FXMLLoader(R.getLayoutFXML("PlayPane"));
 			playPane = (Parent) loader.load();
 			
 		} catch (Exception e) {

@@ -2,13 +2,11 @@ package application;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import application.resource.Resources;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -18,9 +16,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -49,6 +44,7 @@ import javafx.util.Duration;
 import model.ListFile;
 import model.MediaFile;
 import model.PlayList;
+import application.resource.R;
 
 @SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
 public class FXMLController {
@@ -221,7 +217,6 @@ public class FXMLController {
 				);
 
 		playlistTable.setItems(items2);
-
 	}
 
 	@FXML
@@ -259,11 +254,11 @@ public class FXMLController {
 	@FXML
 	protected void onChangeScene(ActionEvent event) {
 		if(Launcher.getInstance().currentScene == Launcher.LIBRARY_SCENE) {
-			btnGoPlayScene.setText(Resources.Strings.goPlayScene);			
+			btnGoPlayScene.setText(R.strings.goPlayScene);			
 			Launcher.getInstance().setScene(Launcher.PLAY_SCENE);
 		}
 		else {
-			btnGoPlayScene.setText(Resources.Strings.goLibraryScene);			
+			btnGoPlayScene.setText(R.strings.goLibraryScene);			
 			Launcher.getInstance().setScene(Launcher.LIBRARY_SCENE);
 		}
 	}
