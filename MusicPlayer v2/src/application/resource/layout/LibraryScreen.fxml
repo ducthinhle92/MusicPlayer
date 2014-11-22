@@ -42,15 +42,7 @@
                                  <items>
                                     <StackPane maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="300.0" minWidth="100.0">
-                                             <content>
-                                                <TableView fx:id="playlistTable" prefHeight="200.0" prefWidth="200.0">
-                                                  <columns>
-                                                    <TableColumn fx:id="playlistCol" prefWidth="130.0" text="Playlist" />
-                                                  </columns>
-                                                </TableView>
-                                             </content>
-                                          </ScrollPane>
+                                          <Pane fx:id="treeViewPane" prefHeight="200.0" prefWidth="200.0" />
                                        </children>
                                     </StackPane>
                                     <StackPane minWidth="300.0">

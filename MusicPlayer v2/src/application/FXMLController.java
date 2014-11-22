@@ -48,6 +48,7 @@ import application.resource.R;
 
 @SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
 public class FXMLController {
+	MediaTreeView treeView;
 	FileChooser fileChooser = new FileChooser();
 	DirectoryChooser folderChooser = new DirectoryChooser();
 	List<File> list = new ArrayList<File>();
@@ -130,10 +131,11 @@ public class FXMLController {
 		// List<ListFile> lf = getPlaylist();
 		// updateTable(lf);
 
-		List<PlayList> lf = getListPlay();
-		if (lf != null) {
-			updateListPlay(lf);
-		}
+	
+	}
+	
+	public void setTreeView(MediaTreeView treeView){
+		this.treeView = treeView;
 	}
 
 	public List<PlayList> getListPlay() throws SQLException {
@@ -148,84 +150,7 @@ public class FXMLController {
 
 	}
 
-	public void updateListPlay(List<PlayList> pl) throws SQLException {
-		// Create a MenuItem and place it in a ContextMenu
-		items2.clear();
-		if (pl != null) {
-			for (int i = 0; i < pl.size(); i++) {
-				items2.add(pl.get(i));
-			}
-		}
-
-		playlistCol
-				.setCellValueFactory(new PropertyValueFactory<PlayList, String>(
-						"name"));
-
-		playlistTable
-				.setRowFactory(new Callback<TableView<PlayList>, TableRow<PlayList>>() {
-
-					@Override
-					public TableRow<PlayList> call(TableView<PlayList> p) {
-						final TableRow<PlayList> row = new TableRow<PlayList>();
-						row.setOnDragEntered(new EventHandler<DragEvent>() {
-							@Override
-							public void handle(DragEvent t) {
-
-							}
-						});
-
-						final ContextMenu contextMenu = new ContextMenu();
-						final MenuItem removeMenuItem = new MenuItem("Remove");
-						removeMenuItem
-								.setOnAction(new EventHandler<ActionEvent>() {
-									@Override
-									public void handle(ActionEvent event) {
-										String select = row.getItem().getName();
-										try {
-											control.deletePlaylist(select);
-
-										} catch (SQLException e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
-
-										playlistTable.getItems().remove(
-												row.getItem());
-									}
-								});
-						contextMenu.getItems().add(removeMenuItem);
-						final MenuItem playMenuItem = new MenuItem("Play");
-						playMenuItem
-								.setOnAction(new EventHandler<ActionEvent>() {
-									@Override
-									public void handle(ActionEvent event) {
-										String select = row.getItem().getName();
-										try {
-											updateTable(control
-													.getPlaylist(select));
-										} catch (SQLException e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
-
-									}
-								});
-						contextMenu.getItems().add(playMenuItem);
-						// Set context menu on row, but use a binding to
-						// make it only show for non-empty rows:
-						row.contextMenuProperty().bind(
-								Bindings.when(row.emptyProperty())
-										.then((ContextMenu) null)
-										.otherwise(contextMenu));
-
-						return row;
-					}
-				}
-
-				);
-
-		playlistTable.setItems(items2);
-	}
+	
 
 	@FXML
 	protected void openFile(ActionEvent event) throws ClassNotFoundException,
@@ -309,8 +234,14 @@ public class FXMLController {
 			}
 
 		}
-		List<PlayList> lf = getListPlay();
-		updateListPlay(lf);
+		
+		int listSize = control.getListNames().size();
+		String[] listNames = new String [listSize];
+		for(int i = 0; i < listSize; i ++){
+			listNames[i] = control.getListNames().get(i);
+		}
+		treeView.loadTreeItems(listNames);
+
 
 	}
 
@@ -601,6 +532,37 @@ public class FXMLController {
 
 		// libraryTable.getColumns().addAll(titleColumn, lengthColoumn,
 		// artistColumn, albumColumn);
+	}
+	
+	protected void processOpenList(List<ListFile> lf) {
+		// TODO Auto-generated method stub
+		resetAll();
+		
+
+			// get list items,players
+			for (int i = 0; i < lf.size(); i++) {
+				items.add(lf.get(i).getTitle());
+				
+				try {
+					Media media = new Media(lf.get(i).getUrl());
+					System.out.println(lf.get(i).getUrl());
+					MediaPlayer mediaPlayer = new MediaPlayer(media);
+					players.add(mediaPlayer);
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out.println("error");
+				}
+
+				
+				System.out.println(i);
+			}
+		
+		mediaView = new MediaView(players.get(0));
+		// mediaView.getMediaPlayer().setVolume(0.5);
+		play(mediaView.getMediaPlayer());
+		listFile.setItems(items);
+
 	}
 
 	public MediaPlayer createPlayer(String src) {

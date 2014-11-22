@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import application.controller.PlayScreen;
@@ -23,6 +24,8 @@ public class Launcher extends Application {
 	private Parent libraryPane;
 	private Parent playPane;
 	private PlayScreen playScreen;
+	private Pane treeViewPane;
+	private DatabaseController dbController;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -37,6 +40,7 @@ public class Launcher extends Application {
 					R.getStyleSheet("application"));	
 			FXMLController controller = loader.getController();
 			controller.setStage(primaryStage);
+			dbController = new DatabaseController();
 
 			primaryStage.setMinWidth(MIN_WIDTH);
 			primaryStage.setMinHeight(MIN_HEIGHT);
@@ -45,6 +49,17 @@ public class Launcher extends Application {
 			
 			bodyPane = (StackPane) scene.lookup("#bodyPane");
 			libraryPane = (Parent) scene.lookup("#libraryPane");
+			treeViewPane = (Pane) scene.lookup("#treeViewPane");
+			MediaTreeView treeView = new MediaTreeView();
+			treeView.setController(controller);
+			controller.setTreeView(treeView);
+			treeViewPane.getChildren().add(treeView.getTreeView());
+			int listSize = dbController.getListNames().size();
+			String[] listNames = new String [listSize];
+			for(int i = 0; i < listSize; i ++){
+				listNames[i] = dbController.getListNames().get(i);
+			}
+			treeView.loadTreeItems(listNames);
 			
 			loader = new FXMLLoader(R.getLayoutFXML("PlayPane"));
 			playPane = (Parent) loader.load();
