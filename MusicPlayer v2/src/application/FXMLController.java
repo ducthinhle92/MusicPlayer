@@ -11,6 +11,8 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -44,6 +46,7 @@ import javafx.util.Duration;
 import model.ListFile;
 import model.MediaFile;
 import model.PlayList;
+import application.controller.PlayScreen;
 import application.resource.R;
 
 @SuppressWarnings({ "unchecked", "deprecation", "rawtypes" })
@@ -97,16 +100,25 @@ public class FXMLController {
 	 */
 	@FXML
 	private void initialize() throws ClassNotFoundException, SQLException {
-		timeSlider.valueProperty().addListener(new InvalidationListener() {
-			public void invalidated(Observable ov) {
-				if (timeSlider.isValueChanging()) {
-					// multiply duration by percentage calculated by slider
-					// position
-					mediaView.getMediaPlayer().seek(
-							duration.multiply(timeSlider.getValue() / 100.0));
-				}
+		
+		timeSlider.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent arg0) {
+				timeSlider.setValueChanging(true);				
 			}
 		});
+		
+		timeSlider.setOnMouseReleased(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				mediaView.getMediaPlayer().pause();
+				mediaView.getMediaPlayer().seek(
+						duration.multiply(timeSlider.getValue() / 100.0));
+				mediaView.getMediaPlayer().play();
+				timeSlider.setValueChanging(false);
+			}
+		});
+		
 		volumeSlider.valueProperty().addListener(new InvalidationListener() {
 			public void invalidated(Observable ov) {
 				if (volumeSlider.isValueChanging()) {
@@ -125,7 +137,6 @@ public class FXMLController {
 		if (lf != null) {
 			updateListPlay(lf);
 		}
-
 	}
 
 	public List<PlayList> getListPlay() throws SQLException {

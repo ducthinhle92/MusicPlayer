@@ -2,14 +2,14 @@
    -fx-border-color:  transparent;
    -fx-background-color: transparent;
    -fx-background-insets: 0;
-   -fx-padding: -10;
+   -fx-padding: 0;
 }
 
 .split-pane:horizontal > .split-pane-divider {
    -fx-border-color:  transparent;
    -fx-background-color: transparent;
    -fx-background-insets: 0;
-   -fx-padding: -10;
+   -fx-padding: 0;
 }
 
 .split-pane:vertical {

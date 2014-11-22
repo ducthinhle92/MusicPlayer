@@ -1,12 +1,13 @@
 package application;
 
-import application.resource.R;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import application.controller.PlayScreen;
+import application.resource.R;
 
 public class Launcher extends Application {
 	public static final int PLAY_SCENE = 0;
@@ -21,6 +22,7 @@ public class Launcher extends Application {
 	private StackPane bodyPane;
 	private Parent libraryPane;
 	private Parent playPane;
+	private PlayScreen playScreen;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -46,7 +48,8 @@ public class Launcher extends Application {
 			
 			loader = new FXMLLoader(R.getLayoutFXML("PlayPane"));
 			playPane = (Parent) loader.load();
-			
+
+			playScreen = new PlayScreen(primaryStage);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,6 +60,7 @@ public class Launcher extends Application {
 			bodyPane.getChildren().clear();
 			bodyPane.getChildren().add(playPane);
 			currentScene = PLAY_SCENE;
+			playScreen.start();
 		}
 		else if(sceneId == LIBRARY_SCENE) {
 			bodyPane.getChildren().clear();
