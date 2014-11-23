@@ -10,10 +10,13 @@ import javafx.stage.Stage;
 
 public abstract class AbstractScreen {
 	private Parent root;
-	private boolean initialized = false;	
+	private boolean initialized = false;
+	
 	protected boolean paused = false;
+	protected Stage stage;
 
 	public AbstractScreen(Stage primaryStage) {
+		this.stage = primaryStage;
 		root = (Parent) primaryStage.getScene().getRoot();
 	}
 	
@@ -61,40 +64,33 @@ public abstract class AbstractScreen {
 			pane = (Pane) _root;
 			return searchParent(pane, id);
 		} catch(ClassCastException e) {
-//			System.out.println(e.getMessage());
 		}
 		
 		try {
 			splitPane = (SplitPane) _root;
 			return searchParent(splitPane, id);			
 		} catch(ClassCastException e) {
-//			System.out.println(e.getMessage());
 		}
 		
 		try {
 			group = (Group) _root;
 			return searchParent(group, id);
 		} catch(ClassCastException e) {
-//			System.out.println(e.getMessage());
 		}
 		
 		try {
 			toolBar = (ToolBar) _root;
 			return searchParent(toolBar, id);
 		} catch(ClassCastException e) {
-//			System.out.println(e.getMessage());
 		}
 		
 		// this is a leaf node
-		if(_root.getId() != null)
-			System.out.println("Leaf node: " + _root.getId());
 		return null;
 	}
 	
 	private Node searchParent(ToolBar _root, String id) {
 		for(Node node : _root.getItems()) {
 			if(node.getId() != null && node.getId().equals(id)) {
-				System.out.println("found!");
 				return node;
 			}
 			else {
@@ -109,7 +105,6 @@ public abstract class AbstractScreen {
 	private Node searchParent(Group _root, String id) {
 		for(Node node : _root.getChildren()) {
 			if(node.getId() != null && node.getId().equals(id)) {
-				System.out.println("found!");
 				return node;
 			}
 			else {
@@ -122,11 +117,8 @@ public abstract class AbstractScreen {
 	}
 
 	private Node searchParent(SplitPane _root, String id) {
-		System.out.println(_root + " - children: " 
-				+ _root.getChildrenUnmodifiable().size());
 		for(Node node : _root.getItems()) {
 			if(node.getId() != null && node.getId().equals(id)) {
-				System.out.println("found!");
 				return node;
 			}
 			else {
@@ -141,7 +133,6 @@ public abstract class AbstractScreen {
 	private Node searchParent(Pane _root, String id) {
 		for(Node node : _root.getChildren()) {
 			if(node.getId() != null && node.getId().equals(id)) {
-				System.out.println("found!");
 				return node;
 			}
 			else {

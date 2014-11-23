@@ -12,7 +12,17 @@ import java.util.List;
 import model.ListFile;
 
 public class DatabaseController {
+	private static DatabaseController instance;
 	private Connection c;
+	
+	public static DatabaseController getInstance() 
+			throws ClassNotFoundException, SQLException {
+		if(instance == null) {
+			instance = new DatabaseController();
+		}
+		
+		return instance;
+	}
 
 	public DatabaseController() throws ClassNotFoundException, SQLException {
 		Class.forName("org.sqlite.JDBC");

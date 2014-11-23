@@ -4,83 +4,41 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import application.controller.PlayScreen;
 import application.resource.R;
 
 public class Launcher extends Application {
-	public static final int PLAY_SCENE = 0;
-	public static final int LIBRARY_SCENE = 1;	
+	public static final int PLAY_SCREEN = 0;
+	public static final int LIBRARY_SCREEN = 1;	
 	public static final double MIN_WIDTH = 500;
 	public static final double MIN_HEIGHT = 400;
 	
-	public int currentScene = LIBRARY_SCENE;
-	public Stage stage;
+	public int currentScene = LIBRARY_SCREEN;
 	
-	private static Launcher instance = null; 
-	private StackPane bodyPane;
-	private Parent libraryPane;
-	private Parent playPane;
-	private PlayScreen playScreen;
-	private Pane treeViewPane;
-	private DatabaseController dbController;
+	private static Launcher instance = null;
 
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			instance = this;
-			this.stage = primaryStage;
 			FXMLLoader loader = new FXMLLoader(
 					R.getLayoutFXML("LibraryScreen"));
 			Parent root = (Parent) loader.load();
 			Scene scene = new Scene(root);
-			scene.getStylesheets().add(
-					R.getStyleSheet("application"));	
-			FXMLController controller = loader.getController();
-			controller.setStage(primaryStage);
-			dbController = new DatabaseController();
+			scene.getStylesheets().add(R.getStyleSheet("application"));	
 
+			primaryStage.setScene(scene);
 			primaryStage.setMinWidth(MIN_WIDTH);
 			primaryStage.setMinHeight(MIN_HEIGHT);
-			primaryStage.setScene(scene);
+			
+			FXMLController controller = loader.getController();
+			controller.setStage(primaryStage);
+			controller.manageLayout();
+			
+			// show it out!
 			primaryStage.show();
-			
-			bodyPane = (StackPane) scene.lookup("#bodyPane");
-			libraryPane = (Parent) scene.lookup("#libraryPane");
-			treeViewPane = (Pane) scene.lookup("#treeViewPane");
-			MediaTreeView treeView = new MediaTreeView();
-			treeView.setController(controller);
-			controller.setTreeView(treeView);
-			treeViewPane.getChildren().add(treeView.getTreeView());
-			int listSize = dbController.getListNames().size();
-			String[] listNames = new String [listSize];
-			for(int i = 0; i < listSize; i ++){
-				listNames[i] = dbController.getListNames().get(i);
-			}
-			treeView.loadTreeItems(listNames);
-			
-			loader = new FXMLLoader(R.getLayoutFXML("PlayPane"));
-			playPane = (Parent) loader.load();
-
-			playScreen = new PlayScreen(primaryStage);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
-	
-	public void setScene(int sceneId) {
-		if(sceneId == PLAY_SCENE) {			
-			bodyPane.getChildren().clear();
-			bodyPane.getChildren().add(playPane);
-			currentScene = PLAY_SCENE;
-			playScreen.start();
-		}
-		else if(sceneId == LIBRARY_SCENE) {
-			bodyPane.getChildren().clear();
-			bodyPane.getChildren().add(libraryPane);
-			currentScene = LIBRARY_SCENE;
 		}
 	}
 
