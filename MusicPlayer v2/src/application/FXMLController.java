@@ -245,7 +245,7 @@ public class FXMLController {
 									.setOnAction(new EventHandler<ActionEvent>() {
 										@Override
 										public void handle(ActionEvent event) {
-											libraryScreen.onPlayItem(row.getItem());											
+											libraryScreen.onPlaySingleFile(row.getItem());											
 										}
 									});
 							contextMenu.getItems().add(playMenuItem);

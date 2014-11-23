@@ -110,7 +110,7 @@
                                              <children>
                                                 <Button fx:id="stop" mnemonicParsing="false" onAction="#btnStop" text="Stop" />
                                                 <Button fx:id="prev" mnemonicParsing="false" onAction="#btnPrev" text="Prev" />
-                                                <Button fx:id="play" mnemonicParsing="false" onAction="#btnPlay" text="Pause" />
+                                                <Button fx:id="play" mnemonicParsing="false" onAction="#btnPlay" text="Play" />
                                                 <Button fx:id="next" mnemonicParsing="false" onAction="#btnNext" text="Next" />
                                                 <Button fx:id="mute" mnemonicParsing="false" onAction="#btnMute" text="Mute" />
                                                 <Slider fx:id="volumeSlider" max="100" prefWidth="70.0" />
