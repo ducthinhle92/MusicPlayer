@@ -69,8 +69,8 @@ public class LibraryScreen extends AbstractScreen {
 	protected void initialize() {
 		super.initialize();
 
-		// Có thể lấy các node từ FXML controller sang đây !!!
-		// Lấy từ FXMLController hoặc dùng findNodeById đều được
+		// CÃ³ thá»ƒ láº¥y cÃ¡c node tá»« FXML controller sang Ä‘Ã¢y !!!
+		// Láº¥y tá»« FXMLController hoáº·c dÃ¹ng findNodeById Ä‘á»�u Ä‘Æ°á»£c
 		tf_listName = FXMLController.getInstance().tf_listName;
 		timeSlider = FXMLController.getInstance().timeSlider;
 		volumeSlider = FXMLController.getInstance().volumeSlider;
@@ -84,9 +84,9 @@ public class LibraryScreen extends AbstractScreen {
 
 		addEventHandler();
 
-		try { // Khởi tạo treePlayList
+		try { // Khá»Ÿi táº¡o treePlayList
 			dbController = DatabaseController.getInstance();
-			// Chú ý tận dụng hàm findeNodeById
+			// ChÃº Ã½ táº­n dá»¥ng hÃ m findeNodeById
 			Pane treeViewPane = (Pane) findNodeById("treeViewPane");
 			treePlayList = new MediaTreeView(FXMLController.getInstance());
 			treeViewPane.getChildren().add(treePlayList.getTreeView());
@@ -202,6 +202,14 @@ public class LibraryScreen extends AbstractScreen {
 
 			@Override
 			public void run() {
+				MediaPlayer curPlayer = mediaView.getMediaPlayer();
+				curPlayer.stop();
+				MediaPlayer nextPlayer = players.get((players.indexOf(curPlayer) + 1)
+						% players.size());
+				listFile.getSelectionModel().select(
+						(players.indexOf(curPlayer) + 1) % players.size());
+				mediaView.setMediaPlayer(nextPlayer);
+				play(nextPlayer);
 
 			}
 		});
