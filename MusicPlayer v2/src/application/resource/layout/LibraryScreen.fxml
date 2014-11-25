@@ -67,7 +67,7 @@
                                                       <Button fx:id="btn_saveList" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" onAction="#onSaveList" prefHeight="25.0" prefWidth="70.0" text="Save list" />
                                                       <Button fx:id="btn_clearList" layoutX="118.0" layoutY="15.0" mnemonicParsing="false" onAction="#onClearList" prefHeight="25.0" prefWidth="70.0" text="Clear list" />
                                                    </children></AnchorPane>
-                                                <ListView fx:id="listFile" prefHeight="117.0" prefWidth="198.0" />
+                                                <StackPane fx:id="nowPlayingPane" />
                                             </items>
                                           </SplitPane>
                                        </children>

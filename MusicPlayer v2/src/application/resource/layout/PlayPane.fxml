@@ -9,7 +9,7 @@
    <children>
       <SplitPane fx:id="abc" dividerPositions="0.7286432160804021" orientation="VERTICAL">
         <items>
-            <StackPane fx:id="test" style="-fx-background-color: #ffffdd;" />
+            <StackPane style="-fx-background-color: #ffffdd;" />
             <StackPane>
                <children>
                   <ListView fx:id="lyric" prefHeight="200.0" prefWidth="200.0" />

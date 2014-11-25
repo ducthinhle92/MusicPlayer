@@ -7,12 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import model.ListFile;
-import model.MediaFile;
-import application.DatabaseController;
-import application.FXMLController;
-import application.MediaTreeView;
-import application.utility.Utils;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -21,11 +15,11 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -36,6 +30,13 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.ListFile;
+import model.MediaFile;
+import application.DatabaseController;
+import application.FXMLController;
+import application.MediaTreeView;
+import application.utility.Utils;
+import application.view.NowPlayingListView;
 
 @SuppressWarnings("deprecation")
 public class LibraryScreen extends AbstractScreen {
@@ -52,7 +53,7 @@ public class LibraryScreen extends AbstractScreen {
 	private MediaView mediaView = null;
 	private Duration duration;
 	private List<MediaPlayer> players = new ArrayList<MediaPlayer>();
-	private ListView<String> listFile;
+	private NowPlayingListView listFile;
 	public List<File> list = new ArrayList<File>();
 
 	private FileChooser fileChooser = new FileChooser();
@@ -74,8 +75,12 @@ public class LibraryScreen extends AbstractScreen {
 		timeSlider = FXMLController.getInstance().timeSlider;
 		volumeSlider = FXMLController.getInstance().volumeSlider;
 		play = FXMLController.getInstance().play;
-		listFile = FXMLController.getInstance().listFile;
 		playTime = FXMLController.getInstance().playTime;
+
+		// add now playing list
+		listFile = new NowPlayingListView();
+		StackPane nowPlaying = FXMLController.getInstance().nowPlayingPane;
+		nowPlaying.getChildren().add(listFile);
 
 		addEventHandler();
 
@@ -123,7 +128,7 @@ public class LibraryScreen extends AbstractScreen {
 		listFile.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				onClickPlayingList(e);
+				onClickNowPlayingList(e);
 			}
 		});
 	}
@@ -243,15 +248,24 @@ public class LibraryScreen extends AbstractScreen {
 		}
 	}
 
-	public void onClickPlayingList(MouseEvent e) {
+	private int currentIndex = -1;
+	public void onClickNowPlayingList(MouseEvent event) {
 		int index = listFile.getSelectionModel().getSelectedIndex();
+		MediaPlayer player = null;
+		try {
+			player = players.get(index);
+		} catch (Exception e) {
+			return;
+		}
 		
-		if (e.getClickCount() == 2) {
+		if (event.getClickCount() == 2 && currentIndex != index) {
 			if (mediaView != null && mediaView.getMediaPlayer() != null) {
 				mediaView.getMediaPlayer().stop();
 			}
-			mediaView.setMediaPlayer(players.get(index));
+			
+			mediaView.setMediaPlayer(player);
 			play(mediaView.getMediaPlayer());
+			currentIndex = index;
 		}
 	}
 
@@ -397,14 +411,11 @@ public class LibraryScreen extends AbstractScreen {
 				players.add(mediaPlayer);
 
 			} catch (Exception e) {
-				System.out.println("error");
+				e.printStackTrace();
 			}
-
-			System.out.println(i);
 		}
 
 		mediaView = new MediaView(players.get(0));
-		// mediaView.getMediaPlayer().setVolume(0.5);
 		play(mediaView.getMediaPlayer());
 		listFile.setItems(items);
 	}
@@ -420,7 +431,7 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	public void resetAll() {
-		if (mediaView != null)
+		if (mediaView != null && mediaView.getMediaPlayer() != null)
 			mediaView.getMediaPlayer().stop();
 		players.clear();
 		items.clear();
@@ -447,7 +458,7 @@ public class LibraryScreen extends AbstractScreen {
 				m1);
 		items.clear();
 		items.add(selectedFile.getTitle());
-		this.listFile.setItems(items);
+		listFile.setItems(items);
 
 		players.clear();
 		players.add(mp1);

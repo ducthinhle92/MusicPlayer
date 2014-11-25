@@ -8,12 +8,8 @@ import javafx.stage.Stage;
 import application.resource.R;
 
 public class Launcher extends Application {
-	public static final int PLAY_SCREEN = 0;
-	public static final int LIBRARY_SCREEN = 1;	
 	public static final double MIN_WIDTH = 500;
 	public static final double MIN_HEIGHT = 400;
-	
-	public int currentScene = LIBRARY_SCREEN;
 	
 	private static Launcher instance = null;
 

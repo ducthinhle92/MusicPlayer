@@ -77,11 +77,13 @@ public class FXMLController {
 	@FXML
 	public TableColumn titleColumn, lengthColoumn, artistColumn, albumColumn,
 			ratingCol, playlistCol;
+	@FXML
+	public StackPane nowPlayingPane;
 
 	final ObservableList<Integer> ratingSample = FXCollections
 			.observableArrayList(1, 2, 3, 4, 5);
 
-	DatabaseController dbController;
+	private DatabaseController dbController;
 
 	/**
 	 * Initializes the controller class. This method is automatically called
@@ -272,11 +274,10 @@ public class FXMLController {
 	
 	public void manageLayout() {
 		try {
-			FXMLLoader loader = new FXMLLoader();
 			bodyPane = (StackPane) stage.getScene().lookup("#bodyPane");
 			libraryPane = (Parent) stage.getScene().lookup("#libraryPane");
 
-			loader = new FXMLLoader(R.getLayoutFXML("PlayPane"));
+			FXMLLoader loader = new FXMLLoader(R.getLayoutFXML("PlayPane"));
 			playPane = (Parent) loader.load();
 			playScreen = new PlayScreen(stage);
 			libraryScreen = new LibraryScreen(stage);
