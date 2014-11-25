@@ -38,7 +38,6 @@ public class MediaTreeView {
 			try {
 				handleMouseClicked(event, selected);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 
 			}
 		};

@@ -128,8 +128,6 @@ public class DatabaseController {
 	}
 
 	public void deleteData(String id) throws SQLException {
-		// TODO Auto-generated method stub
-
 		PreparedStatement prep = c
 				.prepareStatement("DELETE from playlist where ID=?;");
 		prep.setString(1, id);
