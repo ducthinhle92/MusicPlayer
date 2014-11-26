@@ -8,7 +8,6 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -21,7 +20,6 @@ public class PlayScreen extends AbstractScreen {
 	private SplitPane playPaneSpliter;
 	private SplitPane lyricContent;
 	private double dividerPos;
-	private AnchorPane playContent;
 
 	public PlayScreen(Stage primaryStage) {
 		super(primaryStage);

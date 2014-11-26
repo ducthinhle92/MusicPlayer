@@ -10,15 +10,12 @@ import java.util.Random;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
@@ -30,8 +27,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.MediaInfo;
 import model.MediaFile;
+import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
 import application.MediaTreeView;
@@ -44,7 +41,7 @@ public class LibraryScreen extends AbstractScreen {
 	
 	private DatabaseController dbController;
 	private MediaTreeView treePlayList;
-	private TextField tf_listName;
+	private TextField txtPlaylistName;
 	private Slider timeSlider;
 	private Slider volumeSlider;
 	private Button play;
@@ -52,14 +49,16 @@ public class LibraryScreen extends AbstractScreen {
 
 	private MediaView mediaView = null;
 	private Duration duration;
-	private List<MediaPlayer> players = new ArrayList<MediaPlayer>();
+	
+	private ArrayList<MediaPlayer> players = new ArrayList<MediaPlayer>();
+	private ArrayList<MediaFile> selectedFiles = new ArrayList<MediaFile>();
+	
 	private NowPlayingListView listFile;
 	public List<File> list = new ArrayList<File>();
 
 	private FileChooser fileChooser = new FileChooser();
 	private DirectoryChooser folderChooser = new DirectoryChooser();
 	
-	private ArrayList<MediaFile> selectedFiles = new ArrayList<MediaFile>();
 	private Mode mode = Mode.Stoped;
 
 	public LibraryScreen(Stage primaryStage) {
@@ -69,26 +68,23 @@ public class LibraryScreen extends AbstractScreen {
 	@Override
 	protected void initialize() {
 		super.initialize();
-
-		// CÃ³ thá»ƒ láº¥y cÃ¡c node tá»« FXML controller sang Ä‘Ã¢y !!!
-		// Láº¥y tá»« FXMLController hoáº·c dÃ¹ng findNodeById Ä‘á»�u Ä‘Æ°á»£c
-		tf_listName = FXMLController.getInstance().tf_listName;
+		
+		txtPlaylistName = FXMLController.getInstance().txtPlaylistName;
 		timeSlider = FXMLController.getInstance().timeSlider;
 		volumeSlider = FXMLController.getInstance().volumeSlider;
 		play = FXMLController.getInstance().play;
 		playTime = FXMLController.getInstance().playTime;
 
-		// add now playing list
 		listFile = new NowPlayingListView();
 		StackPane nowPlaying = FXMLController.getInstance().nowPlayingPane;
 		nowPlaying.getChildren().add(listFile);
 
 		addEventHandler();
 
-		try { // Khá»Ÿi táº¡o treePlayList
+		try {
 			dbController = DatabaseController.getInstance();
-			// ChÃº Ã½ táº­n dá»¥ng hÃ m findeNodeById
-			Pane treeViewPane = (Pane) findNodeById("treeViewPane");
+			
+			StackPane treeViewPane = (StackPane) findNodeById("treeViewPane");
 			treePlayList = new MediaTreeView(FXMLController.getInstance());
 			treeViewPane.getChildren().add(treePlayList.getTreeView());
 			int listSize = dbController.getListNames().size();
@@ -162,7 +158,7 @@ public class LibraryScreen extends AbstractScreen {
 			if (list != null) {
 				for (int i = 0; i < list.size(); i++) {
 
-					listName = tf_listName.getText();
+					listName = txtPlaylistName.getText();
 					file = new MediaFile(list.get(i));
 					title = file.getTitle();
 					artist = file.getArtist();

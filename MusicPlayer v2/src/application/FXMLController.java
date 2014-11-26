@@ -63,7 +63,7 @@ public class FXMLController {
 	@FXML
 	public Button play, prev, next, btn_saveList, btn_clearList, btnGoPlayScene;
 	@FXML
-	public TextField tf_listName;
+	public TextField txtPlaylistName;
 	@FXML
 	public Slider volumeSlider, timeSlider;
 	@FXML
