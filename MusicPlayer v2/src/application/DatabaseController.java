@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.ListFile;
+import model.MediaInfo;
 
 public class DatabaseController {
 	private static DatabaseController instance;
@@ -26,7 +26,7 @@ public class DatabaseController {
 
 	public DatabaseController() throws ClassNotFoundException, SQLException {
 		Class.forName("org.sqlite.JDBC");
-		c = DriverManager.getConnection("jdbc:sqlite:audio2.db");
+		c = DriverManager.getConnection("jdbc:sqlite:audio.db");
 		Statement stat = c.createStatement();
 		stat.executeUpdate("create table if not exists playlist(id integer,"
 				+ "listName varchar(30)," + "title varchar(30),"
@@ -38,7 +38,7 @@ public class DatabaseController {
 		// TODO Auto-generated method stub
 		List<String> list = new ArrayList<String>();
 		List<String> list1 = new ArrayList<String>();
-		List<ListFile> list2 = getData();
+		List<MediaInfo> list2 = getData();
 
 		for (int i = 0; i < list2.size(); i++) {
 			list1.add(list2.get(i).getListName());
@@ -62,11 +62,11 @@ public class DatabaseController {
 
 	}
 
-	public List<ListFile> getPlaylist(String select) throws SQLException {
+	public List<MediaInfo> getPlaylist(String select) throws SQLException {
 		// TODO Auto-generated method stub
 
-		List<ListFile> list = new ArrayList<ListFile>();
-		List<ListFile> list2 = getData();
+		List<MediaInfo> list = new ArrayList<MediaInfo>();
+		List<MediaInfo> list2 = getData();
 
 		for (int i = 0; i < list2.size(); i++) {
 			if (list2.get(i).getListName().equals(select))
@@ -97,9 +97,9 @@ public class DatabaseController {
 
 	}
 
-	public List<ListFile> getData() throws SQLException {
+	public List<MediaInfo> getData() throws SQLException {
 		// TODO Auto-generated method stub
-		List<ListFile> list = new ArrayList<ListFile>();
+		List<MediaInfo> list = new ArrayList<MediaInfo>();
 		Statement stat = c.createStatement();
 
 		String title;
@@ -120,7 +120,7 @@ public class DatabaseController {
 			url = res.getString("url");
 			artist = res.getString("artist");
 			id = res.getString("id");
-			list.add(new ListFile(id, title, artist, length, album, listName,
+			list.add(new MediaInfo(id, title, artist, length, album, listName,
 					url));
 
 		}

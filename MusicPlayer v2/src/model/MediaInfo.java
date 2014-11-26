@@ -1,6 +1,8 @@
 package model;
 
-public class ListFile {
+import java.io.File;
+
+public class MediaInfo {
 	
 	private String title;
 	private String artist;
@@ -10,7 +12,7 @@ public class ListFile {
 	private String url;
 	private String id;
 	
-	public ListFile(String id, String tit, String art, String len, String alb, String listN, String ur){
+	public MediaInfo(String id, String tit, String art, String len, String alb, String listN, String ur){
 		this.id = id;
 		title = tit;
 		artist = art;
@@ -48,6 +50,7 @@ public class ListFile {
 		return url;
 	}
 	
-	
-
+	public MediaFile getMediaFile() {
+		return new MediaFile(new File(url));
+	}
 }

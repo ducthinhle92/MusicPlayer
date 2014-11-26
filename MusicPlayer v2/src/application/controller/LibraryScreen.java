@@ -30,7 +30,7 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.ListFile;
+import model.MediaInfo;
 import model.MediaFile;
 import application.DatabaseController;
 import application.FXMLController;
@@ -58,7 +58,8 @@ public class LibraryScreen extends AbstractScreen {
 
 	private FileChooser fileChooser = new FileChooser();
 	private DirectoryChooser folderChooser = new DirectoryChooser();
-	private ObservableList<String> items = FXCollections.observableArrayList();
+	
+	private ArrayList<MediaFile> selectedFiles = new ArrayList<MediaFile>();
 	private Mode mode = Mode.Stoped;
 
 	public LibraryScreen(Stage primaryStage) {
@@ -349,7 +350,7 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	public void onClearList() {
-		listFile.setItems(null);
+		listFile.clearItems();
 		mediaView.getMediaPlayer().stop();
 	}
 
@@ -369,7 +370,7 @@ public class LibraryScreen extends AbstractScreen {
 			}
 
 		})) {
-			items.add(file);
+			selectedFiles.add(new MediaFile(new File(file)));
 			players.add(createPlayer("file:///"
 					+ (dir + "\\" + file).replace("\\", "/").replaceAll(" ",
 							"%20")));
@@ -379,7 +380,7 @@ public class LibraryScreen extends AbstractScreen {
 		}
 		mediaView = new MediaView(players.get(0));
 		play(mediaView.getMediaPlayer());
-		listFile.setItems(items);
+		listFile.setItemArray(selectedFiles);
 	}
 
 	// Xu li khi mo Open File
@@ -392,7 +393,7 @@ public class LibraryScreen extends AbstractScreen {
 
 			// get list items,players
 			for (int i = 0; i < list.size(); i++) {
-				items.add(list.get(i).getName());
+				selectedFiles.add(new MediaFile(list.get(i)));
 
 				Media media = new Media(list.get(i).toURI().toString());
 				System.out.println(list.get(i).toURI().toString());
@@ -402,19 +403,19 @@ public class LibraryScreen extends AbstractScreen {
 		}
 		mediaView = new MediaView(players.get(0));
 		play(mediaView.getMediaPlayer());
-		listFile.setItems(items);
+		listFile.setItemArray(selectedFiles);
 	}
 
-	public void processOpenList(List<ListFile> lf) {
+	public void processOpenPlayList(List<MediaInfo> playList) {
 		resetAll();
 
 		// get list items,players
-		for (int i = 0; i < lf.size(); i++) {
-			items.add(lf.get(i).getTitle());
+		for (int i = 0; i < playList.size(); i++) {
+			selectedFiles.add(playList.get(i).getMediaFile());
 
 			try {
-				Media media = new Media(lf.get(i).getUrl());
-				System.out.println(lf.get(i).getUrl());
+				Media media = new Media(playList.get(i).getUrl());
+				System.out.println(playList.get(i).getUrl());
 				MediaPlayer mediaPlayer = new MediaPlayer(media);
 				players.add(mediaPlayer);
 
@@ -425,7 +426,7 @@ public class LibraryScreen extends AbstractScreen {
 
 		mediaView = new MediaView(players.get(0));
 		play(mediaView.getMediaPlayer());
-		listFile.setItems(items);
+		listFile.setItemArray(selectedFiles);
 	}
 
 	public MediaPlayer createPlayer(String src) {
@@ -442,7 +443,7 @@ public class LibraryScreen extends AbstractScreen {
 		if (mediaView != null && mediaView.getMediaPlayer() != null)
 			mediaView.getMediaPlayer().stop();
 		players.clear();
-		items.clear();
+		selectedFiles.clear();
 	}
 
 	private static void configureFileChooser(final FileChooser fileChooser) {
@@ -454,19 +455,17 @@ public class LibraryScreen extends AbstractScreen {
 				new FileChooser.ExtensionFilter("MP3", "*.mp3"));
 	}
 
-	public void onPlaySingleFile(ListFile selectedFile) {
+	public void onPlaySingleFile(MediaInfo selected) {
 		if (mediaView != null) {
 			if (mediaView.getMediaPlayer() != null) {
 				mediaView.getMediaPlayer().stop();
 			}
 		}
 		
-		Media m1 = new Media(selectedFile.getUrl());
-		MediaPlayer mp1 = new MediaPlayer(
-				m1);
-		items.clear();
-		items.add(selectedFile.getTitle());
-		listFile.setItems(items);
+		MediaPlayer mp1 = new MediaPlayer(new Media(selected.getUrl()));
+		selectedFiles.clear();
+		selectedFiles.add(selected.getMediaFile());
+		listFile.setItemArray(selectedFiles);
 
 		players.clear();
 		players.add(mp1);

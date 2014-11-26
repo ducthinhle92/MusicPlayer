@@ -29,7 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import model.ListFile;
+import model.MediaInfo;
 import model.PlayList;
 import application.controller.LibraryScreen;
 import application.controller.PlayScreen;
@@ -53,7 +53,7 @@ public class FXMLController {
 	private int currentScreen = LIBRARY_SCREEN;
 	
 	ObservableList<PlayList> items2 = FXCollections.observableArrayList();
-	ObservableList<ListFile> mediaFiles = FXCollections.observableArrayList();
+	ObservableList<MediaInfo> mediaFiles = FXCollections.observableArrayList();
 	
 	// FXML components
 	@FXML
@@ -71,7 +71,7 @@ public class FXMLController {
 	@FXML
 	public Pane view;
 	@FXML
-	public TableView<ListFile> libraryTable;
+	public TableView<MediaInfo> libraryTable;
 	@FXML
 	public TableView<PlayList> playlistTable;
 	@FXML
@@ -162,7 +162,7 @@ public class FXMLController {
 		libraryScreen.onClearList();
 	}
 
-	public List<ListFile> getPlaylist() throws ClassNotFoundException,
+	public List<MediaInfo> getPlaylist() throws ClassNotFoundException,
 			SQLException {
 		return dbController.getData();
 	}
@@ -178,11 +178,11 @@ public class FXMLController {
 		return pl;
 	}
 
-	public void processOpenList(List<ListFile> playlist) {
-		libraryScreen.processOpenList(playlist);
+	public void processOpenList(List<MediaInfo> playlist) {
+		libraryScreen.processOpenPlayList(playlist);
 	}
 
-	public void updateTable(List<ListFile> lt) {
+	public void updateTable(List<MediaInfo> lt) {
 		mediaFiles.clear();
 		if (lt != null) {
 			for (int i = 0; i < lt.size(); i++) {
@@ -192,30 +192,30 @@ public class FXMLController {
 			}
 
 			titleColumn
-					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
 							"title"));
 			// lengthColoumn = new TableColumn("Length");
 			lengthColoumn
-					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
 							"length"));
 			// albumColumn = new TableColumn("Album");
 			albumColumn
-					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
 							"album"));
 			// artistColumn = new TableColumn("Artist");
 			artistColumn
-					.setCellValueFactory(new PropertyValueFactory<ListFile, String>(
+					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
 							"artist"));
 
 			//
 			//
 
 			libraryTable
-					.setRowFactory(new Callback<TableView<ListFile>, TableRow<ListFile>>() {
+					.setRowFactory(new Callback<TableView<MediaInfo>, TableRow<MediaInfo>>() {
 
 						@Override
-						public TableRow<ListFile> call(TableView<ListFile> p) {
-							final TableRow<ListFile> row = new TableRow<ListFile>();
+						public TableRow<MediaInfo> call(TableView<MediaInfo> p) {
+							final TableRow<MediaInfo> row = new TableRow<MediaInfo>();
 							row.setOnDragEntered(new EventHandler<DragEvent>() {
 								@Override
 								public void handle(DragEvent t) {

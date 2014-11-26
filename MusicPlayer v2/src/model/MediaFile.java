@@ -18,6 +18,7 @@ public class MediaFile {
 	private SimpleIntegerProperty rating;
 
 	private String url;
+	private MediaInfo myInfo;
 
 	// private SimpleListProperty<Label> rating;
 
@@ -69,5 +70,8 @@ public class MediaFile {
 	public String getAlbum() {
 		return album.get();
 	}
-
+	
+	public MediaInfo getInfo() {		
+		return myInfo;
+	}
 }
