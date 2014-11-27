@@ -37,11 +37,11 @@ import model.MediaFile;
 import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
-import application.MediaTreeView;
-import application.PlaylistTable;
-import application.TreeViewListener;
 import application.utility.Utils;
+import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
+import application.view.PlaylistTable;
+import application.view.listener.TreeViewListener;
 
 @SuppressWarnings({"deprecation", "rawtypes"})
 public class LibraryScreen extends AbstractScreen {

@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+@SuppressWarnings({"unchecked"})
 public class PlayScreen extends AbstractScreen {
 
 	public static final ObservableList<String> lyric = 

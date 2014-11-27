@@ -1,8 +1,10 @@
-package application;
+package application.view;
 
 import java.sql.SQLException;
 import java.util.List;
 
+import application.DatabaseController;
+import application.FXMLController;
 import model.MediaInfo;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
