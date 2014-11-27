@@ -73,16 +73,14 @@ public class DatabaseController {
 				list.add(list2.get(i));
 		}
 		return list;
-
 	}
 
 	public void insertData(String listName, String title, String artist,
 			String length, String url, String album) throws SQLException {
 
 		PreparedStatement prep;
-		// stat.executeUpdate("drop table if exists user");
-
-		// creating table
+		
+		System.out.println("save data: " + url);
 
 		// inserting data
 		prep = c.prepareStatement("insert into playlist values(?,?,?,?,?,?,?);");

@@ -1,6 +1,7 @@
 package model;
 
 import java.io.File;
+import java.net.URI;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,14 +19,10 @@ public class MediaFile {
 	private SimpleIntegerProperty rating;
 
 	private String url;
-	private MediaInfo myInfo;
-
-	// private SimpleListProperty<Label> rating;
 
 	public MediaFile(File file) {
-
 		try {
-			AudioFile audioFile = AudioFileIO.read(file);
+			AudioFile audioFile = AudioFileIO.read(file);	
 			title = new SimpleStringProperty(audioFile.getTag().getFirst(
 					FieldKey.TITLE));
 			artist = new SimpleStringProperty(audioFile.getTag().getFirst(
@@ -44,7 +41,14 @@ public class MediaFile {
 		} catch (Exception e) {
 
 		}
+	}
 
+	public MediaFile(URI uri) {
+		this(new File(uri));
+	}
+	
+	public MediaFile(String path) {
+		this(new File(path));
 	}
 
 	public String getPath() {
@@ -69,9 +73,5 @@ public class MediaFile {
 
 	public String getAlbum() {
 		return album.get();
-	}
-	
-	public MediaInfo getInfo() {		
-		return myInfo;
 	}
 }

@@ -1,6 +1,7 @@
 package model;
 
-import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class MediaInfo {
 	
@@ -51,6 +52,12 @@ public class MediaInfo {
 	}
 	
 	public MediaFile getMediaFile() {
-		return new MediaFile(new File(url));
+		MediaFile f = null;
+		try {
+			f = new MediaFile(new URI(url));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return f;
 	}
 }

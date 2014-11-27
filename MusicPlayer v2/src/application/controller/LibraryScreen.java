@@ -41,6 +41,7 @@ import application.utility.Utils;
 import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
 import application.view.PlaylistTable;
+import application.view.listener.ListViewListener;
 import application.view.listener.TreeViewListener;
 
 @SuppressWarnings({"deprecation", "rawtypes"})
@@ -138,11 +139,12 @@ public class LibraryScreen extends AbstractScreen {
 				onVolumeChanged();
 			}
 		});
-
-		listFile.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		
+		listFile.setTreeViewListener(new ListViewListener() {
 			@Override
-			public void handle(MouseEvent e) {
-				onClickNowPlayingList(e);
+			public void onItemClicked(MouseEvent event) {
+				System.out.println("ok, clicked");
+				onClickNowPlayingList(event);
 			}
 		});
 
@@ -167,13 +169,13 @@ public class LibraryScreen extends AbstractScreen {
 							processOpenPlayList(dbController
 									.getPlaylist(itemValue));
 							
-							// move this code to PlaylistTable!
+							// move these code to PlaylistTable!
+							// use this: playTable.setPlayList(itemValue);
 							List<MediaInfo> lt = dbController
 									.getPlaylist(itemValue);
 							ObservableList<MediaInfo> mediaFiles = playTable
 									.getTableData(lt);
 							playTable.setTableData(mediaFiles);
-
 						} catch (SQLException e) {
 						}
 //****************************************************************************
@@ -242,7 +244,6 @@ public class LibraryScreen extends AbstractScreen {
 					url = file.getPath();
 					dbController.insertData(listName, title, artist, length,
 							url, album);
-
 				}
 			}
 
@@ -252,7 +253,6 @@ public class LibraryScreen extends AbstractScreen {
 				listNames[i] = dbController.getListNames().get(i);
 			}
 			menuTreeView.loadTreeItems(listNames);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -328,8 +328,6 @@ public class LibraryScreen extends AbstractScreen {
 		}
 	}
 
-	private int currentIndex = -1;
-
 	public void onClickNowPlayingList(MouseEvent event) {
 		int index = listFile.getSelectionModel().getSelectedIndex();
 		MediaPlayer player = null;
@@ -339,14 +337,13 @@ public class LibraryScreen extends AbstractScreen {
 			return;
 		}
 
-		if (event.getClickCount() == 2 && currentIndex != index) {
+		if (event.getClickCount() == 2) {
 			if (mediaView != null && mediaView.getMediaPlayer() != null) {
 				mediaView.getMediaPlayer().stop();
 			}
 
 			mediaView.setMediaPlayer(player);
 			play(mediaView.getMediaPlayer());
-			currentIndex = index;
 		}
 	}
 
@@ -430,7 +427,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void processOpenFolder() {
 		resetAll();
 		File dir = folderChooser.showDialog(stage);
-		for (final String file : dir.list(new FilenameFilter() {
+		for (final String url : dir.list(new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String name) {
@@ -442,9 +439,9 @@ public class LibraryScreen extends AbstractScreen {
 			}
 
 		})) {
-			selectedFiles.add(new MediaFile(new File(file)));
+			selectedFiles.add(new MediaFile(url));
 			players.add(createPlayer("file:///"
-					+ (dir + "\\" + file).replace("\\", "/").replaceAll(" ",
+					+ (dir + "\\" + url).replace("\\", "/").replaceAll(" ",
 							"%20")));
 			if (players.isEmpty()) {
 				System.out.println("No audio found in " + dir);
@@ -462,13 +459,11 @@ public class LibraryScreen extends AbstractScreen {
 		list = fileChooser.showOpenMultipleDialog(stage);
 
 		if (list != null) {
-
 			// get list items,players
 			for (int i = 0; i < list.size(); i++) {
 				selectedFiles.add(new MediaFile(list.get(i)));
 
 				Media media = new Media(list.get(i).toURI().toString());
-				System.out.println(list.get(i).toURI().toString());
 				MediaPlayer mediaPlayer = new MediaPlayer(media);
 				players.add(mediaPlayer);
 			}
@@ -483,10 +478,11 @@ public class LibraryScreen extends AbstractScreen {
 
 		// get list items,players
 		for (int i = 0; i < playList.size(); i++) {
-			selectedFiles.add(playList.get(i).getMediaFile());
+			MediaFile file = playList.get(i).getMediaFile();
+			selectedFiles.add(file);
 
 			try {
-				Media media = new Media(playList.get(i).getUrl());
+				Media media = new Media(playList.get(i).getUrl());				
 				System.out.println(playList.get(i).getUrl());
 				MediaPlayer mediaPlayer = new MediaPlayer(media);
 				players.add(mediaPlayer);
@@ -497,8 +493,8 @@ public class LibraryScreen extends AbstractScreen {
 		}
 
 		mediaView = new MediaView(players.get(0));
-		play(mediaView.getMediaPlayer());
 		listFile.setItemArray(selectedFiles);
+		play(mediaView.getMediaPlayer());
 	}
 
 	public MediaPlayer createPlayer(String src) {
