@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
@@ -32,6 +33,7 @@ import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
 import application.MediaTreeView;
+import application.PlaylistTable;
 import application.utility.Utils;
 import application.view.NowPlayingListView;
 
@@ -60,6 +62,7 @@ public class LibraryScreen extends AbstractScreen {
 	private DirectoryChooser folderChooser = new DirectoryChooser();
 	
 	private Mode mode = Mode.Stoped;
+	private PlaylistTable playTable;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -84,8 +87,14 @@ public class LibraryScreen extends AbstractScreen {
 		try {
 			dbController = DatabaseController.getInstance();
 			
-			StackPane treeViewPane = (StackPane) findNodeById("treeViewPane");
-			treePlayList = new MediaTreeView(FXMLController.getInstance());
+			// initialize library table
+			playTable = new PlaylistTable();
+			StackPane tablePane = (StackPane) findNodeById("tablePane");
+			tablePane.getChildren().add(playTable.getTable());
+			
+			// initialize tree menu
+			Pane treeViewPane = (Pane) findNodeById("treeViewPane");
+			treePlayList = new MediaTreeView(FXMLController.getInstance(), this);
 			treeViewPane.getChildren().add(treePlayList.getTreeView());
 			int listSize = dbController.getListNames().size();
 			String[] listNames = new String[listSize];
@@ -128,6 +137,10 @@ public class LibraryScreen extends AbstractScreen {
 				onClickNowPlayingList(e);
 			}
 		});
+	}
+	
+	public PlaylistTable getTable(){
+		return playTable;
 	}
 
 	protected void onVolumeChanged() {

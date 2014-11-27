@@ -311,4 +311,8 @@ public class FXMLController {
 	public static FXMLController getInstance() {
 		return instance;
 	}
+	
+	public LibraryScreen getLibraryScreen(){
+		return libraryScreen;
+	}
 }

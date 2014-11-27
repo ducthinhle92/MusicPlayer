@@ -1,36 +1,41 @@
 package application;
 
 import java.sql.SQLException;
+import java.util.List;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
+import model.MediaInfo;
+import application.controller.LibraryScreen;
 
 public class MediaTreeView {
 	private TreeView treeView;
 	private FXMLController fxmlController;
 	private DatabaseController dbController;
+	
+	private PlaylistTable playTable;
 
-	public MediaTreeView(FXMLController fxmlController)
+	public MediaTreeView(FXMLController fxmlController, LibraryScreen libScreen)
 			throws ClassNotFoundException, SQLException {
 		this.fxmlController = fxmlController;
 		dbController = DatabaseController.getInstance();
+		playTable = libScreen.getTable();
+		if(playTable == null)
+			System.out.println("null 2");
 
 		treeView = new TreeView<>();
 		treeView.setShowRoot(false);
-		treeView.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
-			@Override
-			public TreeCell<String> call(TreeView<String> p) {
-				return new TreeCellImpl();
-			}
-		});
 		EventHandler<MouseEvent> mouseEventHandle = (MouseEvent event) -> {
 			TreeItem<String> item = (TreeItem<String>) treeView
 					.getSelectionModel().getSelectedItem();
@@ -38,30 +43,67 @@ public class MediaTreeView {
 			try {
 				handleMouseClicked(event, selected);
 			} catch (Exception e) {
+				// TODO Auto-generated catch block
 
 			}
 		};
-
+		treeView.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
+			@Override
+			public TreeCell<String> call(TreeView<String> p) {
+				TreeCell<String> cell = new TreeCellImpl();
+//				cell.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
+				return cell;
+			}
+			
+			
+		});
+		
 		treeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
 
 	}
 
 	private void handleMouseClicked(MouseEvent event, String selected)
 			throws SQLException {
-
-		if (event.getClickCount() == 1) {
-			try {
-				fxmlController.updateTable(dbController.getPlaylist(selected));
-			} catch (SQLException e) {
-			}
-		} else if (event.getClickCount() == 2) {
-			try {
-				fxmlController.updateTable(dbController.getPlaylist(selected));
-				fxmlController.processOpenList(dbController
-						.getPlaylist(selected));
-			} catch (SQLException e) {
-			}
-		}
+		
+		 Node node = event.getPickResult().getIntersectedNode();
+		    // Accept clicks only on node cells, and not on empty spaces of the TreeView
+		    if (node instanceof Text || (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
+		        String name = (String) ((TreeItem)treeView.getSelectionModel().getSelectedItem()).getValue();
+		        System.out.println("Node click: " + name);
+				if (event.getClickCount() == 1) {
+					try {
+//						fxmlController.updateTable(dbController.getPlaylist(selected));
+						playTable.setTableData(playTable.getTableData(dbController.getPlaylist(selected)));
+					} catch (SQLException e) {
+					}
+				} else if (event.getClickCount() == 2) {
+					
+					try {
+//						fxmlController.updateTable(dbController.getPlaylist(selected));
+						fxmlController.processOpenList(dbController
+								.getPlaylist(selected));
+//						
+//						System.out.println("loi");
+						try {
+							List<MediaInfo>lt = dbController.getPlaylist(selected);
+							System.out.println("ok 1");
+							if(playTable == null)
+								System.out.println("er 2");
+							ObservableList<MediaInfo> mediaFiles = playTable.getTableData(lt);
+							System.out.println("ok 2");
+							playTable.setTableData(mediaFiles);
+							System.out.println("ok 3");
+							System.out.println("ko loi");
+						} catch (Exception e) {
+							// TODO: handle exception
+							System.out.println("this error");
+						}
+						
+					} catch (SQLException e) {
+					}
+				}
+		    }
+		
 	}
 
 	public TreeView getTreeView() {
@@ -131,8 +173,7 @@ public class MediaTreeView {
 					String listName = getVal();
 
 					try {
-						fxmlController.updateTable(dbController
-								.getPlaylist(listName));
+						playTable.setTableData(playTable.getTableData(dbController.getPlaylist(listName)));
 						fxmlController.processOpenList(dbController
 								.getPlaylist(listName));
 					} catch (SQLException e) {
@@ -183,6 +224,8 @@ public class MediaTreeView {
 						.equals("BoxTreeItem")) {
 					setContextMenu(((AbstractTreeItem) getTreeItem()).getMenu());
 				}
+		
+				
 
 			}
 		}

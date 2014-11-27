@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -20,6 +21,7 @@ public class PlayScreen extends AbstractScreen {
 	private SplitPane playPaneSpliter;
 	private SplitPane lyricContent;
 	private double dividerPos;
+	private ListView<String> lyricBox;
 
 	public PlayScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -28,14 +30,15 @@ public class PlayScreen extends AbstractScreen {
 	@Override
 	protected void initialize() {
 		for(int i=0; i<50; i++)
-			lyric.add("Lyric");
+			lyric.add("Thịnh");
 		
 		btnShowLyric = (Button) findNodeById("btnShowLyric");
 		playPaneSpliter = (SplitPane) findNodeById("splitPlayPane");
-		
 		lyricWrapper = (StackPane) findNodeById("lyricPane");
 		lyricContent = (SplitPane) findNodeById("lyricSplitPane");
+		lyricBox = (ListView<String>) findNodeById("lyricBox");
 		
+		lyricBox.setItems(lyric);
 		lyricWrapper.getChildren().clear();
 		playPaneSpliter.setDividerPositions(1, 0);
 		lyricContent.setVisible(false);

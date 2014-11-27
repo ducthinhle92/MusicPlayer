@@ -41,18 +41,7 @@
                               <SplitPane dividerPositions="0.17801047120418848, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                  <items>
                                     <StackPane fx:id="treeViewPane" maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
-                                    <StackPane minWidth="300.0">
-                                       <children>
-                                          <TableView fx:id="libraryTable" prefHeight="200.0" prefWidth="200.0">
-                                            <columns>
-                                              <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Title" />
-                                              <TableColumn fx:id="lengthColoumn" prefWidth="75.0" text="Length" />
-                                              <TableColumn fx:id="artistColumn" prefWidth="75.0" text="Artist" />
-                                              <TableColumn fx:id="albumColumn" prefWidth="75.0" text="Album" />
-                                            </columns>
-                                          </TableView>
-                                       </children>
-                                    </StackPane>
+                                    <StackPane fx:id="tablePane" minWidth="300.0" />
                                     <StackPane maxWidth="400.0" minWidth="200.0">
                                        <children>
                                           <SplitPane dividerPositions="0.3008849557522124" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0">
