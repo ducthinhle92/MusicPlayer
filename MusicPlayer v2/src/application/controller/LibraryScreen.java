@@ -10,11 +10,15 @@ import java.util.Random;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -24,6 +28,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,15 +39,18 @@ import application.DatabaseController;
 import application.FXMLController;
 import application.MediaTreeView;
 import application.PlaylistTable;
+import application.TreeViewListener;
 import application.utility.Utils;
 import application.view.NowPlayingListView;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "rawtypes"})
 public class LibraryScreen extends AbstractScreen {
-	private enum Mode {Playing, Paused, Stoped};
-	
+	private enum Mode {
+		Playing, Paused, Stoped
+	};
+
 	private DatabaseController dbController;
-	private MediaTreeView treePlayList;
+	private MediaTreeView menuTreeView;
 	private TextField txtPlaylistName;
 	private Slider timeSlider;
 	private Slider volumeSlider;
@@ -51,16 +59,16 @@ public class LibraryScreen extends AbstractScreen {
 
 	private MediaView mediaView = null;
 	private Duration duration;
-	
+
 	private ArrayList<MediaPlayer> players = new ArrayList<MediaPlayer>();
 	private ArrayList<MediaFile> selectedFiles = new ArrayList<MediaFile>();
-	
+
 	private NowPlayingListView listFile;
 	public List<File> list = new ArrayList<File>();
 
 	private FileChooser fileChooser = new FileChooser();
 	private DirectoryChooser folderChooser = new DirectoryChooser();
-	
+
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
 
@@ -71,7 +79,7 @@ public class LibraryScreen extends AbstractScreen {
 	@Override
 	protected void initialize() {
 		super.initialize();
-		
+
 		txtPlaylistName = FXMLController.getInstance().txtPlaylistName;
 		timeSlider = FXMLController.getInstance().timeSlider;
 		volumeSlider = FXMLController.getInstance().volumeSlider;
@@ -82,32 +90,32 @@ public class LibraryScreen extends AbstractScreen {
 		StackPane nowPlaying = FXMLController.getInstance().nowPlayingPane;
 		nowPlaying.getChildren().add(listFile);
 
-		addEventHandler();
-
 		try {
 			dbController = DatabaseController.getInstance();
-			
+
 			// initialize library table
 			playTable = new PlaylistTable();
 			StackPane tablePane = (StackPane) findNodeById("tablePane");
 			tablePane.getChildren().add(playTable.getTable());
-			
+
 			// initialize tree menu
 			Pane treeViewPane = (Pane) findNodeById("treeViewPane");
-			treePlayList = new MediaTreeView(FXMLController.getInstance(), this);
-			treeViewPane.getChildren().add(treePlayList.getTreeView());
+			menuTreeView = new MediaTreeView();
+			treeViewPane.getChildren().add(menuTreeView.getTreeView());
 			int listSize = dbController.getListNames().size();
 			String[] listNames = new String[listSize];
 			for (int i = 0; i < listSize; i++) {
 				listNames[i] = dbController.getListNames().get(i);
 			}
-			treePlayList.loadTreeItems(listNames);
+			menuTreeView.loadTreeItems(listNames);
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+		addEventHandler();
 	}
 
 	private void addEventHandler() {
@@ -129,7 +137,7 @@ public class LibraryScreen extends AbstractScreen {
 			public void invalidated(Observable ov) {
 				onVolumeChanged();
 			}
-		});		
+		});
 
 		listFile.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
@@ -137,9 +145,63 @@ public class LibraryScreen extends AbstractScreen {
 				onClickNowPlayingList(e);
 			}
 		});
+
+		menuTreeView.setOnItemClickListener(new TreeViewListener() {
+			@Override
+			public void onItemClicked(MouseEvent event, TreeItem<String> item) {
+				String itemValue = item.getValue();
+				Node node = event.getPickResult().getIntersectedNode();
+
+				if (node instanceof Text
+						|| (node instanceof TreeCell && ((TreeCell) node)
+								.getText() != null)) {
+
+					if (event.getClickCount() == 1) {
+						playTable.setPlayList(itemValue);
+					}
+					else if (event.getClickCount() == 2) {
+//****************************************************************************
+						// Problem!!! What if user don't select a playlist?
+						// example, the Artist menu item selected?
+						try {							
+							processOpenPlayList(dbController
+									.getPlaylist(itemValue));
+							
+							// move this code to PlaylistTable!
+							List<MediaInfo> lt = dbController
+									.getPlaylist(itemValue);
+							ObservableList<MediaInfo> mediaFiles = playTable
+									.getTableData(lt);
+							playTable.setTableData(mediaFiles);
+
+						} catch (SQLException e) {
+						}
+//****************************************************************************
+					}
+				}
+			}
+			
+			@Override
+			public void onPlayItem(String playList, int index) {				
+				try {
+					playTable.setPlayList(playList);
+					processOpenPlayList(dbController.getPlaylist(playList));
+				} catch (SQLException e) {
+				}
+			}
+			
+			@Override
+			public void onRemoveItem(String playList) {
+				try {
+					dbController.deletePlaylist(playList);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
-	
-	public PlaylistTable getTable(){
+
+	public PlaylistTable getTable() {
 		return playTable;
 	}
 
@@ -189,7 +251,7 @@ public class LibraryScreen extends AbstractScreen {
 			for (int i = 0; i < listSize; i++) {
 				listNames[i] = dbController.getListNames().get(i);
 			}
-			treePlayList.loadTreeItems(listNames);
+			menuTreeView.loadTreeItems(listNames);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -214,8 +276,8 @@ public class LibraryScreen extends AbstractScreen {
 			public void run() {
 				MediaPlayer curPlayer = mediaView.getMediaPlayer();
 				curPlayer.stop();
-				MediaPlayer nextPlayer = players.get((players.indexOf(curPlayer) + 1)
-						% players.size());
+				MediaPlayer nextPlayer = players.get((players
+						.indexOf(curPlayer) + 1) % players.size());
 				listFile.getSelectionModel().select(
 						(players.indexOf(curPlayer) + 1) % players.size());
 				mediaView.setMediaPlayer(nextPlayer);
@@ -253,7 +315,7 @@ public class LibraryScreen extends AbstractScreen {
 
 	private void setMode(Mode mode) {
 		this.mode = mode;
-		switch(mode) {
+		switch (mode) {
 		case Playing:
 			play.setText("Pause");
 			break;
@@ -267,6 +329,7 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	private int currentIndex = -1;
+
 	public void onClickNowPlayingList(MouseEvent event) {
 		int index = listFile.getSelectionModel().getSelectedIndex();
 		MediaPlayer player = null;
@@ -275,12 +338,12 @@ public class LibraryScreen extends AbstractScreen {
 		} catch (Exception e) {
 			return;
 		}
-		
+
 		if (event.getClickCount() == 2 && currentIndex != index) {
 			if (mediaView != null && mediaView.getMediaPlayer() != null) {
 				mediaView.getMediaPlayer().stop();
 			}
-			
+
 			mediaView.setMediaPlayer(player);
 			play(mediaView.getMediaPlayer());
 			currentIndex = index;
@@ -470,7 +533,7 @@ public class LibraryScreen extends AbstractScreen {
 				mediaView.getMediaPlayer().stop();
 			}
 		}
-		
+
 		MediaPlayer mp1 = new MediaPlayer(new Media(selected.getUrl()));
 		selectedFiles.clear();
 		selectedFiles.add(selected.getMediaFile());

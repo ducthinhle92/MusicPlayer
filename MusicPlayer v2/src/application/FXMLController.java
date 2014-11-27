@@ -2,40 +2,29 @@ package application;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.DragEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import model.MediaInfo;
 import model.PlayList;
 import application.controller.LibraryScreen;
 import application.controller.PlayScreen;
 import application.resource.R;
 
-@SuppressWarnings({ "unchecked", "rawtypes" })
 public class FXMLController {
 
 	public static final int PLAY_SCREEN = 0;
@@ -69,21 +58,10 @@ public class FXMLController {
 	@FXML
 	public Label playTime;
 	@FXML
-	public Pane view;
-	@FXML
-	public TableView<MediaInfo> libraryTable;
-	@FXML
-	public TableView<PlayList> playlistTable;
-	@FXML
-	public TableColumn titleColumn, lengthColoumn, artistColumn, albumColumn,
-			ratingCol, playlistCol;
-	@FXML
 	public StackPane nowPlayingPane;
 
 	final ObservableList<Integer> ratingSample = FXCollections
 			.observableArrayList(1, 2, 3, 4, 5);
-
-	private DatabaseController dbController;
 
 	/**
 	 * Initializes the controller class. This method is automatically called
@@ -95,7 +73,6 @@ public class FXMLController {
 	@FXML
 	private void initialize() throws ClassNotFoundException, SQLException {
 		instance = this;
-		dbController = DatabaseController.getInstance();
 	}
 	
 	@FXML
@@ -162,110 +139,8 @@ public class FXMLController {
 		libraryScreen.onClearList();
 	}
 
-	public List<MediaInfo> getPlaylist() throws ClassNotFoundException,
-			SQLException {
-		return dbController.getData();
-	}
-
-	public List<PlayList> getListPlay() throws SQLException {
-		List<PlayList> pl = new ArrayList<PlayList>();
-		List<String> ls = dbController.getListNames();
-
-		for (int i = 0; i < ls.size(); i++) {
-			pl.add(new PlayList(ls.get(i)));
-		}
-
-		return pl;
-	}
-
 	public void processOpenList(List<MediaInfo> playlist) {
 		libraryScreen.processOpenPlayList(playlist);
-	}
-
-	public void updateTable(List<MediaInfo> lt) {
-		mediaFiles.clear();
-		if (lt != null) {
-			for (int i = 0; i < lt.size(); i++) {
-
-				mediaFiles.add(lt.get(i));
-
-			}
-
-			titleColumn
-					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
-							"title"));
-			// lengthColoumn = new TableColumn("Length");
-			lengthColoumn
-					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
-							"length"));
-			// albumColumn = new TableColumn("Album");
-			albumColumn
-					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
-							"album"));
-			// artistColumn = new TableColumn("Artist");
-			artistColumn
-					.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
-							"artist"));
-
-			//
-			//
-
-			libraryTable
-					.setRowFactory(new Callback<TableView<MediaInfo>, TableRow<MediaInfo>>() {
-
-						@Override
-						public TableRow<MediaInfo> call(TableView<MediaInfo> p) {
-							final TableRow<MediaInfo> row = new TableRow<MediaInfo>();
-							row.setOnDragEntered(new EventHandler<DragEvent>() {
-								@Override
-								public void handle(DragEvent t) {
-
-								}
-							});
-
-							final ContextMenu contextMenu = new ContextMenu();
-							final MenuItem removeMenuItem = new MenuItem(
-									"Remove");
-							removeMenuItem
-									.setOnAction(new EventHandler<ActionEvent>() {
-										@Override
-										public void handle(ActionEvent event) {
-											String id = row.getItem().getId();
-											try {
-												dbController.deleteData(id);
-											} catch (SQLException e) {
-												e.printStackTrace();
-											}
-
-											libraryTable.getItems().remove(
-													row.getItem());
-										}
-									});
-							contextMenu.getItems().add(removeMenuItem);
-							final MenuItem playMenuItem = new MenuItem("Play");
-							playMenuItem
-									.setOnAction(new EventHandler<ActionEvent>() {
-										@Override
-										public void handle(ActionEvent event) {
-											libraryScreen.onPlaySingleFile(row.getItem());											
-										}
-									});
-							contextMenu.getItems().add(playMenuItem);
-							// Set context menu on row, but use a binding to
-							// make it only show for non-empty rows:
-							row.contextMenuProperty().bind(
-									Bindings.when(row.emptyProperty())
-											.then((ContextMenu) null)
-											.otherwise(contextMenu));
-
-							return row;
-						}
-					}
-
-					);
-			libraryTable.setItems(mediaFiles);
-			// mediaFiles.clear();
-		}
 	}
 
 	public void setStage(Stage primaryStage) {

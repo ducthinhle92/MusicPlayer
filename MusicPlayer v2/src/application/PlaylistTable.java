@@ -46,7 +46,6 @@ public class PlaylistTable {
 	}
 
 	public void setTableData(ObservableList<MediaInfo> mediaFiles) {
-		System.out.println("this ok");
 		playTable.setItems(mediaFiles);
 	}
 
@@ -129,5 +128,12 @@ public class PlaylistTable {
 						return row;
 					}
 				});
+	}
+
+	public void setPlayList(String playList) {
+		try {
+			setTableData(getTableData(dbController.getPlaylist(playList)));
+		} catch (SQLException e) {
+		}
 	}
 }
