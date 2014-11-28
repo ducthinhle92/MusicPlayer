@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<StackPane prefHeight="500.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXMLController">
+   <children>
+      <VBox prefHeight="500.0" prefWidth="768.0">
+         <children>
+            <StackPane fx:id="bodyPane" maxHeight="1000.0" prefHeight="1000.0">
+               <children>
+                  <SplitPane fx:id="libraryPane" dividerPositions="0.06698564593301436, 0.16507177033492823" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                    <items>
+                        <MenuBar prefHeight="25.0" prefWidth="758.0">
+                           <menus>
+                              <Menu mnemonicParsing="false" text="File">
+                                 <items>
+                                     <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open File" />
+                                     <MenuItem mnemonicParsing="false" onAction="#openFolder" text="Open Folder" />
+                                     <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
+                                 </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Edit">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Delete" />
+                                 </items>
+                              </Menu>
+                              <Menu mnemonicParsing="false" text="Help">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="About" />
+                                 </items>
+                              </Menu>
+                           </menus>
+                        </MenuBar>
+                        <HBox maxHeight="38.0" minHeight="38.0" prefHeight="38.0" prefWidth="766.0" />
+                        <StackPane maxHeight="2000.0">
+                           <children>
+                              <SplitPane dividerPositions="0.17801047120418848, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                                 <items>
+                                    <StackPane fx:id="treeViewPane" maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
+                                    <StackPane fx:id="tablePane" minWidth="300.0" />
+                                    <StackPane maxWidth="400.0" minWidth="200.0">
+                                       <children>
+                                          <SplitPane dividerPositions="0.3008849557522124" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0">
+                                            <items>
+                                              <AnchorPane maxHeight="120.0" minHeight="99.0" prefHeight="99.0" prefWidth="198.0">
+                                                   <children>
+                                                      <Button fx:id="btn_saveList" layoutY="2.0" mnemonicParsing="false" onAction="#onSaveList" prefHeight="22.0" prefWidth="70.0" text="Save list" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                      <Button fx:id="btn_clearList" layoutX="72.0" layoutY="2.0" mnemonicParsing="false" onAction="#onClearList" prefHeight="22.0" prefWidth="70.0" text="Clear list" AnchorPane.leftAnchor="70.0" AnchorPane.topAnchor="0.0" />
+                                                   </children></AnchorPane>
+                                                <VBox>
+                                                   <children>
+                                                      <AnchorPane prefHeight="24.0" prefWidth="198.0">
+                                                         <children>
+                                                            <TextField fx:id="txtPlaylistName" layoutX="30.0" layoutY="4.0" prefHeight="24.0" prefWidth="168.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="0.0" />
+                                                            <Button layoutY="1.0" mnemonicParsing="false" prefWidth="30.0" text="&lt;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                            <Button layoutX="168.0" layoutY="1.0" mnemonicParsing="false" prefWidth="30.0" text="&gt;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <StackPane fx:id="nowPlayingPane" prefHeight="236.0" prefWidth="198.0" VBox.vgrow="ALWAYS" />
+                                                   </children>
+                                                </VBox>
+                                            </items>
+                                          </SplitPane>
+                                       </children>
+                                    </StackPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </StackPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </StackPane>
+            <StackPane maxHeight="80.0" maxWidth="2000.0" minHeight="80.0" minWidth="500.0">
+               <children>
+                  <VBox maxWidth="2000.0" minWidth="500.0" prefHeight="77.0" prefWidth="2000.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <StackPane maxWidth="2000.0" minWidth="500.0" prefWidth="2000.0">
+                           <children>
+                              <Slider fx:id="timeSlider" max="100" />
+                           </children>
+                        </StackPane>
+                        <StackPane focusTraversable="true" maxWidth="2000.0" minWidth="500.0">
+                           <children>
+                              <SplitPane dividerPositions="0.21018276762402088, 0.7402088772845953" focusTraversable="false" prefHeight="160.0" prefWidth="200.0">
+                                <items>
+                                  <AnchorPane minWidth="100.0">
+                                       <children>
+                                          <HBox />
+                                        <Label layoutX="4.0" layoutY="24.0" text="Thông tin bài hát" AnchorPane.leftAnchor="4.0" />
+                                         
+                                       </children>
+                                    </AnchorPane>
+                                    <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <AnchorPane prefHeight="65.0" prefWidth="68.0">
+                                                   <children>
+                                                    <Label fx:id="playTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="3.0" layoutY="26.0" prefHeight="14.0" prefWidth="64.0" text="Time" textAlignment="RIGHT" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0">
+                                                         <padding>
+                                                            <Insets right="10.0" />
+                                                         </padding>
+                                                      </Label>
+                                                   </children>
+                                                </AnchorPane>
+                                                <Button fx:id="stop" mnemonicParsing="false" onAction="#btnStop" text="Stop" />
+                                                <Button fx:id="prev" mnemonicParsing="false" onAction="#btnPrev" text="Prev" />
+                                                <Button fx:id="play" mnemonicParsing="false" onAction="#btnPlay" text="Play" />
+                                                <Button fx:id="next" mnemonicParsing="false" onAction="#btnNext" text="Next" />
+                                                <Button fx:id="mute" mnemonicParsing="false" onAction="#btnMute" text="Mute" />
+                                                <Slider fx:id="volumeSlider" max="100" prefWidth="70.0" />
+                                                <AnchorPane prefHeight="65.0" prefWidth="68.0" />
+                                             </children>
+                                          </HBox>
+                                       </children></StackPane>
+                                    <AnchorPane minWidth="100.0">
+                                       <children>
+                                          <Button fx:id="btnGoPlayScene" layoutX="160.0" layoutY="18.0" mnemonicParsing="false" onAction="#onChangeScene" text="To Play Screen" AnchorPane.rightAnchor="10.0" />
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
+         </children>
+      </VBox>
+   </children>
+</StackPane>
