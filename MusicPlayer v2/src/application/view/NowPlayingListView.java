@@ -2,7 +2,7 @@ package application.view;
 
 import java.util.ArrayList;
 
-import application.view.listener.ListViewListener;
+import application.controller.ListViewListener;
 import model.MediaFile;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -41,8 +41,7 @@ import application.utility.Utils;
 import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
 import application.view.PlaylistTable;
-import application.view.listener.ListViewListener;
-import application.view.listener.TreeViewListener;
+import application.controller.TreeViewListener;
 
 @SuppressWarnings({"deprecation", "rawtypes"})
 public class LibraryScreen extends AbstractScreen {
@@ -50,6 +49,7 @@ public class LibraryScreen extends AbstractScreen {
 		Playing, Paused, Stoped
 	};
 
+	private static LibraryScreen instance = null;
 	private DatabaseController dbController;
 	private MediaTreeView menuTreeView;
 	private TextField txtPlaylistName;
@@ -81,6 +81,7 @@ public class LibraryScreen extends AbstractScreen {
 	protected void initialize() {
 		super.initialize();
 
+		instance = this;
 		txtPlaylistName = FXMLController.getInstance().txtPlaylistName;
 		timeSlider = FXMLController.getInstance().timeSlider;
 		volumeSlider = FXMLController.getInstance().volumeSlider;
@@ -116,10 +117,15 @@ public class LibraryScreen extends AbstractScreen {
 			e.printStackTrace();
 		}
 
-		addEventHandler();
+		try {
+			addEventHandler();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 	}
 
-	private void addEventHandler() {
+	private void addEventHandler() throws ClassNotFoundException, SQLException {
 		timeSlider.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
@@ -148,59 +154,12 @@ public class LibraryScreen extends AbstractScreen {
 			}
 		});
 
-		menuTreeView.setOnItemClickListener(new TreeViewListener() {
-			@Override
-			public void onItemClicked(MouseEvent event, TreeItem<String> item) {
-				String itemValue = item.getValue();
-				Node node = event.getPickResult().getIntersectedNode();
-
-				if (node instanceof Text
-						|| (node instanceof TreeCell && ((TreeCell) node)
-								.getText() != null)) {
-
-					if (event.getClickCount() == 1) {
-						playTable.setPlayList(itemValue);
-					}
-					else if (event.getClickCount() == 2) {
-//****************************************************************************
-						// Problem!!! What if user don't select a playlist?
-						// example, the Artist menu item selected?
-						try {							
-							processOpenPlayList(dbController
-									.getPlaylist(itemValue));
-							
-							// move these code to PlaylistTable!
-							// use this: playTable.setPlayList(itemValue);
-							List<MediaInfo> lt = dbController
-									.getPlaylist(itemValue);
-							ObservableList<MediaInfo> mediaFiles = playTable
-									.getTableData(lt);
-							playTable.setTableData(mediaFiles);
-						} catch (SQLException e) {
-						}
-//****************************************************************************
-					}
-				}
-			}
+		menuTreeView.setOnItemClickListener(new TreeViewListener());
+		
+		playTable.setTableListener(new TableListener());
 			
-			@Override
-			public void onPlayItem(String playList, int index) {				
-				try {
-					playTable.setPlayList(playList);
-					processOpenPlayList(dbController.getPlaylist(playList));
-				} catch (SQLException e) {
-				}
-			}
 			
-			@Override
-			public void onRemoveItem(String playList) {
-				try {
-					dbController.deletePlaylist(playList);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+
 	}
 
 	public PlaylistTable getTable() {
@@ -539,5 +498,9 @@ public class LibraryScreen extends AbstractScreen {
 		players.add(mp1);
 		mediaView = new MediaView(mp1);
 		play(mediaView.getMediaPlayer());
+	}
+	
+	public LibraryScreen getInstance(){
+		return instance;
 	}
 }

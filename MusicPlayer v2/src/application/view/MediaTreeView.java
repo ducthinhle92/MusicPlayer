@@ -2,7 +2,8 @@ package application.view;
 
 import java.sql.SQLException;
 
-import application.view.listener.TreeViewListener;
+import application.FXMLController;
+import application.controller.TreeViewListener;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -55,7 +56,7 @@ public class MediaTreeView {
 	private void handleMouseClicked(MouseEvent event, TreeItem<String> item)
 			throws SQLException {
 		if(itemListener != null)
-			itemListener.onItemClicked(event, item);
+			itemListener.onItemClicked(event, item,FXMLController.getInstance().getLibraryScreen().getTable());
 	}
 
 	public TreeView getTreeView() {
@@ -116,9 +117,9 @@ public class MediaTreeView {
 
 				@Override
 				public void handle(ActionEvent ev) {
-					int index = treeView.getSelectionModel().getSelectedIndex();
+					
 					if(itemListener != null)
-						itemListener.onPlayItem(getValue().toString(), index);
+						itemListener.onPlayItem(getValue().toString());
 				}
 			});
 

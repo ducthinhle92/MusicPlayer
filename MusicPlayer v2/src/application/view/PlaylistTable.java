@@ -5,6 +5,7 @@ import java.util.List;
 
 import application.DatabaseController;
 import application.FXMLController;
+import application.controller.TableListener;
 import model.MediaInfo;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -20,6 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.DragEvent;
 import javafx.util.Callback;
 
+
 public class PlaylistTable {
 
 	private TableView playTable;
@@ -29,9 +31,11 @@ public class PlaylistTable {
 	private TableColumn albumColumn;
 	private DatabaseController dbController;
 	private FXMLController fxmlController;
+	private TableListener listener;
 
 	public PlaylistTable() throws ClassNotFoundException, SQLException {
 
+		this.fxmlController = FXMLController.getInstance();
 		dbController = DatabaseController.getInstance();
 		playTable = new TableView();
 		titleColumn = new TableColumn("Title");
@@ -98,12 +102,7 @@ public class PlaylistTable {
 									@Override
 									public void handle(ActionEvent event) {
 										String id = row.getItem().getId();
-										try {
-											dbController.deleteData(id);
-										} catch (SQLException e) {
-											e.printStackTrace();
-										}
-
+										listener.onRemoveItem(id);
 										playTable.getItems().remove(
 												row.getItem());
 									}
@@ -114,9 +113,8 @@ public class PlaylistTable {
 								.setOnAction(new EventHandler<ActionEvent>() {
 									@Override
 									public void handle(ActionEvent event) {
-										fxmlController
-												.getLibraryScreen()
-												.onPlaySingleFile(row.getItem());
+										MediaInfo item = row.getItem();
+										listener.onPlayingItem(item);
 									}
 								});
 						contextMenu.getItems().add(playMenuItem);
@@ -137,5 +135,11 @@ public class PlaylistTable {
 			setTableData(getTableData(dbController.getPlaylist(playList)));
 		} catch (SQLException e) {
 		}
+	}
+
+	public void setTableListener(TableListener tableListener) {
+		// TODO Auto-generated method stub
+		this.listener = tableListener;
+		
 	}
 }
