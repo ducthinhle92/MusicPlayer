@@ -1,5 +1,6 @@
 package application.controller;
 
+import application.resource.R;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -9,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -30,6 +32,9 @@ public class PlayScreen extends AbstractScreen {
 	
 	@Override
 	protected void initialize() {
+		AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
+		String background_play=R.getImage("background_play.jpg");
+		viewPlay.setStyle("-fx-background-image: url('" +background_play +"')");
 		for(int i=0; i<50; i++)
 			lyric.add("Thịnh");
 		

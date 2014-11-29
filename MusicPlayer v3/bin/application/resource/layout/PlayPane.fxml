@@ -11,7 +11,7 @@
    <children>
       <SplitPane fx:id="splitPlayPane" dividerPositions="0.7512562814070352" orientation="VERTICAL">
         <items>
-            <AnchorPane style="-fx-background-color: #ffddff;">
+            <AnchorPane fx:id="viewPlay" style="-fx-background-color: #ffddff;">
                <children>
                   <Button fx:id="btnShowLyric" alignment="CENTER" contentDisplay="CENTER" layoutX="280.0" layoutY="271.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Lyric" AnchorPane.bottomAnchor="0.0" />
                </children>

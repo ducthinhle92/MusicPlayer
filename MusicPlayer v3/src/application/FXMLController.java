@@ -9,12 +9,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.MediaInfo;
@@ -43,12 +47,13 @@ public class FXMLController {
 	ObservableList<MediaInfo> mediaFiles = FXCollections.observableArrayList();
 	
 	// FXML components
+	@FXML HBox button;
 	@FXML
 	public ListView<String> listFile;
 	@FXML
 	public Label fileDetail;
 	@FXML
-	public Button play, prev, next, btn_saveList, btn_clearList, btnGoPlayScene;
+	public Button play, prev, next, btn_saveList, btn_clearList, btnGoPlayScene,mute,stop;
 	@FXML
 	public TextField txtPlaylistName;
 	@FXML
@@ -71,6 +76,21 @@ public class FXMLController {
 	@FXML
 	private void initialize() throws ClassNotFoundException, SQLException {
 		instance = this;
+		button.setStyle("-fx-background-color:#000033"
+				+ ";-fx-background-radius: 30;-fx-background-insets: 0;");
+		Image img_prev=new Image(getClass().getResourceAsStream("resource/image/img_prev.png"));
+		prev.setGraphic(new ImageView(img_prev));
+		prev.setBackground(null);prev.setPadding(new Insets(0,0,0,0));
+		Image img_next=new Image(getClass().getResourceAsStream("resource/image/img_next.png"));
+		next.setGraphic(new ImageView(img_next));
+		next.setBackground(null);next.setPadding(new Insets(0,0,0,0));
+		Image img_pause=new Image(getClass().getResourceAsStream("resource/image/img_pause.png"));
+		play.setGraphic(new ImageView(img_pause));
+		play.setBackground(null);play.setPadding(new Insets(0,0,0,0));
+		Image img_sound=new Image(getClass().getResourceAsStream("resource/image/img_sound.png"));
+		mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
+		Image img_stop=new Image(getClass().getResourceAsStream("resource/image/img_stop.png"));
+		stop.setGraphic(new ImageView(img_stop));stop.setBackground(null);
 	}
 	
 	@FXML

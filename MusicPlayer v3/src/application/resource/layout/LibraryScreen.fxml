@@ -97,7 +97,7 @@
                                     </AnchorPane>
                                     <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                          <HBox fx:id="button" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                              <children>
                                                 <AnchorPane prefHeight="65.0" prefWidth="68.0">
                                                    <children>
@@ -108,11 +108,11 @@
                                                       </Label>
                                                    </children>
                                                 </AnchorPane>
-                                                <Button fx:id="stop" mnemonicParsing="false" onAction="#btnStop" text="Stop" />
-                                                <Button fx:id="prev" mnemonicParsing="false" onAction="#btnPrev" text="Prev" />
-                                                <Button fx:id="play" mnemonicParsing="false" onAction="#btnPlay" text="Play" />
-                                                <Button fx:id="next" mnemonicParsing="false" onAction="#btnNext" text="Next" />
-                                                <Button fx:id="mute" mnemonicParsing="false" onAction="#btnMute" text="Mute" />
+                                                <Button fx:id="stop" mnemonicParsing="false" onAction="#btnStop"  />
+                                                <Button fx:id="prev" mnemonicParsing="false" onAction="#btnPrev"  />
+                                                <Button fx:id="play" mnemonicParsing="false" onAction="#btnPlay"  />
+                                                <Button fx:id="next" mnemonicParsing="false" onAction="#btnNext"  />
+                                                <Button fx:id="mute" mnemonicParsing="false" onAction="#btnMute"  />
                                                 <Slider fx:id="volumeSlider" max="100" prefWidth="70.0" />
                                                 <AnchorPane prefHeight="65.0" prefWidth="68.0" />
                                              </children>

@@ -16,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -33,6 +35,7 @@ import model.MediaFile;
 import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
+import application.resource.R;
 import application.utility.Utils;
 import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
@@ -52,8 +55,14 @@ public class LibraryScreen extends AbstractScreen {
 	private TextField txtPlaylistName;
 	private Slider timeSlider;
 	private Slider volumeSlider;
-	private Button play;
+	private Button play,mute;
 	private Label playTime;
+	
+	Image img_mute=new Image(R.getImage("img_mute.png"));
+	Image img_sound=new Image(R.getImage("img_sound.png"));
+	Image img_pause=new Image(R.getImage("img_pause.png"));
+	Image img_play=new Image(R.getImage("img_play.png"));
+
 
 	private MediaView mediaView = null;
 	private Duration duration;
@@ -83,6 +92,7 @@ public class LibraryScreen extends AbstractScreen {
 		volumeSlider = FXMLController.getInstance().volumeSlider;
 		play = FXMLController.getInstance().play;
 		playTime = FXMLController.getInstance().playTime;
+		mute = FXMLController.getInstance().mute;
 
 		listFile = new NowPlayingListView();
 		StackPane nowPlaying = FXMLController.getInstance().nowPlayingPane;
@@ -322,13 +332,14 @@ public class LibraryScreen extends AbstractScreen {
 		this.mode = mode;
 		switch (mode) {
 		case Playing:
-			play.setText("Pause");
+			Image img_pause=new Image(R.getImage("img_pause.png"));
+			play.setGraphic(new ImageView(img_pause));play.setBackground(null);
 			break;
 		case Paused:
-			play.setText("Play");
+			play.setGraphic(new ImageView(img_play));play.setBackground(null);
 			break;
 		case Stoped:
-			play.setText("Play");
+			play.setGraphic(new ImageView(img_play));play.setBackground(null);
 			break;
 		}
 	}
@@ -369,6 +380,13 @@ public class LibraryScreen extends AbstractScreen {
 					if (!volumeSlider.isValueChanging()) {
 						volumeSlider.setValue((int) Math.round(mediaView
 								.getMediaPlayer().getVolume() * 100));
+						if(volumeSlider.getValue()==0){
+							
+							 mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
+							}
+						if(volumeSlider.getValue()!=0){
+							mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
+					}
 					}
 				}
 			});
@@ -406,7 +424,7 @@ public class LibraryScreen extends AbstractScreen {
 			MediaPlayer prevPlayer = players
 					.get((players.indexOf(curPlayer) - 1) % players.size());
 			listFile.getSelectionModel().select(
-					(players.indexOf(curPlayer) + 1) % players.size());
+					(players.indexOf(curPlayer) - 1) % players.size());
 			mediaView.setMediaPlayer(prevPlayer);
 			play(prevPlayer);
 		}
@@ -421,6 +439,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickMute() {
 		mediaView.getMediaPlayer().setVolume(0);
 		volumeSlider.setValue(0);
+		mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
 	}
 
 	public void onClearList() {
@@ -455,6 +474,7 @@ public class LibraryScreen extends AbstractScreen {
 		mediaView = new MediaView(players.get(0));
 		play(mediaView.getMediaPlayer());
 		listFile.setItemArray(selectedFiles);
+		listFile.getSelectionModel().select(0);
 	}
 
 	// Xu li khi mo Open File
@@ -476,6 +496,7 @@ public class LibraryScreen extends AbstractScreen {
 		mediaView = new MediaView(players.get(0));
 		play(mediaView.getMediaPlayer());
 		listFile.setItemArray(selectedFiles);
+		listFile.getSelectionModel().select(0);
 	}
 
 	public void processOpenPlayList(List<MediaInfo> playList) {
