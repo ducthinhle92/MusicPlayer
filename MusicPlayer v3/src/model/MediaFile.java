@@ -24,6 +24,7 @@ public class MediaFile {
 	public MediaFile(File file) {
 		try {
 			audioFile = AudioFileIO.read(file);
+			
 			title = new SimpleStringProperty(audioFile.getTag().getFirst(
 					FieldKey.TITLE));
 			artist = new SimpleStringProperty(audioFile.getTag().getFirst(
@@ -76,7 +77,7 @@ public class MediaFile {
 		return album.get();
 	}
 
-	public String getLyric() {		
+	public String getLyric() {
 		return audioFile.getTag().getFirst(FieldKey.LYRICS);
 	}
 	

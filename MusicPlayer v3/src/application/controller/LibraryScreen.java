@@ -16,8 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -35,7 +33,6 @@ import model.MediaFile;
 import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
-import application.resource.R;
 import application.utility.Utils;
 import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
@@ -55,7 +52,7 @@ public class LibraryScreen extends AbstractScreen {
 	private TextField txtPlaylistName;
 	private Slider timeSlider;
 	private Slider volumeSlider;
-	private Button play,mute;
+	private Button play, mute;
 	private Label playTime;
 	
 //	Image img_mute=new Image(R.getImage("img_mute.png"));
@@ -432,6 +429,7 @@ public class LibraryScreen extends AbstractScreen {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
 		currentAudio = null;
+		listFile.getSelectionModel().select(0);
 		setMode(Mode.Stoped);
 	}
 
