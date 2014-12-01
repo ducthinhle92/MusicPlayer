@@ -19,10 +19,11 @@ public class MediaFile {
 	private SimpleIntegerProperty rating;
 
 	private String url;
+	private AudioFile audioFile;
 
 	public MediaFile(File file) {
 		try {
-			AudioFile audioFile = AudioFileIO.read(file);	
+			audioFile = AudioFileIO.read(file);
 			title = new SimpleStringProperty(audioFile.getTag().getFirst(
 					FieldKey.TITLE));
 			artist = new SimpleStringProperty(audioFile.getTag().getFirst(
@@ -39,7 +40,7 @@ public class MediaFile {
 					+ (duration - 60 * (int) (duration / 60)));
 
 		} catch (Exception e) {
-
+			
 		}
 	}
 
@@ -73,5 +74,14 @@ public class MediaFile {
 
 	public String getAlbum() {
 		return album.get();
+	}
+
+	public String getLyric() {		
+		return audioFile.getTag().getFirst(FieldKey.LYRICS);
+	}
+	
+	@Override
+	public String toString() {	
+		return title.get();
 	}
 }

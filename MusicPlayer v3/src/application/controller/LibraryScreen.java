@@ -58,10 +58,10 @@ public class LibraryScreen extends AbstractScreen {
 	private Button play,mute;
 	private Label playTime;
 	
-	Image img_mute=new Image(R.getImage("img_mute.png"));
-	Image img_sound=new Image(R.getImage("img_sound.png"));
-	Image img_pause=new Image(R.getImage("img_pause.png"));
-	Image img_play=new Image(R.getImage("img_play.png"));
+//	Image img_mute=new Image(R.getImage("img_mute.png"));
+//	Image img_sound=new Image(R.getImage("img_sound.png"));
+//	Image img_pause=new Image(R.getImage("img_pause.png"));
+//	Image img_play=new Image(R.getImage("img_play.png"));
 
 
 	private MediaView mediaView = null;
@@ -78,6 +78,7 @@ public class LibraryScreen extends AbstractScreen {
 
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
+	private MediaFile currentAudio = null;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -218,10 +219,6 @@ public class LibraryScreen extends AbstractScreen {
 		});
 	}
 
-	public PlaylistTable getTable() {
-		return playTable;
-	}
-
 	protected void onVolumeChanged() {
 		if (volumeSlider.isValueChanging()) {
 			mediaView.getMediaPlayer().setVolume(
@@ -324,7 +321,9 @@ public class LibraryScreen extends AbstractScreen {
 				}
 			}
 		});
+		
 		player.play();
+		currentAudio  = listFile.getSelectionModel().getSelectedItem();
 		setMode(Mode.Playing);
 	}
 
@@ -332,14 +331,13 @@ public class LibraryScreen extends AbstractScreen {
 		this.mode = mode;
 		switch (mode) {
 		case Playing:
-			Image img_pause=new Image(R.getImage("img_pause.png"));
-			play.setGraphic(new ImageView(img_pause));play.setBackground(null);
+//			play.setGraphic(new ImageView(img_pause));play.setBackground(null);
 			break;
 		case Paused:
-			play.setGraphic(new ImageView(img_play));play.setBackground(null);
+//			play.setGraphic(new ImageView(img_play));play.setBackground(null);
 			break;
 		case Stoped:
-			play.setGraphic(new ImageView(img_play));play.setBackground(null);
+//			play.setGraphic(new ImageView(img_play));play.setBackground(null);
 			break;
 		}
 	}
@@ -382,10 +380,10 @@ public class LibraryScreen extends AbstractScreen {
 								.getMediaPlayer().getVolume() * 100));
 						if(volumeSlider.getValue()==0){
 							
-							 mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
+//							 mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
 							}
 						if(volumeSlider.getValue()!=0){
-							mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
+//							mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
 					}
 					}
 				}
@@ -433,13 +431,14 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickStop() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
+		currentAudio = null;
 		setMode(Mode.Stoped);
 	}
 
 	public void onClickMute() {
 		mediaView.getMediaPlayer().setVolume(0);
 		volumeSlider.setValue(0);
-		mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
+//		mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
 	}
 
 	public void onClearList() {
@@ -472,9 +471,9 @@ public class LibraryScreen extends AbstractScreen {
 			}
 		}
 		mediaView = new MediaView(players.get(0));
-		play(mediaView.getMediaPlayer());
 		listFile.setItemArray(selectedFiles);
 		listFile.getSelectionModel().select(0);
+		play(mediaView.getMediaPlayer());
 	}
 
 	// Xu li khi mo Open File
@@ -494,9 +493,9 @@ public class LibraryScreen extends AbstractScreen {
 			}
 		}
 		mediaView = new MediaView(players.get(0));
-		play(mediaView.getMediaPlayer());
 		listFile.setItemArray(selectedFiles);
 		listFile.getSelectionModel().select(0);
+		play(mediaView.getMediaPlayer());
 	}
 
 	public void processOpenPlayList(List<MediaInfo> playList) {
@@ -520,6 +519,7 @@ public class LibraryScreen extends AbstractScreen {
 
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
+		listFile.getSelectionModel().select(0);
 		play(mediaView.getMediaPlayer());
 	}
 
@@ -560,10 +560,19 @@ public class LibraryScreen extends AbstractScreen {
 		selectedFiles.clear();
 		selectedFiles.add(selected.getMediaFile());
 		listFile.setItemArray(selectedFiles);
+		listFile.getSelectionModel().select(0);
 
 		players.clear();
 		players.add(mp1);
 		mediaView = new MediaView(mp1);
 		play(mediaView.getMediaPlayer());
+	}
+
+	/**
+	 * get the current playing audio
+	 * @return
+	 */
+	public MediaFile getCurrentAudio() {		
+		return currentAudio;
 	}
 }

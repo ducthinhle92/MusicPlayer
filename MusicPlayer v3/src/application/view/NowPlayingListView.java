@@ -12,10 +12,10 @@ import javafx.scene.input.MouseEvent;
 import model.MediaFile;
 import application.view.listener.ListViewListener;
 
-public class NowPlayingListView extends ListView<PlayingItem>{
+public class NowPlayingListView extends ListView<MediaFile>{
 	private EventHandler<MouseEvent> eventHandler;
 	private ListViewListener listener;
-	private ObservableList<PlayingItem> items;
+	private ObservableList<MediaFile> items;
 
 	public NowPlayingListView() {
 		super();
@@ -47,7 +47,7 @@ public class NowPlayingListView extends ListView<PlayingItem>{
 	public void setItemArray(ArrayList<MediaFile> listFile) {
 		items.clear();
 		for(MediaFile mf : listFile)
-			items.add(new PlayingItem(mf));
+			items.add(mf);
 	}
 
 	public void clearItems() {

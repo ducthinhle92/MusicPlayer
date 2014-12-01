@@ -30,8 +30,12 @@ public abstract class AbstractScreen {
 		}
 		
 		paused = false;
+		show();
 	}
 	
+	public void show() {
+	}
+
 	public void pause() {
 		paused = true;
 	}

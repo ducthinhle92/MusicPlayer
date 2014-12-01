@@ -1,6 +1,7 @@
 package application.controller;
 
-import application.resource.R;
+import model.MediaFile;
+import application.FXMLController;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -9,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -25,6 +27,8 @@ public class PlayScreen extends AbstractScreen {
 	private SplitPane lyricContent;
 	private double dividerPos;
 	private ListView<String> lyricBox;
+	private TextField txtTitle;
+	private TextField txtArtist;
 
 	public PlayScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -32,9 +36,9 @@ public class PlayScreen extends AbstractScreen {
 	
 	@Override
 	protected void initialize() {
-		AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
-		String background_play=R.getImage("background_play.jpg");
-		viewPlay.setStyle("-fx-background-image: url('" +background_play +"')");
+//		AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
+//		String background_play=R.getImage("background_play.jpg");
+//		viewPlay.setStyle("-fx-background-image: url('" +background_play +"')");
 		for(int i=0; i<50; i++)
 			lyric.add("Thịnh");
 		
@@ -43,6 +47,8 @@ public class PlayScreen extends AbstractScreen {
 		lyricWrapper = (StackPane) findNodeById("lyricPane");
 		lyricContent = (SplitPane) findNodeById("lyricSplitPane");
 		lyricBox = (ListView<String>) findNodeById("lyricBox");
+		txtTitle = (TextField) findNodeById("txtTitle");
+		txtArtist = (TextField) findNodeById("txtTitle");
 		
 		lyricBox.setItems(lyric);
 		lyricWrapper.getChildren().clear();
@@ -51,6 +57,35 @@ public class PlayScreen extends AbstractScreen {
 		dividerPos = playPaneSpliter.getDividerPositions()[0];
 		
 		addEventHandler();
+	}
+	
+	@Override
+	public void show() {
+		validateLyric();
+	}
+
+	private void validateLyric() {
+		MediaFile audio = FXMLController.getInstance().getCurrentAudio();
+		if(audio != null && lyricContent.isVisible()) {
+			System.out.println("validating lyric");
+			txtTitle.setText(audio.getTitle());
+			txtArtist.setText(audio.getArtist());
+			
+			String strLyric = audio.getLyric();
+			if(strLyric != null && strLyric.length() > 0) {
+				loadLyric(strLyric);
+			}
+			else {
+				lyric.clear();
+			}
+		}
+	}
+
+	private void loadLyric(String strLyric) {
+		lyricBox.getItems().clear();
+		String[] lines = strLyric.split("\n");
+		for(String line : lines)
+			lyric.add(line);
 	}
 
 	private void addEventHandler() {
@@ -84,6 +119,7 @@ public class PlayScreen extends AbstractScreen {
 			lyricContent.setVisible(true);
 			playPaneSpliter.setDividerPosition(0, dividerPos);
 			lyricWrapper.getChildren().add(lyricContent);
+			validateLyric();
 		}
 	}
 }
