@@ -12,6 +12,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import model.MediaFile;
@@ -49,10 +50,10 @@ public class PlayScreen extends AbstractScreen {
 
 	@Override
 	protected void initialize() {
-		// AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
-		// String background_play=R.getImage("background_play.jpg");
-		// viewPlay.setStyle("-fx-background-image: url('" +background_play
-		// +"')");
+		 AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
+		 String background_play=R.getImage("background_play.jpg");
+		 viewPlay.setStyle("-fx-background-image: url('" +background_play
+		 +"')");
 
 		playPaneSpliter = (SplitPane) findNodeById("splitPlayPane");
 		lyricWrapper = (StackPane) findNodeById("lyricWrapper");

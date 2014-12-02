@@ -16,6 +16,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -33,6 +35,7 @@ import model.MediaFile;
 import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
+import application.resource.R;
 import application.utility.Utils;
 import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
@@ -55,10 +58,10 @@ public class LibraryScreen extends AbstractScreen {
 	private Button play, mute;
 	private Label playTime;
 	
-//	Image img_mute=new Image(R.getImage("img_mute.png"));
-//	Image img_sound=new Image(R.getImage("img_sound.png"));
-//	Image img_pause=new Image(R.getImage("img_pause.png"));
-//	Image img_play=new Image(R.getImage("img_play.png"));
+	Image img_mute=new Image(R.getImage("img_mute.png"));
+	Image img_sound=new Image(R.getImage("img_sound.png"));
+	Image img_pause=new Image(R.getImage("img_pause.png"));
+	Image img_play=new Image(R.getImage("img_play.png"));
 
 
 	private MediaView mediaView = null;
@@ -328,13 +331,13 @@ public class LibraryScreen extends AbstractScreen {
 		this.mode = mode;
 		switch (mode) {
 		case Playing:
-//			play.setGraphic(new ImageView(img_pause));play.setBackground(null);
+			play.setGraphic(new ImageView(img_pause));play.setBackground(null);
 			break;
 		case Paused:
-//			play.setGraphic(new ImageView(img_play));play.setBackground(null);
+			play.setGraphic(new ImageView(img_play));play.setBackground(null);
 			break;
 		case Stoped:
-//			play.setGraphic(new ImageView(img_play));play.setBackground(null);
+			play.setGraphic(new ImageView(img_play));play.setBackground(null);
 			break;
 		}
 	}
@@ -377,10 +380,10 @@ public class LibraryScreen extends AbstractScreen {
 								.getMediaPlayer().getVolume() * 100));
 						if(volumeSlider.getValue()==0){
 							
-//							 mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
+							 mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
 							}
 						if(volumeSlider.getValue()!=0){
-//							mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
+							mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
 					}
 					}
 				}
@@ -436,7 +439,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickMute() {
 		mediaView.getMediaPlayer().setVolume(0);
 		volumeSlider.setValue(0);
-//		mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
+		mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
 	}
 
 	public void onClearList() {
