@@ -53,6 +53,12 @@ public class NowPlayingListView extends ListView<MediaFile>{
 	public void clearItems() {
 		setItems(null);
 	}
+	
+
+
+	public ObservableList<MediaFile> getItem() {
+		return items;
+	}
 
 	public void setTreeViewListener(ListViewListener listener) {
 		this.listener = listener;

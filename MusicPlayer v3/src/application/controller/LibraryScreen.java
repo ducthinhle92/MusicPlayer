@@ -244,11 +244,11 @@ public class LibraryScreen extends AbstractScreen {
 		MediaFile file;
 
 		try {
-			if (list != null) {
-				for (int i = 0; i < list.size(); i++) {
+			if (listFile != null) {
+				for (int i = 0; i < listFile.getItem().size(); i++) {
 
 					listName = txtPlaylistName.getText();
-					file = new MediaFile(list.get(i));
+					file = listFile.getItem().get(i);
 					title = file.getTitle();
 					artist = file.getArtist();
 					album = file.getAlbum();
