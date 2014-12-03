@@ -9,17 +9,15 @@ public class MediaInfo {
 	private String artist;
 	private String length;
 	private String album;
-	private String listName;
 	private String url;
 	private String id;
 	
-	public MediaInfo(String id, String tit, String art, String len, String alb, String listN, String ur){
+	public MediaInfo(String id, String tit, String art, String len, String alb, String ur){
 		this.id = id;
 		title = tit;
 		artist = art;
 		length = len;
 		album = alb;
-		listName = listN;
 		url = ur;
 	}
 	
@@ -41,10 +39,6 @@ public class MediaInfo {
 
 	public String getAlbum() {
 		return album;
-	}
-
-	public String getListName() {
-		return listName;
 	}
 
 	public String getUrl() {

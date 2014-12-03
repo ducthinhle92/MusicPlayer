@@ -243,11 +243,11 @@ public class LibraryScreen extends AbstractScreen {
 		MediaFile file;
 
 		try {
-			if (list != null) {
-				for (int i = 0; i < list.size(); i++) {
+			if (listFile != null) {
+				for (int i = 0; i < listFile.getItem().size(); i++) {
 
 					listName = txtPlaylistName.getText();
-					file = new MediaFile(list.get(i));
+					file = listFile.getItem().get(i);
 					title = file.getTitle();
 					artist = file.getArtist();
 					album = file.getAlbum();
@@ -522,8 +522,9 @@ public class LibraryScreen extends AbstractScreen {
 
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
-		listFile.setPlayingItem(0);
+		listFile.getSelectionModel().select(0);
 		play(mediaView.getMediaPlayer());
+		//v3
 	}
 
 	public MediaPlayer createPlayer(String src) {
@@ -539,6 +540,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void resetAll() {
 		if (mediaView != null && mediaView.getMediaPlayer() != null)
 			mediaView.getMediaPlayer().stop();
+		
 		players.clear();
 		selectedFiles.clear();
 	}

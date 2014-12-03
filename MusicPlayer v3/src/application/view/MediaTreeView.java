@@ -141,8 +141,8 @@ public class MediaTreeView {
 				public void handle(ActionEvent ev) {
 					if(listener != null)
 						listener.onRemoveItem(getValue().toString());
-					int index = treeView.getSelectionModel().getSelectedIndex();
-					getChildren().remove(index);
+					TreeItem c = (TreeItem)treeView.getSelectionModel().getSelectedItem();
+		            boolean remove = c.getParent().getChildren().remove(c);
 				}
 			});
 

@@ -51,7 +51,7 @@ public class NowPlayingListView extends ListView<MediaFile>{
 	}
 
 	public void clearItems() {
-		setItems(null);
+		items.clear();
 	}
 
 	public void setTreeViewListener(ListViewListener listener) {
@@ -60,6 +60,10 @@ public class NowPlayingListView extends ListView<MediaFile>{
 	
 	public void setPlayingItem(int index) {
 		getSelectionModel().select(index);
+	}
+	
+	public ObservableList<MediaFile> getItem() {
+		return items;
 	}
 
 	public MediaFile getPlayingItem() {
