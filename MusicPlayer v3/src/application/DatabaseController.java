@@ -33,14 +33,14 @@ public class DatabaseController {
 				+ "length varchar(15)," + "album varchar(30),"
 				+ "artist varchar(30)," + "url text," + "primary key (id));");
 		
-		stat.executeUpdate("create table if not exists allplaylist(listname varchar(30),id integer);");
+		stat.executeUpdate("create table if not exists playlist(listname varchar(30),id integer);");
 	}
 
 	public List<String> getListNames() throws SQLException {
 		// TODO Auto-generated method stub
 		List<String> list = new ArrayList<String>();
 		Statement stat = c.createStatement();
-		ResultSet res = stat.executeQuery("select DISTINCT listname FROM allplaylist");
+		ResultSet res = stat.executeQuery("select DISTINCT listname FROM playlist");
 
 		String listName = "";
 		while (res.next()) {
@@ -54,7 +54,7 @@ public class DatabaseController {
 	public void deletePlaylist(String select) throws SQLException {
 		// TODO Auto-generated method stub
 		PreparedStatement prep = c
-				.prepareStatement("DELETE from allplaylist where listName=?;");
+				.prepareStatement("DELETE from playlist where listName=?;");
 		prep.setString(1, select);
 		prep.execute();
 
@@ -66,7 +66,7 @@ public class DatabaseController {
 		List<MediaInfo> list = new ArrayList<MediaInfo>();
 		Statement stat = c.createStatement();
 		PreparedStatement prep;
-		prep = c.prepareStatement("select id from allplaylist where listname = ?");
+		prep = c.prepareStatement("select id from playlist where listname = ?");
 		prep.setString(1, select);
 		ResultSet res = prep.executeQuery();
 		while(res.next()){
@@ -108,7 +108,7 @@ public class DatabaseController {
 		Statement stat = c.createStatement();
 		ResultSet res = stat.executeQuery("select * from allmusic where url = '" + url +"';");
 		if( res.next()){
-			prep = c.prepareStatement("insert into allplaylist values(?,?)");
+			prep = c.prepareStatement("insert into playlist values(?,?)");
 			prep.setString(1, listName);
 			prep.setString(2, res.getString("id"));
 			prep.execute();
@@ -123,7 +123,7 @@ public class DatabaseController {
 			
 			res = stat.executeQuery("select * from allmusic where url = '" + url +"';");
 			
-			prep = c.prepareStatement("insert into allplaylist values(?,?)");
+			prep = c.prepareStatement("insert into playlist values(?,?)");
 			prep.setString(1, listName);
 			res.next();
 			prep.setString(2, res.getString("id"));
@@ -133,7 +133,7 @@ public class DatabaseController {
 
 	public void deleteData(String id) throws SQLException {
 		PreparedStatement prep = c
-				.prepareStatement("DELETE from allplaylist where ID=?;");
+				.prepareStatement("DELETE from playlist where ID=?;");
 		prep.setString(1, id);
 		prep.execute();
 

@@ -1,9 +1,7 @@
 package application.controller;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -29,7 +27,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -355,13 +352,6 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	public void onClickNowPlayingList(MouseEvent event) {
-		MediaPlayer player = null;
-		try {
-			player = nowPlayingView.getMediaPlayer();
-		} catch (Exception e) {
-			return;
-		}
-
 		if (event.getClickCount() == 2) {
 			if (mediaView != null && mediaView.getMediaPlayer() != null) {
 				mediaView.getMediaPlayer().stop();
