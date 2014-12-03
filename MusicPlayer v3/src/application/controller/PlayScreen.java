@@ -27,6 +27,9 @@ public class PlayScreen extends AbstractScreen {
 			.observableArrayList();
 	protected static final int MODE_EDIT = 0;
 	protected static final int MODE_UPDATE = 1;
+	protected static final int TO_EDIT_AREA = 2;
+	private static final int TO_UPDATE_AREA = 3;
+	
 	private Button btnShowLyric;
 	private StackPane lyricWrapper;
 	private SplitPane playPaneSpliter;
@@ -41,6 +44,8 @@ public class PlayScreen extends AbstractScreen {
 	private StackPane lyricBox;
 	private Button btnUpdateLyric;
 	private boolean updatingLyric = false;
+	private boolean loadedLyric = false;
+	private MediaFile currentMedia = null;
 	private LyricGatherService liveUpdater;
 	private ObservableList<String> backupLyric;
 
@@ -50,10 +55,10 @@ public class PlayScreen extends AbstractScreen {
 
 	@Override
 	protected void initialize() {
-		 AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
-		 String background_play=R.getImage("background_play.jpg");
-		 viewPlay.setStyle("-fx-background-image: url('" +background_play
-		 +"')");
+		AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
+		String background_play = R.getImage("background_play.jpg");
+		viewPlay.setStyle("-fx-background-image: url('" + background_play
+				+ "')");
 
 		playPaneSpliter = (SplitPane) findNodeById("splitPlayPane");
 		lyricWrapper = (StackPane) findNodeById("lyricWrapper");
@@ -72,7 +77,7 @@ public class PlayScreen extends AbstractScreen {
 
 		listViewLyric.setItems(lyric);
 		lyricWrapper.getChildren().clear();
-		playPaneSpliter.setDividerPositions(1, 0);
+		playPaneSpliter.setDividerPositions(0, 1);
 		lyricComponent.setVisible(false);
 		dividerPos = playPaneSpliter.getDividerPositions()[0];
 
@@ -85,8 +90,9 @@ public class PlayScreen extends AbstractScreen {
 	}
 
 	private void validateLyric() {
-		MediaFile audio = FXMLController.getInstance().getCurrentAudio();
+		MediaFile audio = FXMLController.getInstance().getCurrentMedia();		
 		if (audio != null && lyricComponent.isVisible()) {
+			loadedLyric = true;
 			txtTitle.setText(audio.getTitle());
 			txtArtist.setText(audio.getArtist());
 
@@ -99,11 +105,22 @@ public class PlayScreen extends AbstractScreen {
 		}
 	}
 
-	private void loadLyric(String strLyric) {
-		listViewLyric.getItems().clear();
-		String[] lines = strLyric.split("\n");
-		for (String line : lines)
-			lyric.add(line);
+	protected void onClickShowLyric() {
+		if (lyricComponent.isVisible()) {
+			// hide lyric box
+			lyricComponent.setVisible(false);
+			lyricWrapper.getChildren().clear();
+			dividerPos = playPaneSpliter.getDividerPositions()[0];
+			playPaneSpliter.setDividerPositions(0, 1);
+		} else {
+			// show lyric box
+			lyricComponent.setVisible(true);
+			playPaneSpliter.setDividerPosition(0, dividerPos);
+			lyricWrapper.getChildren().add(lyricComponent);
+
+			if (!loadedLyric)
+				validateLyric();
+		}
 	}
 
 	private void addEventHandler() {
@@ -114,12 +131,12 @@ public class PlayScreen extends AbstractScreen {
 			}
 		});
 
-		lyricWrapper.widthProperty().addListener(new ChangeListener<Number>() {
+		lyricWrapper.heightProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable,
 					Number oldValue, Number newValue) {
-				btnShowLyric.setLayoutX((newValue.doubleValue() - btnShowLyric
-						.getWidth()) / 2);
+				btnShowLyric.setLayoutY((newValue.doubleValue() - btnShowLyric
+						.getHeight()) / 2);
 			}
 		});
 
@@ -128,9 +145,10 @@ public class PlayScreen extends AbstractScreen {
 			@Override
 			public void handle(MouseEvent event) {
 				if (lyricMode == MODE_EDIT) {
-					setLyricMode(MODE_UPDATE);
+					// save button clicked
+					onSaveClicked();
 				} else if (lyricMode == MODE_UPDATE) {
-					setLyricMode(MODE_EDIT);
+					onEditClicked();
 				}
 			}
 		});
@@ -138,10 +156,14 @@ public class PlayScreen extends AbstractScreen {
 		btnUpdateLyric.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if(!updatingLyric)
-					getLiveLyric();
-				else {
-					cancelGetLyric();
+				if (lyricMode == MODE_EDIT) {
+					onCancelEditLyric();
+				} else {
+					if (!updatingLyric)
+						onUpdateLyricClicked();
+					else {
+						onCancelGetLyric();
+					}
 				}
 			}
 		});
@@ -155,69 +177,141 @@ public class PlayScreen extends AbstractScreen {
 		});
 	}
 
-	protected void cancelGetLyric() {
-		if(liveUpdater != null)
+	protected void onEditClicked() {
+		if (txtTitle.getText().equals("") || txtArtist.getText().equals(""))
+			return;
+		setLyricMode(MODE_EDIT);
+		currentMedia = FXMLController.getInstance().getCurrentMedia();
+
+		if (lyric.size() > 0) {
+			// backup and copy lyric to edit area
+			backupLyric();
+			copyLyric(TO_EDIT_AREA);
+		}
+	}
+
+	protected void onSaveClicked() {
+		setLyricMode(MODE_UPDATE);
+		copyLyric(TO_UPDATE_AREA);
+		saveMediaFile(currentMedia);
+		synchronizeMedia();
+	}
+
+	protected void onCancelEditLyric() {
+		setLyricMode(MODE_UPDATE);
+		synchronizeMedia();
+	}
+
+	protected void onCancelGetLyric() {
+		if (liveUpdater != null)
 			liveUpdater.cancel();
-		if(backupLyric != null) {
+		if (backupLyric != null) {
 			lyric.clear();
-			for(String s : backupLyric) lyric.add(s);				
-		}			
+			for (String s : backupLyric)
+				lyric.add(s);
+		}
 		finishGetLiveLyric();
 	}
 
-	protected void getLiveLyric() {
+	protected void onUpdateLyricClicked() {
 		String title = txtTitle.getText().trim();
 		String artist = txtArtist.getText().trim();
-		if(title == null || title.length() == 0
-				|| artist == null || artist.length() == 0) {
+		if (title == null || title.length() == 0 || artist == null
+				|| artist.length() == 0) {
 			return;
 		}
 		
+		currentMedia = FXMLController.getInstance().getCurrentMedia();
+
 		// reset lyric box and disable control components
-		updatingLyric  = true;
+		updatingLyric = true;
 		btnEditLyric.setDisable(true);
 		btnUpdateLyric.setText(R.strings.cancel);
 		// backup the lyric in case of failure
-		if(lyric.size() > 0) {
-			backupLyric = FXCollections.observableArrayList();
-			for(String s : lyric) backupLyric.add(s);
-		} else
-			backupLyric = null;
+		backupLyric();
 		// now, clear the lyric box
 		lyric.clear();
-		
+
 		liveUpdater = new LyricGatherService(title, artist, lyric);
 		liveUpdater.setOnSucceeded(onSuccessHandler);
 		liveUpdater.setOnFailed(onFailedHandler);
 		liveUpdater.start();
 	}
 	
+	protected void copyLyric(int target) {
+		if (target == TO_EDIT_AREA) {
+			int count = 0;
+			String strLyric = lyric.get(0);
+			for (String line : lyric) {
+				count++;
+				if (count == 1)
+					continue;
+				strLyric += "\n" + line;
+			}
+			txtAreaLyric.setText(strLyric);
+		} 
+		else { // target == TO_UPDATE_AREA
+			String strLyric = txtAreaLyric.getText();
+			lyric.clear();
+			if(strLyric.length() == 0) return;
+			String[] lines = strLyric.split("\n");
+			for(String line : lines) lyric.add(line);
+		}
+	}
+
+	private void backupLyric() {
+		if (lyric.size() > 0) {
+			backupLyric = FXCollections.observableArrayList();
+			for (String s : lyric)
+				backupLyric.add(s);
+		} else
+			backupLyric = null;
+	}
+	
+	private void loadLyric(String strLyric) {
+		listViewLyric.getItems().clear();
+		String[] lines = strLyric.split("\n");
+		for (String line : lines)
+			lyric.add(line);
+	}
+
 	private EventHandler<WorkerStateEvent> onSuccessHandler = new EventHandler<WorkerStateEvent>() {
 
 		@Override
 		public void handle(WorkerStateEvent arg0) {
 			System.out.println("Retrieve lyric successfully");
-			if(liveUpdater.getValue() == true)
+			if (liveUpdater.getValue() == true)
 				finishGetLiveLyric();
 		}
 	};
 	private EventHandler<WorkerStateEvent> onFailedHandler = new EventHandler<WorkerStateEvent>() {
 		@Override
 		public void handle(WorkerStateEvent arg0) {
-			System.out.println("Failed to retrieve lyric");
 			// recover the last lyric
-			if(backupLyric != null) {
+			if (backupLyric != null) {
 				lyric.clear();
-				for(String s : backupLyric) lyric.add(s);		
-			}			
+				for (String s : backupLyric)
+					lyric.add(s);
+			}
 			finishGetLiveLyric();
 		}
 	};
-	
+
 	private void finishGetLiveLyric() {
 		btnUpdateLyric.setText(R.strings.update_lyric);
 		btnEditLyric.setDisable(false);
 		updatingLyric = false;
+		
+		// update lyric content to synchronize with current media
+		synchronizeMedia();
+	}
+
+	/**
+	 * synchronize the current media being update/edit lyric with
+	 * the current playing media.
+	 */
+	private void synchronizeMedia() {
+		
 	}
 
 	protected void setLyricMode(int mode) {
@@ -226,27 +320,27 @@ public class PlayScreen extends AbstractScreen {
 			lyricBox.getChildren().clear();
 			lyricBox.getChildren().add(txtAreaLyric);
 			btnEditLyric.setText(R.strings.save);
+			btnUpdateLyric.setText(R.strings.cancel);
 			btnEditLyric.setDisable(true);
 		} else {
 			lyricBox.getChildren().clear();
 			lyricBox.getChildren().add(listViewLyric);
 			btnEditLyric.setText(R.strings.edit_lyric);
+			btnUpdateLyric.setText(R.strings.update_lyric);
+			btnEditLyric.setDisable(false);
+		}
+	}
+	
+	public void onMediaChanged() {
+		if(lyricComponent.isVisible()) {
+			validateLyric();
+		}
+		else {
+			loadedLyric = false;
 		}
 	}
 
-	protected void onClickShowLyric() {
-		if (lyricComponent.isVisible()) {
-			// hide lyric box
-			lyricComponent.setVisible(false);
-			lyricWrapper.getChildren().clear();
-			dividerPos = playPaneSpliter.getDividerPositions()[0];
-			playPaneSpliter.setDividerPositions(1, 0);
-		} else {
-			// show lyric box
-			lyricComponent.setVisible(true);
-			playPaneSpliter.setDividerPosition(0, dividerPos);
-			lyricWrapper.getChildren().add(lyricComponent);
-			validateLyric();
-		}
+	protected void saveMediaFile(MediaFile file) {
+		
 	}
 }

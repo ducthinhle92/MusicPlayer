@@ -57,12 +57,11 @@ public class LibraryScreen extends AbstractScreen {
 	private Slider volumeSlider;
 	private Button play, mute;
 	private Label playTime;
-	
-	Image img_mute=new Image(R.getImage("img_mute.png"));
-	Image img_sound=new Image(R.getImage("img_sound.png"));
-	Image img_pause=new Image(R.getImage("img_pause.png"));
-	Image img_play=new Image(R.getImage("img_play.png"));
 
+	Image img_mute = new Image(R.getImage("img_mute.png"));
+	Image img_sound = new Image(R.getImage("img_sound.png"));
+	Image img_pause = new Image(R.getImage("img_pause.png"));
+	Image img_play = new Image(R.getImage("img_play.png"));
 
 	private MediaView mediaView = null;
 	private Duration duration;
@@ -78,7 +77,7 @@ public class LibraryScreen extends AbstractScreen {
 
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
-	private MediaFile currentAudio = null;
+	private MediaFile currentMedia = null;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -244,11 +243,11 @@ public class LibraryScreen extends AbstractScreen {
 		MediaFile file;
 
 		try {
-			if (listFile != null) {
-				for (int i = 0; i < listFile.getItem().size(); i++) {
+			if (list != null) {
+				for (int i = 0; i < list.size(); i++) {
 
 					listName = txtPlaylistName.getText();
-					file = listFile.getItem().get(i);
+					file = new MediaFile(list.get(i));
 					title = file.getTitle();
 					artist = file.getArtist();
 					album = file.getAlbum();
@@ -288,13 +287,12 @@ public class LibraryScreen extends AbstractScreen {
 			public void run() {
 				MediaPlayer curPlayer = mediaView.getMediaPlayer();
 				curPlayer.stop();
-				MediaPlayer nextPlayer = players.get((players
-						.indexOf(curPlayer) + 1) % players.size());
-				listFile.getSelectionModel().select(
-						(players.indexOf(curPlayer) + 1) % players.size());
+
+				int index = (players.indexOf(curPlayer) + 1) % players.size();
+				MediaPlayer nextPlayer = players.get(index);
+				listFile.setPlayingItem(index);
 				mediaView.setMediaPlayer(nextPlayer);
 				play(nextPlayer);
-
 			}
 		});
 		// Set View khi play audio
@@ -321,9 +319,9 @@ public class LibraryScreen extends AbstractScreen {
 				}
 			}
 		});
-		
+
 		player.play();
-		currentAudio  = listFile.getSelectionModel().getSelectedItem();
+		currentMedia = listFile.getPlayingItem();
 		setMode(Mode.Playing);
 	}
 
@@ -331,13 +329,16 @@ public class LibraryScreen extends AbstractScreen {
 		this.mode = mode;
 		switch (mode) {
 		case Playing:
-			play.setGraphic(new ImageView(img_pause));play.setBackground(null);
+			play.setGraphic(new ImageView(img_pause));
+			play.setBackground(null);
 			break;
 		case Paused:
-			play.setGraphic(new ImageView(img_play));play.setBackground(null);
+			play.setGraphic(new ImageView(img_play));
+			play.setBackground(null);
 			break;
 		case Stoped:
-			play.setGraphic(new ImageView(img_play));play.setBackground(null);
+			play.setGraphic(new ImageView(img_play));
+			play.setBackground(null);
 			break;
 		}
 	}
@@ -378,13 +379,14 @@ public class LibraryScreen extends AbstractScreen {
 					if (!volumeSlider.isValueChanging()) {
 						volumeSlider.setValue((int) Math.round(mediaView
 								.getMediaPlayer().getVolume() * 100));
-						if(volumeSlider.getValue()==0){
-							
-							 mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
-							}
-						if(volumeSlider.getValue()!=0){
-							mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
-					}
+						if (volumeSlider.getValue() == 0) {
+							mute.setGraphic(new ImageView(img_mute));
+							mute.setBackground(null);
+						}
+						if (volumeSlider.getValue() != 0) {
+							mute.setGraphic(new ImageView(img_sound));
+							mute.setBackground(null);
+						}
 					}
 				}
 			});
@@ -406,10 +408,10 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickNext() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
-		MediaPlayer nextPlayer = players.get((players.indexOf(curPlayer) + 1)
-				% players.size());
-		listFile.getSelectionModel().select(
-				(players.indexOf(curPlayer) + 1) % players.size());
+
+		int index = (players.indexOf(curPlayer) + 1) % players.size();
+		MediaPlayer nextPlayer = players.get(index);
+		listFile.setPlayingItem(index);
 		mediaView.setMediaPlayer(nextPlayer);
 		play(nextPlayer);
 	}
@@ -419,10 +421,10 @@ public class LibraryScreen extends AbstractScreen {
 		int i = players.indexOf(curPlayer);
 		if (i > 0 && i < players.size()) {
 			curPlayer.stop();
-			MediaPlayer prevPlayer = players
-					.get((players.indexOf(curPlayer) - 1) % players.size());
-			listFile.getSelectionModel().select(
-					(players.indexOf(curPlayer) - 1) % players.size());
+
+			int index = (players.indexOf(curPlayer) - 1) % players.size();
+			MediaPlayer prevPlayer = players.get(index);
+			listFile.setPlayingItem(index);
 			mediaView.setMediaPlayer(prevPlayer);
 			play(prevPlayer);
 		}
@@ -431,15 +433,16 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickStop() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
-		currentAudio = null;
-		listFile.getSelectionModel().select(0);
+		currentMedia = null;
+		listFile.setPlayingItem(0);
 		setMode(Mode.Stoped);
 	}
 
 	public void onClickMute() {
 		mediaView.getMediaPlayer().setVolume(0);
 		volumeSlider.setValue(0);
-		mute.setGraphic(new ImageView(img_mute));mute.setBackground(null);
+		mute.setGraphic(new ImageView(img_mute));
+		mute.setBackground(null);
 	}
 
 	public void onClearList() {
@@ -473,11 +476,10 @@ public class LibraryScreen extends AbstractScreen {
 		}
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
-		listFile.getSelectionModel().select(0);
+		listFile.setPlayingItem(0);
 		play(mediaView.getMediaPlayer());
 	}
 
-	// Xu li khi mo Open File
 	public void processOpenFile() {
 		resetAll();
 		configureFileChooser(fileChooser);
@@ -495,7 +497,7 @@ public class LibraryScreen extends AbstractScreen {
 		}
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
-		listFile.getSelectionModel().select(0);
+		listFile.setPlayingItem(0);
 		play(mediaView.getMediaPlayer());
 	}
 
@@ -520,7 +522,7 @@ public class LibraryScreen extends AbstractScreen {
 
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
-		listFile.getSelectionModel().select(0);
+		listFile.setPlayingItem(0);
 		play(mediaView.getMediaPlayer());
 	}
 
@@ -561,7 +563,7 @@ public class LibraryScreen extends AbstractScreen {
 		selectedFiles.clear();
 		selectedFiles.add(selected.getMediaFile());
 		listFile.setItemArray(selectedFiles);
-		listFile.getSelectionModel().select(0);
+		listFile.setPlayingItem(0);
 
 		players.clear();
 		players.add(mp1);
@@ -573,7 +575,7 @@ public class LibraryScreen extends AbstractScreen {
 	 * get the current playing audio
 	 * @return
 	 */
-	public MediaFile getCurrentAudio() {		
-		return currentAudio;
+	public MediaFile getCurrentMedia() {
+		return currentMedia;
 	}
 }

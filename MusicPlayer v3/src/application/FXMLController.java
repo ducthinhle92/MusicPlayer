@@ -9,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -77,17 +76,19 @@ public class FXMLController {
 		instance = this;
 		Image img_prev=new Image(getClass().getResourceAsStream("resource/image/img_prev.png"));
 		prev.setGraphic(new ImageView(img_prev));
-		prev.setBackground(null);prev.setPadding(new Insets(0,0,0,0));
+		prev.setBackground(null);
 		Image img_next=new Image(getClass().getResourceAsStream("resource/image/img_next.png"));
 		next.setGraphic(new ImageView(img_next));
-		next.setBackground(null);next.setPadding(new Insets(0,0,0,0));
+		next.setBackground(null);
 		Image img_pause=new Image(getClass().getResourceAsStream("resource/image/img_pause.png"));
 		play.setGraphic(new ImageView(img_pause));
-		play.setBackground(null);play.setPadding(new Insets(0,0,0,0));
+		play.setBackground(null);
 		Image img_sound=new Image(getClass().getResourceAsStream("resource/image/img_sound.png"));
-		mute.setGraphic(new ImageView(img_sound));mute.setBackground(null);
+		mute.setGraphic(new ImageView(img_sound));
+		mute.setBackground(null);
 		Image img_stop=new Image(getClass().getResourceAsStream("resource/image/img_stop.png"));
-		stop.setGraphic(new ImageView(img_stop));stop.setBackground(null);
+		stop.setGraphic(new ImageView(img_stop));
+		stop.setBackground(null);
 	}
 	
 	@FXML
@@ -206,7 +207,7 @@ public class FXMLController {
 		return libraryScreen;
 	}
 
-	public MediaFile getCurrentAudio() {		
-		return libraryScreen.getCurrentAudio();
+	public MediaFile getCurrentMedia() {		
+		return libraryScreen.getCurrentMedia();
 	}
 }

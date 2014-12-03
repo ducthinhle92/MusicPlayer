@@ -98,9 +98,9 @@
                                     </AnchorPane>
                                     <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <AnchorPane style="-fx-background-color: #000033; -fx-background-radius: 30; -fx-background-insets: 0;">
+                                          <AnchorPane maxHeight="60.0" maxWidth="400.0" style="-fx-background-color: #000033; -fx-background-radius: 30; -fx-background-insets: 0;">
                                              <children>
-                                              <Label fx:id="playTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="-1.0" layoutY="23.0" prefHeight="14.0" prefWidth="102.0" text="Time" textAlignment="RIGHT" textFill="WHITE" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="299.0" AnchorPane.topAnchor="23.0">
+                                              <Label fx:id="playTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="23.0" prefHeight="14.0" prefWidth="96.0" text="Time" textAlignment="RIGHT" textFill="WHITE" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="23.0">
                                                    <padding>
                                                       <Insets right="10.0" />
                                                    </padding>
@@ -108,12 +108,12 @@
                                                       <Font name="System Bold" size="11.0" />
                                                    </font>
                                                 </Label>
-                                                <Button fx:id="stop" layoutX="101.0" layoutY="18.0" mnemonicParsing="false" onAction="#btnStop" prefHeight="30.0" prefWidth="30.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="101.0" AnchorPane.rightAnchor="269.0" AnchorPane.topAnchor="14.0" />
-                                                <Button fx:id="prev" layoutX="131.0" layoutY="18.0" mnemonicParsing="false" onAction="#btnPrev" prefHeight="30.0" prefWidth="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="131.0" AnchorPane.rightAnchor="229.0" AnchorPane.topAnchor="14.0" />
-                                                <Button fx:id="play" layoutX="170.0" mnemonicParsing="false" onAction="#btnPlay" prefHeight="60.0" prefWidth="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="0.0" />
-                                                <Button fx:id="next" layoutX="230.0" layoutY="18.0" mnemonicParsing="false" onAction="#btnNext" prefHeight="30.0" prefWidth="40.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="14.0" />
-                                                <Button fx:id="mute" layoutX="269.0" layoutY="18.0" mnemonicParsing="false" onAction="#btnMute" prefHeight="30.0" prefWidth="30.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="269.0" AnchorPane.rightAnchor="101.0" AnchorPane.topAnchor="14.0" />
-                                                <Slider fx:id="volumeSlider" layoutX="299.0" layoutY="27.0" max="100" prefWidth="70.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="299.0" AnchorPane.rightAnchor="31.0" AnchorPane.topAnchor="27.0" />
+                                                <Button fx:id="stop" layoutX="95.0" layoutY="15.0" mnemonicParsing="false" onAction="#btnStop" prefHeight="30.0" prefWidth="30.0" />
+                                                <Button fx:id="prev" layoutX="130.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnPrev" prefHeight="34.0" prefWidth="40.0" />
+                                                <Button fx:id="play" layoutX="170.0" mnemonicParsing="false" onAction="#btnPlay" prefHeight="60.0" prefWidth="60.0" />
+                                                <Button fx:id="next" layoutX="230.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnNext" prefHeight="34.0" prefWidth="40.0" />
+                                                <Button fx:id="mute" layoutX="275.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnMute" prefHeight="30.0" prefWidth="30.0" />
+                                                <Slider fx:id="volumeSlider" layoutX="316.0" layoutY="25.0" max="100" maxWidth="70.0" prefHeight="12.0" prefWidth="70.0" AnchorPane.bottomAnchor="22.0" AnchorPane.topAnchor="25.0" />
                                              </children>
                                           </AnchorPane>
                                        </children></StackPane>
