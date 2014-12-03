@@ -83,6 +83,12 @@ public class MediaFile {
 	
 	@Override
 	public String toString() {	
+		if(title == null)
+			return "no title";
+		
+		if (title.get().trim().equals(""))
+			return "no title";
+		
 		return title.get();
 	}
 }

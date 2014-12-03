@@ -216,9 +216,9 @@ public class FXMLController {
 		return libraryScreen.getCurrentMedia();
 	}
 
-	public void onMediaChanged(MediaFile currentMedia) {
+	public void onMediaChanged() {
 		for(MediaListener ml : mediaListeners) {
-			ml.onMediaChanged(currentMedia);
+			ml.onMediaChanged();
 		}
 	}
 

@@ -355,7 +355,7 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	}
 
 	@Override
-	public void onMediaChanged(MediaFile currentMedia) {
+	public void onMediaChanged() {
 		if(lyricMode != MODE_EDIT && !updatingLyric) {	
 			loadedLyric = false;
 			validateLyric();
