@@ -290,7 +290,7 @@ public class LibraryScreen extends AbstractScreen {
 
 				int index = (players.indexOf(curPlayer) + 1) % players.size();
 				MediaPlayer nextPlayer = players.get(index);
-				listFile.setPlayingItem(index);
+				listFile.setPlayingIndex(index);
 				mediaView.setMediaPlayer(nextPlayer);
 				play(nextPlayer);
 			}
@@ -322,6 +322,7 @@ public class LibraryScreen extends AbstractScreen {
 
 		player.play();
 		currentMedia = listFile.getPlayingItem();
+		FXMLController.getInstance().onMediaChanged(currentMedia);
 		setMode(Mode.Playing);
 	}
 
@@ -411,7 +412,7 @@ public class LibraryScreen extends AbstractScreen {
 
 		int index = (players.indexOf(curPlayer) + 1) % players.size();
 		MediaPlayer nextPlayer = players.get(index);
-		listFile.setPlayingItem(index);
+		listFile.setPlayingIndex(index);
 		mediaView.setMediaPlayer(nextPlayer);
 		play(nextPlayer);
 	}
@@ -424,7 +425,7 @@ public class LibraryScreen extends AbstractScreen {
 
 			int index = (players.indexOf(curPlayer) - 1) % players.size();
 			MediaPlayer prevPlayer = players.get(index);
-			listFile.setPlayingItem(index);
+			listFile.setPlayingIndex(index);
 			mediaView.setMediaPlayer(prevPlayer);
 			play(prevPlayer);
 		}
@@ -433,8 +434,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickStop() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
-		currentMedia = null;
-		listFile.setPlayingItem(0);
+		listFile.setPlayingIndex(0);
 		setMode(Mode.Stoped);
 	}
 
@@ -476,7 +476,7 @@ public class LibraryScreen extends AbstractScreen {
 		}
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
-		listFile.setPlayingItem(0);
+		listFile.setPlayingIndex(0);
 		play(mediaView.getMediaPlayer());
 	}
 
@@ -497,7 +497,7 @@ public class LibraryScreen extends AbstractScreen {
 		}
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
-		listFile.setPlayingItem(0);
+		listFile.setPlayingIndex(0);
 		play(mediaView.getMediaPlayer());
 	}
 
@@ -522,9 +522,8 @@ public class LibraryScreen extends AbstractScreen {
 
 		mediaView = new MediaView(players.get(0));
 		listFile.setItemArray(selectedFiles);
-		listFile.getSelectionModel().select(0);
+		listFile.setPlayingIndex(0);
 		play(mediaView.getMediaPlayer());
-		//v3
 	}
 
 	public MediaPlayer createPlayer(String src) {
@@ -540,7 +539,6 @@ public class LibraryScreen extends AbstractScreen {
 	public void resetAll() {
 		if (mediaView != null && mediaView.getMediaPlayer() != null)
 			mediaView.getMediaPlayer().stop();
-		
 		players.clear();
 		selectedFiles.clear();
 	}
@@ -565,7 +563,7 @@ public class LibraryScreen extends AbstractScreen {
 		selectedFiles.clear();
 		selectedFiles.add(selected.getMediaFile());
 		listFile.setItemArray(selectedFiles);
-		listFile.setPlayingItem(0);
+		listFile.setPlayingIndex(0);
 
 		players.clear();
 		players.add(mp1);
@@ -578,6 +576,6 @@ public class LibraryScreen extends AbstractScreen {
 	 * @return
 	 */
 	public MediaFile getCurrentMedia() {
-		return currentMedia;
+		return listFile.getPlayingItem();
 	}
 }

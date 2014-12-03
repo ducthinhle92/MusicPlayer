@@ -2,6 +2,7 @@ package application;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.collections.FXCollections;
@@ -25,6 +26,7 @@ import model.PlayList;
 import application.controller.LibraryScreen;
 import application.controller.PlayScreen;
 import application.resource.R;
+import application.view.listener.MediaListener;
 
 public class FXMLController {
 
@@ -63,6 +65,7 @@ public class FXMLController {
 
 	final ObservableList<Integer> ratingSample = FXCollections
 			.observableArrayList(1, 2, 3, 4, 5);
+	private ArrayList<MediaListener> mediaListeners;
 
 	/**
 	 * Initializes the controller class. This method is automatically called
@@ -74,6 +77,8 @@ public class FXMLController {
 	@FXML
 	private void initialize() throws ClassNotFoundException, SQLException {
 		instance = this;
+		mediaListeners = new ArrayList<MediaListener>();
+		
 		Image img_prev=new Image(getClass().getResourceAsStream("resource/image/img_prev.png"));
 		prev.setGraphic(new ImageView(img_prev));
 		prev.setBackground(null);
@@ -209,5 +214,15 @@ public class FXMLController {
 
 	public MediaFile getCurrentMedia() {		
 		return libraryScreen.getCurrentMedia();
+	}
+
+	public void onMediaChanged(MediaFile currentMedia) {
+		for(MediaListener ml : mediaListeners) {
+			ml.onMediaChanged(currentMedia);
+		}
+	}
+
+	public void addMediaListener(MediaListener listener) {
+		mediaListeners.add(listener);
 	}
 }

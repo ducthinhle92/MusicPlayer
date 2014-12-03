@@ -16,18 +16,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class MediaTreeView {
 	private TreeView treeView;
 	private TreeViewListener listener;
 
-	public MediaTreeView()
-			throws ClassNotFoundException, SQLException {
+	public MediaTreeView() throws ClassNotFoundException, SQLException {
 
 		treeView = new TreeView<>();
 		treeView.setShowRoot(false);
-		EventHandler<MouseEvent> mouseEventHandle = 
-				new EventHandler<MouseEvent>() {
+		EventHandler<MouseEvent> mouseEventHandle = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				TreeItem<String> item = (TreeItem<String>) treeView
@@ -46,10 +44,10 @@ public class MediaTreeView {
 				return cell;
 			}
 		});
-		
+
 		treeView.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEventHandle);
 	}
-	
+
 	public void setTreeViewListener(TreeViewListener listener) {
 		this.listener = listener;
 	}
@@ -59,8 +57,7 @@ public class MediaTreeView {
 		if (listener != null) {
 			Node node = event.getPickResult().getIntersectedNode();
 			if (node instanceof Text
-					|| (node instanceof TreeCell 
-							&& ((TreeCell) node).getText() != null)) {
+					|| (node instanceof TreeCell && ((TreeCell) node).getText() != null)) {
 				if (event.getClickCount() == 1)
 					listener.onItemSingleClicked(event, item);
 				else if (event.getClickCount() == 2) {
@@ -129,7 +126,7 @@ public class MediaTreeView {
 				@Override
 				public void handle(ActionEvent ev) {
 					int index = treeView.getSelectionModel().getSelectedIndex();
-					if(listener != null)
+					if (listener != null)
 						listener.onPlayItem(getValue().toString(), index);
 				}
 			});
@@ -139,10 +136,11 @@ public class MediaTreeView {
 
 				@Override
 				public void handle(ActionEvent ev) {
-					if(listener != null)
+					if (listener != null)
 						listener.onRemoveItem(getValue().toString());
-					TreeItem c = (TreeItem)treeView.getSelectionModel().getSelectedItem();
-		            boolean remove = c.getParent().getChildren().remove(c);
+					TreeItem c = (TreeItem) treeView.getSelectionModel()
+							.getSelectedItem();
+					boolean remove = c.getParent().getChildren().remove(c);
 				}
 			});
 

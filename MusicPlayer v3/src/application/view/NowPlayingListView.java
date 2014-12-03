@@ -12,7 +12,7 @@ import javafx.scene.input.MouseEvent;
 import model.MediaFile;
 import application.view.listener.ListViewListener;
 
-public class NowPlayingListView extends ListView<MediaFile>{
+public class NowPlayingListView extends ListView<MediaFile> {
 	private EventHandler<MouseEvent> eventHandler;
 	private ListViewListener listener;
 	private ObservableList<MediaFile> items;
@@ -22,16 +22,16 @@ public class NowPlayingListView extends ListView<MediaFile>{
 
 		items = FXCollections.observableArrayList();
 		setItems(items);
-		
+
 		eventHandler = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				Node node = event.getPickResult().getIntersectedNode();
-				if(node instanceof ListCell<?> 
-				|| node instanceof NowPlayingListView) {
+				if (node instanceof ListCell<?>
+						|| node instanceof NowPlayingListView) {
 					return;
 				}
-				
+
 				processMouseEvent(event);
 			}
 		};
@@ -39,14 +39,14 @@ public class NowPlayingListView extends ListView<MediaFile>{
 	}
 
 	protected void processMouseEvent(MouseEvent event) {
-		if(listener != null) {
+		if (listener != null) {
 			listener.onItemClicked(event);
 		}
 	}
 
 	public void setItemArray(ArrayList<MediaFile> listFile) {
 		items.clear();
-		for(MediaFile mf : listFile)
+		for (MediaFile mf : listFile)
 			items.add(mf);
 	}
 
@@ -57,16 +57,16 @@ public class NowPlayingListView extends ListView<MediaFile>{
 	public void setTreeViewListener(ListViewListener listener) {
 		this.listener = listener;
 	}
-	
-	public void setPlayingItem(int index) {
+
+	public void setPlayingIndex(int index) {
 		getSelectionModel().select(index);
 	}
-	
+
 	public ObservableList<MediaFile> getItem() {
 		return items;
 	}
 
 	public MediaFile getPlayingItem() {
-		return null;
+		return getSelectionModel().getSelectedItem();
 	}
 }

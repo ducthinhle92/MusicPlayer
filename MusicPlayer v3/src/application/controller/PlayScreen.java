@@ -19,9 +19,10 @@ import model.MediaFile;
 import application.FXMLController;
 import application.resource.R;
 import application.utility.LyricGatherService;
+import application.view.listener.MediaListener;
 
 @SuppressWarnings({ "unchecked" })
-public class PlayScreen extends AbstractScreen {
+public class PlayScreen extends AbstractScreen implements MediaListener {
 
 	public static final ObservableList<String> lyric = FXCollections
 			.observableArrayList();
@@ -54,7 +55,7 @@ public class PlayScreen extends AbstractScreen {
 	}
 
 	@Override
-	protected void initialize() {
+	protected void initialize() {		
 		AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
 		String background_play = R.getImage("background_play.jpg");
 		viewPlay.setStyle("-fx-background-image: url('" + background_play
@@ -79,8 +80,9 @@ public class PlayScreen extends AbstractScreen {
 		lyricWrapper.getChildren().clear();
 		playPaneSpliter.setDividerPositions(0, 1);
 		lyricComponent.setVisible(false);
-		dividerPos = playPaneSpliter.getDividerPositions()[0];
-
+		dividerPos = playPaneSpliter.getDividerPositions()[0];		
+		
+		FXMLController.getInstance().addMediaListener(this);
 		addEventHandler();
 	}
 
@@ -91,7 +93,8 @@ public class PlayScreen extends AbstractScreen {
 
 	private void validateLyric() {
 		MediaFile audio = FXMLController.getInstance().getCurrentMedia();		
-		if (audio != null && lyricComponent.isVisible()) {
+		if (!loadedLyric &&	audio != null && lyricComponent.isVisible()) {
+			System.out.println("validating lyric");
 			loadedLyric = true;
 			txtTitle.setText(audio.getTitle());
 			txtArtist.setText(audio.getArtist());
@@ -117,9 +120,8 @@ public class PlayScreen extends AbstractScreen {
 			lyricComponent.setVisible(true);
 			playPaneSpliter.setDividerPosition(0, dividerPos);
 			lyricWrapper.getChildren().add(lyricComponent);
-
-			if (!loadedLyric)
-				validateLyric();
+			
+			validateLyric();
 		}
 	}
 
@@ -279,9 +281,7 @@ public class PlayScreen extends AbstractScreen {
 
 		@Override
 		public void handle(WorkerStateEvent arg0) {
-			System.out.println("Retrieve lyric successfully");
-			if (liveUpdater.getValue() == true)
-				finishGetLiveLyric();
+			finishGetLiveLyric();
 		}
 	};
 	private EventHandler<WorkerStateEvent> onFailedHandler = new EventHandler<WorkerStateEvent>() {
@@ -301,6 +301,7 @@ public class PlayScreen extends AbstractScreen {
 		btnUpdateLyric.setText(R.strings.update_lyric);
 		btnEditLyric.setDisable(false);
 		updatingLyric = false;
+		saveMediaFile(currentMedia);
 		
 		// update lyric content to synchronize with current media
 		synchronizeMedia();
@@ -311,7 +312,20 @@ public class PlayScreen extends AbstractScreen {
 	 * the current playing media.
 	 */
 	private void synchronizeMedia() {
-		
+		MediaFile nowPlay = FXMLController.getInstance().getCurrentMedia();
+		if(!nowPlay.getPath().equals(currentMedia.getPath())) {
+			currentMedia = nowPlay;
+			txtTitle.setText(nowPlay.getTitle());
+			txtArtist.setText(nowPlay.getArtist());
+			setLyricMode(MODE_UPDATE);
+			
+			String strLyric = nowPlay.getLyric();
+			if (strLyric != null && strLyric.length() > 0) {
+				loadLyric(strLyric);
+			} else {
+				lyric.clear();
+			}
+		}
 	}
 
 	protected void setLyricMode(int mode) {
@@ -330,17 +344,21 @@ public class PlayScreen extends AbstractScreen {
 			btnEditLyric.setDisable(false);
 		}
 	}
-	
-	public void onMediaChanged() {
-		if(lyricComponent.isVisible()) {
-			validateLyric();
-		}
-		else {
-			loadedLyric = false;
-		}
-	}
 
+	/**
+	 * Save the lyric to according media, base on the media was being played
+	 * at the time begin edit/update state is started
+	 * @param file
+	 */
 	protected void saveMediaFile(MediaFile file) {
 		
+	}
+
+	@Override
+	public void onMediaChanged(MediaFile currentMedia) {
+		if(lyricMode != MODE_EDIT && !updatingLyric) {	
+			loadedLyric = false;
+			validateLyric();
+		}
 	}
 }
