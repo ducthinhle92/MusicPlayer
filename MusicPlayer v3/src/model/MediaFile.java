@@ -8,7 +8,10 @@ import javafx.beans.property.SimpleStringProperty;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.KeyNotFoundException;
 
 public class MediaFile {
 
@@ -79,6 +82,36 @@ public class MediaFile {
 
 	public String getLyric() {
 		return audioFile.getTag().getFirst(FieldKey.LYRICS);
+	}
+
+	public void setTitle(String text) {
+		try {
+			title.set(text);
+			audioFile.getTag().setField(FieldKey.TITLE, text);
+		} catch (KeyNotFoundException | FieldDataInvalidException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setArtist(String text) {		
+		try {
+			artist.set(text);
+			audioFile.getTag().setField(FieldKey.TITLE, text);
+		} catch (KeyNotFoundException | FieldDataInvalidException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void setLyric(String lyric) {
+		try {
+			audioFile.getTag().setField(FieldKey.LYRICS, lyric);
+		} catch (KeyNotFoundException | FieldDataInvalidException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveFile() throws CannotWriteException {
+		audioFile.commit();
 	}
 	
 	@Override

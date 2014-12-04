@@ -325,6 +325,7 @@ public class LibraryScreen extends AbstractScreen {
 			public void run() {
 				MediaPlayer curPlayer = mediaView.getMediaPlayer();
 				curPlayer.stop();
+				curPlayer.dispose();
 
 				int index = nowPlayingView.getNextIndex();
 				nowPlayingView.setPlayingIndex(index);
@@ -433,17 +434,18 @@ public class LibraryScreen extends AbstractScreen {
 				mediaView.getMediaPlayer().pause();
 				setMode(Mode.Paused);
 			} else {
-				play(mediaView.getMediaPlayer());
+				mediaView.getMediaPlayer().play();
 				setMode(Mode.Playing);
-				FXMLController.getInstance().onMediaChanged();
 			}
 		}
 	}
 
 	public void onClickNext() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
-		if(curPlayer != null)
+		if(curPlayer != null) {
 			curPlayer.stop();
+			curPlayer.dispose();
+		}
 
 		int curIndex = nowPlayingView.getPlayingIndex();
 		if (curIndex >= 0) {
@@ -461,8 +463,10 @@ public class LibraryScreen extends AbstractScreen {
 
 	public void onClickPrev() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
-		if(curPlayer != null)
+		if(curPlayer != null) {
 			curPlayer.stop();
+			curPlayer.dispose();
+		}
 		int curIndex = nowPlayingView.getPlayingIndex();
 		if (curIndex >= 0) {
 			curPlayer.stop();

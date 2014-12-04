@@ -1,5 +1,9 @@
 package application.controller;
 
+import java.util.ArrayList;
+
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -57,13 +61,34 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	private Label lbInfo, playTime;
 	private VBox mainBackground;
 	private Pane controlPane;
+	private MediaFile pendingSaveFile = null;
+
+	private EventHandler<WorkerStateEvent> onSuccessHandler = new EventHandler<WorkerStateEvent>() {
+
+		@Override
+		public void handle(WorkerStateEvent arg0) {
+			finishGetLiveLyric();
+		}
+	};
+	private EventHandler<WorkerStateEvent> onFailedHandler = new EventHandler<WorkerStateEvent>() {
+		@Override
+		public void handle(WorkerStateEvent arg0) {
+			// recover the last lyric
+			if (backupLyric != null) {
+				lyric.clear();
+				for (String s : backupLyric)
+					lyric.add(s);
+			}
+			finishGetLiveLyric();
+		}
+	};
 
 	public PlayScreen(Stage primaryStage) {
 		super(primaryStage);
 	}
 
 	@Override
-	protected void initialize() {
+	protected void initialize() {		
 		// retrieve references from FXML controller
 		controlPane = FXMLController.getInstance().controlPane;
 		lbInfo = FXMLController.getInstance().lbInfo;
@@ -98,7 +123,6 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 		lyricWrapper = (StackPane) findNodeById("lyricWrapper");
 		lyricComponent = (SplitPane) findNodeById("lyricComp");
 		lyricBox = (StackPane) findNodeById("lyricBox");
-
 		listViewLyric = (ListView<String>) findNodeById("lvLyric");
 		txtTitle = (TextField) findNodeById("txtTitle");
 		txtArtist = (TextField) findNodeById("txtArtist");
@@ -308,31 +332,22 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	}
 	
 	private void loadLyric(String strLyric) {
-		listViewLyric.getItems().clear();
 		String[] lines = strLyric.split("\n");
-		for (String line : lines)
-			lyric.add(line);
-	}
-
-	private EventHandler<WorkerStateEvent> onSuccessHandler = new EventHandler<WorkerStateEvent>() {
-
-		@Override
-		public void handle(WorkerStateEvent arg0) {
-			finishGetLiveLyric();
-		}
-	};
-	private EventHandler<WorkerStateEvent> onFailedHandler = new EventHandler<WorkerStateEvent>() {
-		@Override
-		public void handle(WorkerStateEvent arg0) {
-			// recover the last lyric
-			if (backupLyric != null) {
-				lyric.clear();
-				for (String s : backupLyric)
-					lyric.add(s);
+		if (lyricMode == MODE_UPDATE) {
+			listViewLyric.getItems().clear();			
+			for (String line : lines) {
+				lyric.add(line);
 			}
-			finishGetLiveLyric();
 		}
-	};
+		else {
+			StringBuilder builder = new StringBuilder();
+			builder.append(lines[0]);
+			for(int i=0; i<lines.length; i++)
+				builder.append("\n" + lines[i]);
+			txtAreaLyric.clear();
+			txtAreaLyric.setText(builder.toString());
+		}
+	}
 
 	private void finishGetLiveLyric() {
 		btnUpdateLyric.setText(R.strings.update_lyric);
@@ -385,10 +400,29 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	/**
 	 * Save the lyric to according media, base on the media was being played
 	 * at the time begin edit/update state is started
-	 * @param file
+	 * @param media
 	 */
-	protected void saveMediaFile(MediaFile file) {
+	protected void saveMediaFile(MediaFile media) {
+		media.setTitle(txtTitle.getText());
+		media.setArtist(txtArtist.getText());	
 		
+		// save lyric
+		if(lyricMode == MODE_EDIT) {
+			media.setLyric(txtAreaLyric.toString());
+		}
+		else {
+			if(lyric.size() == 0)
+				return; // nothing to save
+			
+			StringBuilder strLyric = new StringBuilder();			
+			strLyric.append(lyric.get(0));
+			for(int i=1; i<lyric.size(); i++) {
+				strLyric.append("\n" + lyric.get(i));
+			}
+			media.setLyric(strLyric.toString());
+		}		
+		
+		pendingSaveFile = media;	
 	}
 
 	@Override
@@ -397,5 +431,13 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 			loadedLyric = false;
 			validateLyric();
 		}
+		
+		try {
+			if(pendingSaveFile != null)
+				pendingSaveFile.saveFile();
+		} catch (CannotWriteException e) {
+			e.printStackTrace();
+		}
+		pendingSaveFile = null;
 	}
 }
