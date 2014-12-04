@@ -16,9 +16,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.MediaFile;
 import model.MediaInfo;
@@ -59,9 +59,13 @@ public class FXMLController {
 	@FXML
 	public Slider volumeSlider, timeSlider;
 	@FXML
-	public Label playTime;
+	public Label playTime, lbInfo;
 	@FXML
 	public StackPane nowPlayingPane;
+	@FXML
+	public VBox mainBackground;
+	@FXML
+	public Pane controlPane;
 
 	final ObservableList<Integer> ratingSample = FXCollections
 			.observableArrayList(1, 2, 3, 4, 5);
@@ -78,22 +82,6 @@ public class FXMLController {
 	private void initialize() throws ClassNotFoundException, SQLException {
 		instance = this;
 		mediaListeners = new ArrayList<MediaListener>();
-		
-		Image img_prev=new Image(getClass().getResourceAsStream("resource/image/img_prev.png"));
-		prev.setGraphic(new ImageView(img_prev));
-		prev.setBackground(null);
-		Image img_next=new Image(getClass().getResourceAsStream("resource/image/img_next.png"));
-		next.setGraphic(new ImageView(img_next));
-		next.setBackground(null);
-		Image img_pause=new Image(getClass().getResourceAsStream("resource/image/img_pause.png"));
-		play.setGraphic(new ImageView(img_pause));
-		play.setBackground(null);
-		Image img_sound=new Image(getClass().getResourceAsStream("resource/image/img_sound.png"));
-		mute.setGraphic(new ImageView(img_sound));
-		mute.setBackground(null);
-		Image img_stop=new Image(getClass().getResourceAsStream("resource/image/img_stop.png"));
-		stop.setGraphic(new ImageView(img_stop));
-		stop.setBackground(null);
 	}
 	
 	@FXML
@@ -199,7 +187,7 @@ public class FXMLController {
 			libraryScreen.start();
 		}
 	}
-	
+
 	public int getCurrentScreen() {
 		return currentScreen;
 	}

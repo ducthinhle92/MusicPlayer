@@ -21,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.AudioSpectrumListener;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -50,12 +51,15 @@ public class LibraryScreen extends AbstractScreen {
 	};
 
 	private DatabaseController dbController;
+	
+	// FXML component
 	private MediaTreeView menuTreeView;
 	private TextField txtPlaylistName;
 	private Slider timeSlider;
 	private Slider volumeSlider;
-	private Button play, mute;
-	private Label playTime;
+	private Button play, mute, stop, next, prev;
+	private Label playTime, lbInfo;
+	private VBox mainBackground;
 
 	Image img_mute = new Image(R.getImage("img_mute.png"));
 	Image img_sound = new Image(R.getImage("img_sound.png"));
@@ -71,7 +75,7 @@ public class LibraryScreen extends AbstractScreen {
 
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
-	private Button stop;
+	private Pane controlPane;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -81,13 +85,38 @@ public class LibraryScreen extends AbstractScreen {
 	protected void initialize() {
 		super.initialize();
 
+		controlPane = FXMLController.getInstance().controlPane;
+		lbInfo = FXMLController.getInstance().lbInfo;
+		playTime = FXMLController.getInstance().playTime;		
+		mainBackground = FXMLController.getInstance().mainBackground;
 		txtPlaylistName = FXMLController.getInstance().txtPlaylistName;
 		timeSlider = FXMLController.getInstance().timeSlider;
 		volumeSlider = FXMLController.getInstance().volumeSlider;
-		playTime = FXMLController.getInstance().playTime;		
 		play = FXMLController.getInstance().play;
+		prev = FXMLController.getInstance().prev;
+		next = FXMLController.getInstance().next;
 		stop = FXMLController.getInstance().stop;
 		mute = FXMLController.getInstance().mute;
+		
+		Image img_prev=new Image(R.getImage("img_prev.png"));
+		prev.setGraphic(new ImageView(img_prev));
+		prev.setBackground(null);
+		
+		Image img_next=new Image(R.getImage("img_next.png"));
+		next.setGraphic(new ImageView(img_next));
+		next.setBackground(null);
+		
+		Image img_pause=new Image(R.getImage("img_pause.png"));
+		play.setGraphic(new ImageView(img_pause));
+		play.setBackground(null);
+		
+		Image img_sound=new Image(R.getImage("img_sound.png"));
+		mute.setGraphic(new ImageView(img_sound));
+		mute.setBackground(null);
+		
+		Image img_stop=new Image(R.getImage("img_stop.png"));
+		stop.setGraphic(new ImageView(img_stop));
+		stop.setBackground(null);
 		
 		// initialize value and set default button state
 		mediaView = new MediaView();
@@ -124,6 +153,15 @@ public class LibraryScreen extends AbstractScreen {
 		}
 
 		addEventHandler();
+	}
+	
+	@Override
+	public void show() {
+		super.show();
+		controlPane.setStyle(R.styles.control_pane_lib);
+		mainBackground.setStyle(R.styles.background_lib);
+		lbInfo.setStyle(R.styles.label_info_lib);
+		playTime.setStyle(R.styles.label_time_lib);
 	}
 
 	private void addEventHandler() {
@@ -404,7 +442,8 @@ public class LibraryScreen extends AbstractScreen {
 
 	public void onClickNext() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
-		curPlayer.stop();
+		if(curPlayer != null)
+			curPlayer.stop();
 
 		int curIndex = nowPlayingView.getPlayingIndex();
 		if (curIndex >= 0) {
@@ -422,6 +461,8 @@ public class LibraryScreen extends AbstractScreen {
 
 	public void onClickPrev() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
+		if(curPlayer != null)
+			curPlayer.stop();
 		int curIndex = nowPlayingView.getPlayingIndex();
 		if (curIndex >= 0) {
 			curPlayer.stop();

@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<StackPane fx:id="playPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="playPane" minHeight="100.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <SplitPane fx:id="splitPlayPane" dividerPositions="0.3">
+      <SplitPane fx:id="splitPlayPane" dividerPositions="0.3" style="-fx-background-color: transparent;">
         <items>
             <StackPane fx:id="lyricWrapper" maxWidth="300.0" SplitPane.resizableWithParent="false">
                <children>
@@ -34,11 +34,11 @@
                   </SplitPane>
                </children>
             </StackPane>
-            <AnchorPane fx:id="viewPlay" style="-fx-background-color: #0000dd;;">
+            <AnchorPane fx:id="viewPlay" style="-fx-background-color: transparent;">
                <children>
-                  <ImageView fx:id="albumArt" fitHeight="398.0" fitWidth="416.0" layoutX="29.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="albumArt" fitHeight="398.0" fitWidth="416.0" layoutX="9.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../image/background_play.jpg" />
+                        <Image url="@../image/album_art.png" />
                      </image>
                   </ImageView>
                   <Button fx:id="btnShowLyric" alignment="CENTER" contentDisplay="CENTER" layoutX="-5.0" layoutY="188.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Lyric" AnchorPane.leftAnchor="-5.0" />

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -7,9 +8,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<StackPane prefHeight="500.0" prefWidth="768.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXMLController">
+<StackPane prefHeight="500.0" prefWidth="768.0" stylesheets="@../css/application.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXMLController">
    <children>
-      <VBox prefHeight="500.0" prefWidth="768.0">
+      <VBox fx:id="mainBackground" prefHeight="500.0" prefWidth="768.0" style="-fx-background-color: #e3edf8;">
          <children>
             <StackPane fx:id="bodyPane" maxHeight="1000.0" prefHeight="1000.0">
                <children>
@@ -41,8 +42,8 @@
                            <children>
                               <SplitPane dividerPositions="0.17801047120418848, 0.7342931937172775" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                  <items>
-                                    <StackPane fx:id="treeViewPane" maxWidth="300.0" minWidth="100.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
-                                    <StackPane fx:id="tablePane" minWidth="300.0" />
+                                    <StackPane fx:id="treeViewPane" maxWidth="300.0" minWidth="100.0" prefWidth="200.0" style="-fx-background-color: #ffffdf;" SplitPane.resizableWithParent="false" />
+                                    <StackPane fx:id="tablePane" minWidth="300.0" style="-fx-background-color: #dfffff;" />
                                     <StackPane maxWidth="400.0" minWidth="200.0">
                                        <children>
                                           <SplitPane dividerPositions="0.3008849557522124" orientation="VERTICAL" prefHeight="341.0" prefWidth="196.0">
@@ -76,43 +77,37 @@
                   </SplitPane>
                </children>
             </StackPane>
-            <StackPane maxHeight="80.0" maxWidth="2000.0" minHeight="80.0" minWidth="500.0">
+            <StackPane maxHeight="80.0" maxWidth="2000.0" minHeight="80.0" minWidth="500.0" style="-fx-background-color: transparent;">
                <children>
-                  <VBox maxWidth="2000.0" minWidth="500.0" prefHeight="77.0" prefWidth="2000.0" VBox.vgrow="ALWAYS">
+                  <VBox maxWidth="2000.0" minWidth="500.0" prefHeight="77.0" prefWidth="2000.0" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
                      <children>
-                        <StackPane maxWidth="2000.0" minWidth="500.0" prefWidth="2000.0">
+                        <StackPane maxWidth="2000.0" minWidth="500.0" prefWidth="2000.0" style="-fx-background-color: transparent;">
                            <children>
-                              <Slider fx:id="timeSlider" max="100" />
+                              <Slider fx:id="timeSlider" max="100" style="-fx-background-color: transparent;" />
                            </children>
                         </StackPane>
-                        <StackPane focusTraversable="true" maxWidth="2000.0" minWidth="500.0">
+                        <StackPane focusTraversable="true" maxWidth="2000.0" minWidth="500.0" style="-fx-background-color: transparent;">
                            <children>
-                              <SplitPane dividerPositions="0.21018276762402088, 0.7402088772845953" focusTraversable="false">
+                              <SplitPane dividerPositions="0.21018276762402088, 0.7402088772845953" focusTraversable="false" style="-fx-background-color: transparent;">
                                 <items>
                                   <AnchorPane minWidth="100.0">
                                        <children>
                                           <HBox />
-                                        <Label layoutX="4.0" layoutY="24.0" text="Thông tin bài hát" AnchorPane.leftAnchor="4.0" />
+                                        <Label fx:id="lbInfo" layoutX="4.0" layoutY="24.0" style="-fx-text-fill: #2c2828;" text="Thông tin bài hát" AnchorPane.leftAnchor="4.0" />
                                          
                                        </children>
                                     </AnchorPane>
-                                    <StackPane maxWidth="400.0" minWidth="400.0" SplitPane.resizableWithParent="false">
+                                    <StackPane maxHeight="60.0" maxWidth="400.0" minHeight="60.0" minWidth="400.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <AnchorPane maxHeight="60.0" maxWidth="400.0" style="-fx-background-color: #000033; -fx-background-radius: 30; -fx-background-insets: 0;">
+                                          <AnchorPane maxHeight="60.0" maxWidth="400.0" style="-fx-background-color: transparent;">
                                              <children>
-                                              <Label fx:id="playTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="23.0" prefHeight="14.0" prefWidth="96.0" text="Time" textAlignment="RIGHT" textFill="WHITE" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="23.0">
-                                                   <padding>
-                                                      <Insets right="10.0" />
-                                                   </padding>
-                                                   <font>
-                                                      <Font name="System Bold" size="11.0" />
-                                                   </font>
-                                                </Label>
-                                                <Button fx:id="stop" layoutX="95.0" layoutY="15.0" mnemonicParsing="false" onAction="#btnStop" prefHeight="30.0" prefWidth="30.0" />
-                                                <Button fx:id="prev" layoutX="130.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnPrev" prefHeight="34.0" prefWidth="40.0" />
-                                                <Button fx:id="play" layoutX="170.0" mnemonicParsing="false" onAction="#btnPlay" prefHeight="60.0" prefWidth="60.0" />
-                                                <Button fx:id="next" layoutX="230.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnNext" prefHeight="34.0" prefWidth="40.0" />
-                                                <Button fx:id="mute" layoutX="275.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnMute" prefHeight="30.0" prefWidth="30.0" />
+                                                <Pane fx:id="controlPane" prefHeight="60.0" prefWidth="400.0" style="-fx-border-color: #000000; -fx-border-radius: 20; -fx-border-width: 1; -fx-border-insets: 0; -fx-background-color: e3edf8; -fx-background-radius: 20; -fx-opacity: 0.5;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="14.0" />
+                                              <Label fx:id="playTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="23.0" prefHeight="14.0" prefWidth="96.0" style="-fx-text-fill: #2c2828;" text="Time" textAlignment="RIGHT" textFill="#2c2828" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="23.0" />
+                                                <Button fx:id="stop" graphicTextGap="0.0" layoutX="95.0" layoutY="15.0" mnemonicParsing="false" onAction="#btnStop" prefHeight="30.0" prefWidth="30.0" />
+                                                <Button fx:id="prev" graphicTextGap="0.0" layoutX="130.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnPrev" prefHeight="34.0" prefWidth="40.0" />
+                                                <Button fx:id="play" graphicTextGap="0.0" layoutX="170.0" mnemonicParsing="false" onAction="#btnPlay" prefHeight="60.0" prefWidth="60.0" />
+                                                <Button fx:id="next" graphicTextGap="0.0" layoutX="230.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnNext" prefHeight="34.0" prefWidth="40.0" />
+                                                <Button fx:id="mute" graphicTextGap="0.0" layoutX="275.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnMute" prefHeight="30.0" prefWidth="30.0" />
                                                 <Slider fx:id="volumeSlider" layoutX="316.0" layoutY="25.0" max="100" maxWidth="70.0" prefHeight="12.0" prefWidth="70.0" AnchorPane.bottomAnchor="22.0" AnchorPane.topAnchor="25.0" />
                                              </children>
                                           </AnchorPane>

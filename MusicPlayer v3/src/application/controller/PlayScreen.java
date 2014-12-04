@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
@@ -15,7 +16,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.MediaFile;
 import application.FXMLController;
@@ -51,13 +54,22 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	private MediaFile currentMedia = null;
 	private LyricGatherService liveUpdater;
 	private ObservableList<String> backupLyric;
+	private Label lbInfo, playTime;
+	private VBox mainBackground;
+	private Pane controlPane;
 
 	public PlayScreen(Stage primaryStage) {
 		super(primaryStage);
 	}
 
 	@Override
-	protected void initialize() {		
+	protected void initialize() {
+		// retrieve references from FXML controller
+		controlPane = FXMLController.getInstance().controlPane;
+		lbInfo = FXMLController.getInstance().lbInfo;
+		playTime = FXMLController.getInstance().playTime;
+		mainBackground = FXMLController.getInstance().mainBackground;		
+		
 		// setup the album art image
 		AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
 		ImageView albumArt = (ImageView) findNodeById("albumArt");
@@ -110,6 +122,10 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	@Override
 	public void show() {
 		validateLyric();
+		controlPane.setStyle(R.styles.control_pane_play);
+		mainBackground.setStyle(R.styles.background_play);
+		lbInfo.setStyle(R.styles.label_info_play);
+		playTime.setStyle(R.styles.label_time_play);
 	}
 
 	private void validateLyric() {
