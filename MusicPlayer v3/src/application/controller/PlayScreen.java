@@ -11,6 +11,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -56,10 +58,29 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 
 	@Override
 	protected void initialize() {		
+		// setup the album art image
 		AnchorPane viewPlay = (AnchorPane) findNodeById("viewPlay");
-		String background_play = R.getImage("background_play.jpg");
-		viewPlay.setStyle("-fx-background-image: url('" + background_play
-				+ "')");
+		ImageView albumArt = (ImageView) findNodeById("albumArt");
+		Image imgAlbum = new Image(R.getImage("album_art.png"));
+		albumArt.setImage(imgAlbum);
+		albumArt.setFitWidth(imgAlbum.getWidth());
+		albumArt.setFitHeight(imgAlbum.getHeight());
+		viewPlay.widthProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				albumArt.setLayoutX((newValue.doubleValue()	- 
+						albumArt.getFitWidth())/2);
+			}
+		});		
+		viewPlay.heightProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				albumArt.setLayoutY((newValue.doubleValue() 
+						- albumArt.getFitHeight())/2);
+			}
+		});
 
 		playPaneSpliter = (SplitPane) findNodeById("splitPlayPane");
 		lyricWrapper = (StackPane) findNodeById("lyricWrapper");

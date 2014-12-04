@@ -34,8 +34,13 @@
                   </SplitPane>
                </children>
             </StackPane>
-            <AnchorPane fx:id="viewPlay" style="-fx-background-color: #ffddff;">
+            <AnchorPane fx:id="viewPlay" style="-fx-background-color: #0000dd;;">
                <children>
+                  <ImageView fx:id="albumArt" fitHeight="398.0" fitWidth="416.0" layoutX="29.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../image/background_play.jpg" />
+                     </image>
+                  </ImageView>
                   <Button fx:id="btnShowLyric" alignment="CENTER" contentDisplay="CENTER" layoutX="-5.0" layoutY="188.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Lyric" AnchorPane.leftAnchor="-5.0" />
                </children>
             </AnchorPane>

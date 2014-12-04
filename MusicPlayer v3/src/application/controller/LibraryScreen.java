@@ -64,16 +64,10 @@ public class LibraryScreen extends AbstractScreen {
 
 	private MediaView mediaView = null;
 	private Duration duration;
-
-//	private ArrayList<MediaPlayer> players = new ArrayList<MediaPlayer>();
 	private ObservableList<MediaFile> playingFiles 
 									= FXCollections.observableArrayList();
-
 	private NowPlayingListView nowPlayingView;
-//	public List<File> list = new ArrayList<File>();
-
 	private FileChooser fileChooser = new FileChooser();
-//	private DirectoryChooser folderChooser = new DirectoryChooser();
 
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
@@ -563,8 +557,6 @@ public class LibraryScreen extends AbstractScreen {
 	 * @return
 	 */
 	public MediaFile getCurrentMedia() {
-		System.out.println("current media: " 
-				+ nowPlayingView.getPlayingItem().getTitle());
 		return nowPlayingView.getPlayingItem();
 	}
 }
