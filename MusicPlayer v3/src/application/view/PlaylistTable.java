@@ -142,4 +142,15 @@ public class PlaylistTable {
 		this.listener = tableListener;
 		
 	}
+
+	public void setAllMusic() {
+		// TODO Auto-generated method stub
+		
+		try{
+			setTableData(getTableData(dbController.getAllMusic()));
+		} catch(SQLException e){
+			
+		}
+		
+	}
 }

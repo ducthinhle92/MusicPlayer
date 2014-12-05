@@ -2,6 +2,7 @@ package application.controller;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -60,6 +61,7 @@ public class LibraryScreen extends AbstractScreen {
 	private Button play, mute, stop, next, prev;
 	private Label playTime, lbInfo;
 	private VBox mainBackground;
+	private List<String> allMusicUrl;
 
 	Image img_mute = new Image(R.getImage("img_mute.png"));
 	Image img_sound = new Image(R.getImage("img_sound.png"));
@@ -129,6 +131,8 @@ public class LibraryScreen extends AbstractScreen {
 
 		try {
 			dbController = DatabaseController.getInstance();
+			allMusicUrl = dbController.getAllMusicUrl();
+			System.out.println(allMusicUrl.size());
 
 			// initialize library table
 			playTable = new PlaylistTable();
@@ -199,6 +203,9 @@ public class LibraryScreen extends AbstractScreen {
 				String itemValue = item.getValue();
 				if (item.getParent().getValue().equals("Playlist")) {
 					playTable.setPlayList(itemValue);
+				} else if(itemValue.equals("All Music")){
+					playTable.setAllMusic();
+					System.out.println("Set ok");
 				}
 			}
 
@@ -530,19 +537,76 @@ public class LibraryScreen extends AbstractScreen {
 //		play(mediaView.getMediaPlayer());
 	}
 
-	public void processOpenFile() {
+	public void processOpenFile() throws SQLException {
 		configureFileChooser(fileChooser);
 		List<File> listFile = fileChooser.showOpenMultipleDialog(stage);
+		File dir = null;
 
 		if (listFile != null) {
 			resetAll();
+			dir = listFile.get(0).getParentFile();
+			System.out.println(dir.getPath());
 			for (int i = 0; i < listFile.size(); i++) {
 				playingFiles.add(new MediaFile(listFile.get(i)));
 			}
+			addMusicToLibrary(dir);
 		}
+		
 		nowPlayingView.setPlayingIndex(0);
 		mediaView.setMediaPlayer(nowPlayingView.getMediaPlayer());
 		play(mediaView.getMediaPlayer());
+	}
+	
+	
+	// add music to library
+	public void addMusicToLibrary(File dir) throws SQLException{
+		ArrayList<File> listMp3 = getMp3FileOnSelectedFolder(dir);
+
+		for(int i = 0;i < listMp3.size();i ++){
+			if(!checkExits(listMp3.get(i))){
+				insertMp3FileToDatabase(listMp3.get(i));
+			}
+		}
+	}
+	
+	public void insertMp3FileToDatabase(File file) throws SQLException{
+		MediaFile mdFile = new MediaFile(file);
+		String title = mdFile.getTitle();
+		String length = mdFile.getLength();
+		String artist = mdFile.getArtist();
+		String album = mdFile.getAlbum();
+		String url = mdFile.getPath();
+		dbController.insertIntoAllmusic(title, artist, length, url, album);
+	}
+	
+	public ArrayList<File> getMp3FileOnSelectedFolder(File dir){
+		ArrayList<File> list = new ArrayList<>();
+		File[] files = dir.listFiles();
+
+	     for(File file : files){
+	    	 String path = file.getPath();
+	         if (path.substring(path.length() -4, path.length()).equals(".mp3")) {
+	             list.add(file);
+	         }
+	    }
+	     return list;
+	}
+	
+	public boolean checkExits(File file){
+		MediaFile mdFile = new MediaFile(file);
+		String mdPath = mdFile.getPath();
+		
+		if(mdPath != null){
+			for(int i = 0; i < allMusicUrl.size(); i ++){
+				if(mdPath.equals(allMusicUrl.get(i))){
+					return true;
+				}
+					
+			}
+		}
+		
+		 
+		return false;
 	}
 
 	public void processOpenPlayList(List<MediaInfo> playList) {
