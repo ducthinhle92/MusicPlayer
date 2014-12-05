@@ -85,21 +85,11 @@ public class MediaFile {
 	}
 
 	public void setTitle(String text) {
-		try {
-			title.set(text);
-			audioFile.getTag().setField(FieldKey.TITLE, text);
-		} catch (KeyNotFoundException | FieldDataInvalidException e) {
-			e.printStackTrace();
-		}
+		title.set(text);
 	}
 	
-	public void setArtist(String text) {		
-		try {
-			artist.set(text);
-			audioFile.getTag().setField(FieldKey.TITLE, text);
-		} catch (KeyNotFoundException | FieldDataInvalidException e) {
-			e.printStackTrace();
-		}
+	public void setArtist(String text) {
+		artist.set(text);
 	}
 	
 	public void setLyric(String lyric) {
@@ -111,7 +101,13 @@ public class MediaFile {
 	}
 	
 	public void saveFile() throws CannotWriteException {
-		audioFile.commit();
+		try {
+			audioFile.getTag().setField(FieldKey.TITLE, title.get());
+			audioFile.getTag().setField(FieldKey.ARTIST, artist.get());
+			audioFile.commit();
+		} catch (KeyNotFoundException | FieldDataInvalidException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

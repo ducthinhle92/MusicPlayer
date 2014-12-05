@@ -361,7 +361,8 @@ public class LibraryScreen extends AbstractScreen {
 
 		player.play();
 		FXMLController.getInstance().onMediaChanged();
-		setMode(Mode.Playing);
+		if(mode != Mode.Playing)
+			setMode(Mode.Playing);
 	}
 
 	private void setMode(Mode mode) {
@@ -486,6 +487,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickStop() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
+		nowPlayingView.onStop();
 		setMode(Mode.Stoped);
 	}
 

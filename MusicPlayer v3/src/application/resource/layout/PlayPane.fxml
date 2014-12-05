@@ -22,7 +22,7 @@
                               <Label layoutX="14.0" layoutY="40.0" text="Artist:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="40.0" />
                               <TextField fx:id="txtArtist" layoutX="60.0" layoutY="36.0" prefHeight="22.0" prefWidth="153.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="36.0" />
                               <Button fx:id="btnUpdateLyric" layoutX="164.0" layoutY="58.0" mnemonicParsing="false" prefWidth="74.0" text="Live update" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="10.0" />
-                              <Button fx:id="btnEditLyric" layoutX="67.0" layoutY="74.0" mnemonicParsing="false" prefWidth="70.0" text="Edit lyric" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="86.0" />
+                              <Button fx:id="btnEdit" layoutX="67.0" layoutY="74.0" mnemonicParsing="false" prefWidth="70.0" text="Edit" AnchorPane.bottomAnchor="4.0" AnchorPane.rightAnchor="86.0" />
                            </children>
                         </AnchorPane>
                         <StackPane fx:id="lyricBox" style="-fx-border-width: 0;">

@@ -79,10 +79,14 @@ public class NowPlayingListView extends ListView<MediaFile> {
 	}
 
 	public MediaFile getPlayingItem() {
-		return getSelectionModel().getSelectedItem();
+		try {
+			return items.get(playingIndex);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
-	public int getPlayingIndex() {		
+	public int getPlayingIndex() {
 		return playingIndex;
 	}
 
@@ -102,5 +106,9 @@ public class NowPlayingListView extends ListView<MediaFile> {
 	
 	public int getPrevIndex() {
 		return (playingIndex - 1 + items.size()) % items.size();
+	}
+
+	public void onStop() {
+		setPlayingIndex(0);
 	}
 }

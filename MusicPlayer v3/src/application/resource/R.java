@@ -10,7 +10,7 @@ public class R {
 		public static final String update_lyric = "Live update";
 		public static final String cancel = "Cancel";
 		public static final String save = "Save";
-		public static final String edit_lyric = "Edit lyric";		
+		public static final String edit_lyric = "Edit";		
 	}
 	
 	public static class styles {

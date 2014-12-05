@@ -9,8 +9,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.collections.ObservableList;
-
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,7 +22,7 @@ public class LyricsGatherer {
 	private final static String service2 = "http://lyrics.wikia.com/api.php";
 
 	public static List<String> getSongLyrics1(String title, String artist,
-			ObservableList<String> lyric) throws IOException {
+			ArrayList<String> lyric) throws IOException {
 
 		try {
 			Connection conn = Jsoup.connect(service1 + "/"
@@ -55,7 +53,7 @@ public class LyricsGatherer {
 	}
 
 	public static List<String> getSongLyrics2(String title, String artist,
-			ObservableList<String> lyric) throws IOException {
+			ArrayList<String> lyric) throws IOException {
 		try {
 			URL apiEndPoint = new URL(service2 + "?func=getSong&artist="
 					+ escape(artist) + "&song=" + escape(title) + "&fmt=xml");
@@ -98,7 +96,7 @@ public class LyricsGatherer {
 		}
 	}
 
-	public static List<String> parseLyrics(String htmlData, ObservableList<String> lyric2) {
+	public static List<String> parseLyrics(String htmlData, ArrayList<String> lyric2) {
 		int cursor = 0;
 		List<String> lyric = new ArrayList<String>();
 		String line = null;
@@ -157,13 +155,12 @@ public class LyricsGatherer {
 	}
 
 	public static List<String> getSongLyrics(String title, String artist,
-			ObservableList<String> lyric) throws Exception {
+			ArrayList<String> lyric) throws Exception {
 		title = validate(title);
 		artist = validate(artist);
 		List<String> result = null;
 
 		try {
-			System.out.println("Trying get lyric with " + service1);
 			result = LyricsGatherer.getSongLyrics1(title, artist, lyric);
 			if (result != null && result.size() != 0) {
 				return result;
@@ -172,7 +169,6 @@ public class LyricsGatherer {
 		}
 		
 		try {
-			System.out.println("Trying get lyric with " + service2);
 			result = LyricsGatherer.getSongLyrics2(title, artist, lyric);
 			if (result != null && result.size() != 0) {
 				return result;

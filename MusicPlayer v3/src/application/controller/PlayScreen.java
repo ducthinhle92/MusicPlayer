@@ -2,8 +2,6 @@ package application.controller;
 
 import java.util.ArrayList;
 
-import org.jaudiotagger.audio.exceptions.CannotWriteException;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -25,6 +23,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.MediaFile;
+
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+
 import application.FXMLController;
 import application.resource.R;
 import application.utility.LyricGatherService;
@@ -49,7 +50,7 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	private TextField txtTitle;
 	private TextField txtArtist;
 	private TextArea txtAreaLyric;
-	private Button btnEditLyric;
+	private Button btnEdit;
 	protected int lyricMode;
 	private StackPane lyricBox;
 	private Button btnUpdateLyric;
@@ -67,6 +68,11 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 
 		@Override
 		public void handle(WorkerStateEvent arg0) {
+			System.out.println("Lyric updated successfully");
+			ArrayList<String> result = liveUpdater.getResult();
+			for(String s : result) {
+				lyric.add(s);
+			}
 			finishGetLiveLyric();
 		}
 	};
@@ -126,12 +132,11 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 		listViewLyric = (ListView<String>) findNodeById("lvLyric");
 		txtTitle = (TextField) findNodeById("txtTitle");
 		txtArtist = (TextField) findNodeById("txtArtist");
-		btnEditLyric = (Button) findNodeById("btnEditLyric");
+		btnEdit = (Button) findNodeById("btnEdit");
 		btnUpdateLyric = (Button) findNodeById("btnUpdateLyric");
 		btnShowLyric = (Button) findNodeById("btnShowLyric");
 
 		txtAreaLyric = new TextArea();
-		lyricMode = MODE_UPDATE;
 
 		listViewLyric.setItems(lyric);
 		lyricWrapper.getChildren().clear();
@@ -141,6 +146,8 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 		
 		FXMLController.getInstance().addMediaListener(this);
 		addEventHandler();
+		
+		setLyricMode(MODE_UPDATE);
 	}
 
 	@Override
@@ -155,7 +162,6 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	private void validateLyric() {
 		MediaFile audio = FXMLController.getInstance().getCurrentMedia();		
 		if (!loadedLyric &&	audio != null && lyricComponent.isVisible()) {
-			System.out.println("validating lyric");
 			loadedLyric = true;
 			txtTitle.setText(audio.getTitle());
 			txtArtist.setText(audio.getArtist());
@@ -203,7 +209,7 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 			}
 		});
 
-		btnEditLyric.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		btnEdit.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
@@ -231,18 +237,23 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 			}
 		});
 
-		txtAreaLyric.textProperty().addListener(new ChangeListener<String>() {
+		ChangeListener<String> textChangeListener 
+											= new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable,
 					String oldValue, String newValue) {
-				btnEditLyric.setDisable(false);
+				btnEdit.setDisable(false);
 			}
-		});
+		};
+		txtAreaLyric.textProperty().addListener(textChangeListener);		
+		txtTitle.textProperty().addListener(textChangeListener);		
+		txtArtist.textProperty().addListener(textChangeListener);
 	}
 
 	protected void onEditClicked() {
-		if (txtTitle.getText().equals("") || txtArtist.getText().equals(""))
+		if(FXMLController.getInstance().getCurrentMedia() == null) {
 			return;
+		}
 		setLyricMode(MODE_EDIT);
 		currentMedia = FXMLController.getInstance().getCurrentMedia();
 
@@ -254,9 +265,9 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 	}
 
 	protected void onSaveClicked() {
-		setLyricMode(MODE_UPDATE);
 		copyLyric(TO_UPDATE_AREA);
 		saveMediaFile(currentMedia);
+		setLyricMode(MODE_UPDATE);
 		synchronizeMedia();
 	}
 
@@ -288,14 +299,14 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 
 		// reset lyric box and disable control components
 		updatingLyric = true;
-		btnEditLyric.setDisable(true);
+		btnEdit.setDisable(true);
 		btnUpdateLyric.setText(R.strings.cancel);
 		// backup the lyric in case of failure
 		backupLyric();
 		// now, clear the lyric box
 		lyric.clear();
 
-		liveUpdater = new LyricGatherService(title, artist, lyric);
+		liveUpdater = new LyricGatherService(title, artist);
 		liveUpdater.setOnSucceeded(onSuccessHandler);
 		liveUpdater.setOnFailed(onFailedHandler);
 		liveUpdater.start();
@@ -351,7 +362,7 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 
 	private void finishGetLiveLyric() {
 		btnUpdateLyric.setText(R.strings.update_lyric);
-		btnEditLyric.setDisable(false);
+		btnEdit.setDisable(false);
 		updatingLyric = false;
 		saveMediaFile(currentMedia);
 		
@@ -385,15 +396,19 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 		if (lyricMode == MODE_EDIT) {
 			lyricBox.getChildren().clear();
 			lyricBox.getChildren().add(txtAreaLyric);
-			btnEditLyric.setText(R.strings.save);
+			btnEdit.setText(R.strings.save);
 			btnUpdateLyric.setText(R.strings.cancel);
-			btnEditLyric.setDisable(true);
+			btnEdit.setDisable(true);
+			txtTitle.setEditable(true);
+			txtArtist.setEditable(true);
 		} else {
 			lyricBox.getChildren().clear();
 			lyricBox.getChildren().add(listViewLyric);
-			btnEditLyric.setText(R.strings.edit_lyric);
+			btnEdit.setText(R.strings.edit_lyric);
 			btnUpdateLyric.setText(R.strings.update_lyric);
-			btnEditLyric.setDisable(false);
+			btnEdit.setDisable(false);
+			txtTitle.setEditable(false);
+			txtArtist.setEditable(false);
 		}
 	}
 
@@ -408,7 +423,7 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 		
 		// save lyric
 		if(lyricMode == MODE_EDIT) {
-			media.setLyric(txtAreaLyric.toString());
+			media.setLyric(txtAreaLyric.getText());
 		}
 		else {
 			if(lyric.size() == 0)
@@ -422,7 +437,7 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 			media.setLyric(strLyric.toString());
 		}		
 		
-		pendingSaveFile = media;	
+		pendingSaveFile = media;
 	}
 
 	@Override
@@ -433,8 +448,9 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 		}
 		
 		try {
-			if(pendingSaveFile != null)
+			if(pendingSaveFile != null) {
 				pendingSaveFile.saveFile();
+			}
 		} catch (CannotWriteException e) {
 			e.printStackTrace();
 		}

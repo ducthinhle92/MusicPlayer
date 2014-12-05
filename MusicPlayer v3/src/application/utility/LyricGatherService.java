@@ -1,21 +1,20 @@
 package application.utility;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
 public class LyricGatherService extends Service<Boolean> {
-	private ObservableList<String> lyric;
+	private ArrayList<String> lyric;
 	private String artist;
 	private String songTitle;
 	
-	public LyricGatherService(String songTitle, String artist, 
-			ObservableList<String> lyric) {
+	public LyricGatherService(String songTitle, String artist) {
 		this.songTitle = songTitle;
 		this.artist = artist;
-		this.lyric = lyric;
+		this.lyric = new ArrayList<String>();
 	}
 	
 	@Override
@@ -29,5 +28,9 @@ public class LyricGatherService extends Service<Boolean> {
 				return (result != null);
 			}
 		};
+	}
+	
+	public ArrayList<String> getResult() {
+		return lyric;
 	}
 }
