@@ -105,10 +105,16 @@ public class LibraryScreen extends AbstractScreen {
 		Image img_prev=new Image(R.getImage("img_prev.png"));
 		prev.setGraphic(new ImageView(img_prev));
 		prev.setBackground(null);
+		ButtonEffector.addEffect(prev);
+		ButtonEffector.setGraphic(prev,	R.getImage("img_prev.png"), 
+				R.getImage("img_prev_hover.png"));
 		
 		Image img_next=new Image(R.getImage("img_next.png"));
 		next.setGraphic(new ImageView(img_next));
 		next.setBackground(null);
+		ButtonEffector.addEffect(next);
+		ButtonEffector.setGraphic(next,	R.getImage("img_next.png"), 
+				R.getImage("img_next_hover.png"));
 		
 		play.setBackground(null);
 		ButtonEffector.addEffect(play);
