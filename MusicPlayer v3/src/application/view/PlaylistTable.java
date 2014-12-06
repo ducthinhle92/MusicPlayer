@@ -1,5 +1,6 @@
 package application.view;
 
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -11,14 +12,17 @@ import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
 
@@ -44,6 +48,11 @@ public class PlaylistTable {
 		albumColumn = new TableColumn("Album");
 		playTable.getColumns().addAll(titleColumn, lengthColoumn, artistColumn,
 				albumColumn);
+		
+		
+		
+
+
 		setTableFactory();
 	}
 
@@ -94,6 +103,21 @@ public class PlaylistTable {
 
 							}
 						});
+						
+						row.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+
+							@Override
+							public void handle(MouseEvent event) {
+								// TODO Auto-generated method stub
+								if(event.getClickCount() > 1){
+									MediaInfo item = row.getItem();
+									listener.onPlayingItem(item);
+								}
+								
+							}
+
+							
+						});
 
 						final ContextMenu contextMenu = new ContextMenu();
 						final MenuItem removeMenuItem = new MenuItem("Remove");
@@ -120,10 +144,23 @@ public class PlaylistTable {
 						contextMenu.getItems().add(playMenuItem);
 						// Set context menu on row, but use a binding to
 						// make it only show for non-empty rows:
-						row.contextMenuProperty().bind(
-								Bindings.when(row.emptyProperty())
-										.then((ContextMenu) null)
-										.otherwise(contextMenu));
+						
+						
+						final MenuItem playNextMenuItem = new MenuItem("Play Next");
+						playNextMenuItem
+						.setOnAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent event) {
+								MediaInfo item = row.getItem();
+								listener.onPlayNextItem(item);
+							}
+						});
+				contextMenu.getItems().add(playNextMenuItem);
+				
+				row.contextMenuProperty().bind(
+						Bindings.when(row.emptyProperty())
+								.then((ContextMenu) null)
+								.otherwise(contextMenu));
 
 						return row;
 					}

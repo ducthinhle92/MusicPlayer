@@ -52,6 +52,7 @@ public class LibraryScreen extends AbstractScreen {
 	};
 
 	private DatabaseController dbController;
+	private File dir;
 	
 	// FXML component
 	private MediaTreeView menuTreeView;
@@ -260,7 +261,21 @@ public class LibraryScreen extends AbstractScreen {
 			public void onPlayingItem(MediaInfo item) {
 				onPlaySingleFile(item);
 			}
+			
+			@Override
+			public void onPlayNextItem(MediaInfo item){
+				onPlayNextFile(item);
+			}
 		});
+	}
+
+	protected void onPlayNextFile(MediaInfo item) {
+		// TODO Auto-generated method stub
+		MediaFile mdfile = item.getMediaFile();
+		int nextPlaying = nowPlayingView.getNextIndex();
+		playingFiles.add(nextPlaying, mdfile);
+		nowPlayingView.setItems(playingFiles);
+		
 	}
 
 	protected void onVolumeChanged() {
@@ -494,6 +509,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickStop() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
+		
 		nowPlayingView.onStop();
 		setMode(Mode.Stoped);
 	}
@@ -540,7 +556,7 @@ public class LibraryScreen extends AbstractScreen {
 	public void processOpenFile() throws SQLException {
 		configureFileChooser(fileChooser);
 		List<File> listFile = fileChooser.showOpenMultipleDialog(stage);
-		File dir = null;
+		dir = null;
 
 		if (listFile != null) {
 			resetAll();
@@ -549,7 +565,26 @@ public class LibraryScreen extends AbstractScreen {
 			for (int i = 0; i < listFile.size(); i++) {
 				playingFiles.add(new MediaFile(listFile.get(i)));
 			}
-			addMusicToLibrary(dir);
+			
+			// Luong add nhac vao thu vien
+			Thread thread = new Thread(){
+
+				@Override
+				public void run() {
+					try {
+						addMusicToLibrary(dir);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+			};
+			thread.start();
+					
+			
+			
 		}
 		
 		nowPlayingView.setPlayingIndex(0);

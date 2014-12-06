@@ -15,4 +15,10 @@ public class TableListener {
 	public void onPlayingItem(MediaInfo item) {
 	}
 
+
+	public void onPlayNextItem(MediaInfo item) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
