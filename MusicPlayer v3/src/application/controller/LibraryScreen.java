@@ -38,6 +38,7 @@ import application.DatabaseController;
 import application.FXMLController;
 import application.resource.R;
 import application.utility.Utils;
+import application.view.ButtonEffector;
 import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
 import application.view.PlaylistTable;
@@ -109,9 +110,10 @@ public class LibraryScreen extends AbstractScreen {
 		next.setGraphic(new ImageView(img_next));
 		next.setBackground(null);
 		
-		Image img_pause=new Image(R.getImage("img_pause.png"));
-		play.setGraphic(new ImageView(img_pause));
 		play.setBackground(null);
+		ButtonEffector.addEffect(play);
+		ButtonEffector.setGraphic(play,	R.getImage("img_pause.png"), 
+				R.getImage("img_pause_hover.png"));
 		
 		Image img_sound=new Image(R.getImage("img_sound.png"));
 		mute.setGraphic(new ImageView(img_sound));
@@ -391,17 +393,17 @@ public class LibraryScreen extends AbstractScreen {
 		this.mode = mode;
 		switch (mode) {
 		case Playing:
-			play.setGraphic(new ImageView(img_pause));
-			play.setBackground(null);
+			ButtonEffector.setGraphic(play,	R.getImage("img_pause.png"), 
+					R.getImage("img_pause_hover.png"));
 			stop.setDisable(false);
 			break;
 		case Paused:
-			play.setGraphic(new ImageView(img_play));
-			play.setBackground(null);
+			ButtonEffector.setGraphic(play,	R.getImage("img_play.png"), 
+					R.getImage("img_play_hover.png"));
 			break;
-		case Stoped:
-			play.setGraphic(new ImageView(img_play));
-			play.setBackground(null);	
+		case Stoped:	
+			ButtonEffector.setGraphic(play,	R.getImage("img_play.png"), 
+					R.getImage("img_play_hover.png"));
 			stop.setDisable(true);
 			break;
 		}

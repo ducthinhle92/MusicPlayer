@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
@@ -96,9 +97,9 @@
                                          
                                        </children>
                                     </AnchorPane>
-                                    <StackPane maxHeight="60.0" maxWidth="400.0" minHeight="60.0" minWidth="400.0" SplitPane.resizableWithParent="false">
+                                    <StackPane maxHeight="68.0" maxWidth="400.0" minHeight="68.0" minWidth="400.0" SplitPane.resizableWithParent="false">
                                        <children>
-                                          <AnchorPane maxHeight="60.0" maxWidth="400.0" style="-fx-background-color: transparent;">
+                                          <AnchorPane maxHeight="68.0" maxWidth="400.0" style="-fx-background-color: transparent;">
                                              <children>
                                                 <Pane fx:id="controlPane" prefHeight="60.0" prefWidth="400.0" style="-fx-border-color: #000000; -fx-border-radius: 20; -fx-border-width: 1; -fx-border-insets: 0; -fx-background-color: e3edf8; -fx-background-radius: 20; -fx-opacity: 0.5;" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="14.0" />
                                               <Label fx:id="playTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="23.0" prefHeight="14.0" prefWidth="96.0" style="-fx-text-fill: #2c2828;" text="Time" textAlignment="RIGHT" textFill="#2c2828" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="23.0" />
