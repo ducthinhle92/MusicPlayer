@@ -91,11 +91,6 @@ public class FXMLController {
 	}
 
 	@FXML
-	protected void openFolder(ActionEvent event) {
-		libraryScreen.processOpenFolder();
-	}
-
-	@FXML
 	protected void exit(ActionEvent event) {
 		System.exit(0);
 	}

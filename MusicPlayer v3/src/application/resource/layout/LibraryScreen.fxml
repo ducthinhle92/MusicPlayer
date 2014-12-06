@@ -21,7 +21,6 @@
                               <Menu mnemonicParsing="false" text="File">
                                  <items>
                                      <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open File" />
-                                     <MenuItem mnemonicParsing="false" onAction="#openFolder" text="Open Folder" />
                                      <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
                                  </items>
                               </Menu>
@@ -105,7 +104,7 @@
                                               <Label fx:id="playTime" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutY="23.0" prefHeight="14.0" prefWidth="96.0" style="-fx-text-fill: #2c2828;" text="Time" textAlignment="RIGHT" textFill="#2c2828" AnchorPane.bottomAnchor="23.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="23.0" />
                                                 <Button fx:id="stop" graphicTextGap="0.0" layoutX="95.0" layoutY="15.0" mnemonicParsing="false" onAction="#btnStop" prefHeight="30.0" prefWidth="30.0" />
                                                 <Button fx:id="prev" graphicTextGap="0.0" layoutX="130.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnPrev" prefHeight="34.0" prefWidth="40.0" />
-                                                <Button fx:id="play" graphicTextGap="0.0" layoutX="170.0" mnemonicParsing="false" onAction="#btnPlay" prefHeight="60.0" prefWidth="60.0" />
+                                                <Button id="btnPlay" fx:id="play" graphicTextGap="0.0" layoutX="170.0" mnemonicParsing="false" onAction="#btnPlay" prefHeight="60.0" prefWidth="60.0" />
                                                 <Button fx:id="next" graphicTextGap="0.0" layoutX="230.0" layoutY="13.0" mnemonicParsing="false" onAction="#btnNext" prefHeight="34.0" prefWidth="40.0" />
                                                 <Button fx:id="mute" graphicTextGap="0.0" layoutX="275.0" layoutY="16.0" mnemonicParsing="false" onAction="#btnMute" prefHeight="30.0" prefWidth="30.0" />
                                                 <Slider fx:id="volumeSlider" layoutX="316.0" layoutY="25.0" max="100" maxWidth="70.0" prefHeight="12.0" prefWidth="70.0" AnchorPane.bottomAnchor="22.0" AnchorPane.topAnchor="25.0" />

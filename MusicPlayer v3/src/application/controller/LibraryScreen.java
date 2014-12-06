@@ -163,8 +163,8 @@ public class LibraryScreen extends AbstractScreen {
 	@Override
 	public void show() {
 		super.show();
-		controlPane.setStyle(R.styles.control_pane_lib);
 		mainBackground.setStyle(R.styles.background_lib);
+		controlPane.setStyle(R.styles.control_pane_lib);
 		lbInfo.setStyle(R.styles.label_info_lib);
 		playTime.setStyle(R.styles.label_time_lib);
 	}
@@ -525,32 +525,6 @@ public class LibraryScreen extends AbstractScreen {
 		nowPlayingView.clearItems();
 		mediaView.getMediaPlayer().stop();
 		FXMLController.getInstance().onMediaChanged();
-	}
-
-	public void processOpenFolder() {
-//		resetAll();
-//		File dir = folderChooser.showDialog(stage);
-//		for (final String url : dir.list(new FilenameFilter() {
-//
-//			@Override
-//			public boolean accept(File dir, String name) {
-//				if (name.endsWith(".mp3"))
-//					return true;
-//				else {
-//					return false;
-//				}
-//			}
-//
-//		})) {
-//			playingFiles.add(new MediaFile(url));
-//			
-//			if(playingFiles.isEmpty())
-//				System.out.println("No audio found in " + dir);
-//		}
-//		
-//		nowPlayingView.setPlayingIndex(0);
-//		mediaView.setMediaPlayer(nowPlayingView.getMediaPlayer());
-//		play(mediaView.getMediaPlayer());
 	}
 
 	public void processOpenFile() throws SQLException {
