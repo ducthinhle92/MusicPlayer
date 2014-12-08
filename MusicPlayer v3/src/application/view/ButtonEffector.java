@@ -88,4 +88,25 @@ public class ButtonEffector extends ImageView {
 			}
 		});
 	}
+
+	public static void setToggleGraphic(Button button, 
+			String img1, String img2) {
+		button.addEventHandler(MouseEvent.MOUSE_CLICKED,
+				new EventHandler<MouseEvent>() {
+			int selectedImg = 1;
+			ImageView graphic1 = new ImageView(img1);
+			ImageView graphic2 = new ImageView(img2);
+			@Override
+			public void handle(MouseEvent arg0) {
+				if(selectedImg == 1) {
+					button.setGraphic(graphic2);
+					selectedImg = 2;
+				}
+				else {
+					button.setGraphic(graphic1);
+					selectedImg = 1;
+				}
+			}
+		});
+	}
 }

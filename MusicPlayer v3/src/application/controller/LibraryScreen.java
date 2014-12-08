@@ -9,6 +9,8 @@ import java.util.Random;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -66,10 +68,7 @@ public class LibraryScreen extends AbstractScreen {
 	private VBox mainBackground;
 	private List<String> allMusicUrl;
 
-	Image img_mute = new Image(R.getImage("img_mute.png"));
-	Image img_sound = new Image(R.getImage("img_sound.png"));
-	Image img_pause = new Image(R.getImage("img_pause.png"));
-	Image img_play = new Image(R.getImage("img_play.png"));
+	private ImageView img_sound, img_mute;
 
 	private MediaView mediaView = null;
 	private Duration duration;
@@ -81,6 +80,8 @@ public class LibraryScreen extends AbstractScreen {
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
 	private Pane controlPane;
+	
+	private boolean muted = false;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -124,9 +125,11 @@ public class LibraryScreen extends AbstractScreen {
 		ButtonEffector.setGraphic(play,	R.getImage("img_pause.png"), 
 				R.getImage("img_pause_hover.png"));
 		
-		Image img_sound=new Image(R.getImage("img_sound.png"));
-		mute.setGraphic(new ImageView(img_sound));
+		img_sound = new ImageView(R.getImage("img_sound.png"));
+		img_mute = new ImageView(R.getImage("img_mute.png"));
+		mute.setGraphic(img_sound);
 		mute.setBackground(null);
+		ButtonEffector.addEffect(mute);
 		
 		Image img_stop=new Image(R.getImage("img_stop.png"));
 		stop.setGraphic(new ImageView(img_stop));
@@ -197,6 +200,14 @@ public class LibraryScreen extends AbstractScreen {
 
 		volumeSlider.valueProperty().addListener(new InvalidationListener() {
 			public void invalidated(Observable ov) {
+				onVolumeChanged();
+			}
+		});
+		volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
 				onVolumeChanged();
 			}
 		});
@@ -302,10 +313,13 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	protected void onVolumeChanged() {
-		if (volumeSlider.isValueChanging()) {
-			mediaView.getMediaPlayer().setVolume(
-					volumeSlider.getValue() / 100.0);
+		if(muted) {
+			muted = false;
+			mute.setGraphic(img_sound);
 		}
+		if(mediaView.getMediaPlayer() != null)
+			mediaView.getMediaPlayer().setVolume(
+				volumeSlider.getValue() / 100.0);
 	}
 
 	protected void onProgressChanged() {
@@ -379,6 +393,13 @@ public class LibraryScreen extends AbstractScreen {
 				play(nextPlayer);
 			}
 		});
+		
+		// set the volume
+		if(muted)
+			player.setVolume(0);
+		else
+			player.setVolume(volumeSlider.getValue() / 100);
+		
 		// Set View khi play audio
 		player.setAudioSpectrumListener(new AudioSpectrumListener() {
 
@@ -457,18 +478,18 @@ public class LibraryScreen extends AbstractScreen {
 						timeSlider.setValue(currentTime.divide(duration)
 								.toMillis() * 100.0);
 					}
-					if (!volumeSlider.isValueChanging()) {
-						volumeSlider.setValue((int) Math.round(mediaView
-								.getMediaPlayer().getVolume() * 100));
-						if (volumeSlider.getValue() == 0) {
-							mute.setGraphic(new ImageView(img_mute));
-							mute.setBackground(null);
-						}
-						if (volumeSlider.getValue() != 0) {
-							mute.setGraphic(new ImageView(img_sound));
-							mute.setBackground(null);
-						}
-					}
+//					if (!volumeSlider.isValueChanging()) {
+//						volumeSlider.setValue((int) Math.round(mediaView
+//								.getMediaPlayer().getVolume() * 100));
+//						if (volumeSlider.getValue() == 0) {
+//							mute.setGraphic(new ImageView(img_mute));
+//							mute.setBackground(null);
+//						}
+//						if (volumeSlider.getValue() != 0) {
+//							mute.setGraphic(new ImageView(img_sound));
+//							mute.setBackground(null);
+//						}
+//					}
 				}
 			});
 		}
@@ -538,10 +559,20 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	public void onClickMute() {
-		mediaView.getMediaPlayer().setVolume(0);
-		volumeSlider.setValue(0);
-		mute.setGraphic(new ImageView(img_mute));
-		mute.setBackground(null);
+		if(muted) {
+			muted = false;
+			mute.setGraphic(img_sound);
+			if(mediaView.getMediaPlayer() != null)
+				mediaView.getMediaPlayer().setVolume(
+						volumeSlider.getValue() / 100);
+		}
+		else {
+			muted = true;
+			mute.setGraphic(img_mute);
+			if(mediaView.getMediaPlayer() != null)
+				mediaView.getMediaPlayer().setVolume(0);
+		}
+		System.out.println("muted = " + muted);
 	}
 
 	public void onClearList() {
