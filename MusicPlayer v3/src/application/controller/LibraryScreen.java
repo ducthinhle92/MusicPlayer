@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -105,6 +106,7 @@ public class LibraryScreen extends AbstractScreen {
 		Image img_prev=new Image(R.getImage("img_prev.png"));
 		prev.setGraphic(new ImageView(img_prev));
 		prev.setBackground(null);
+		prev.setDisable(true);
 		ButtonEffector.addEffect(prev);
 		ButtonEffector.setGraphic(prev,	R.getImage("img_prev.png"), 
 				R.getImage("img_prev_hover.png"));
@@ -112,6 +114,7 @@ public class LibraryScreen extends AbstractScreen {
 		Image img_next=new Image(R.getImage("img_next.png"));
 		next.setGraphic(new ImageView(img_next));
 		next.setBackground(null);
+		next.setDisable(true);
 		ButtonEffector.addEffect(next);
 		ButtonEffector.setGraphic(next,	R.getImage("img_next.png"), 
 				R.getImage("img_next_hover.png"));
@@ -275,15 +278,27 @@ public class LibraryScreen extends AbstractScreen {
 				onPlayNextFile(item);
 			}
 		});
+		
+		playingFiles.addListener(new ListChangeListener<MediaFile>() {
+			@Override
+			public void onChanged(
+					ListChangeListener.Change<? extends MediaFile> change) {
+				if(playingFiles.size() >= 2) {
+					prev.setDisable(false);
+					next.setDisable(false);
+				}
+				else {
+					prev.setDisable(true);
+					next.setDisable(true);					
+				}
+			}			
+		});
 	}
 
 	protected void onPlayNextFile(MediaInfo item) {
-		// TODO Auto-generated method stub
-		MediaFile mdfile = item.getMediaFile();
-		int nextPlaying = nowPlayingView.getNextIndex();
-		playingFiles.add(nextPlaying, mdfile);
-		nowPlayingView.setItems(playingFiles);
-		
+		MediaFile file = item.getMediaFile();
+		int index = nowPlayingView.getNextIndex();
+		playingFiles.add(index, file);
 	}
 
 	protected void onVolumeChanged() {
