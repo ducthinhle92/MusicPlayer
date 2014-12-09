@@ -18,7 +18,6 @@ public class ButtonEffector extends ImageView {
 			@Override
 			public void handle(MouseEvent arg0) {
 				setEffect(shadow);
-				System.out.println("ok");
 			}
 		});
 		setOnMouseExited(new EventHandler<MouseEvent>() {
@@ -46,7 +45,6 @@ public class ButtonEffector extends ImageView {
 				new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
-				button.setEffect(null);
 				button.setGraphic(ivNormal);
 			}
 		});

@@ -57,7 +57,7 @@ public class LibraryScreen extends AbstractScreen {
 
 	private DatabaseController dbController;
 	private File dir;
-	
+
 	// FXML component
 	private MediaTreeView menuTreeView;
 	private TextField txtPlaylistName;
@@ -72,16 +72,17 @@ public class LibraryScreen extends AbstractScreen {
 
 	private MediaView mediaView = null;
 	private Duration duration;
-	private ObservableList<MediaFile> playingFiles 
-									= FXCollections.observableArrayList();
+	private ObservableList<MediaFile> playingFiles = FXCollections
+			.observableArrayList();
 	private NowPlayingListView nowPlayingView;
 	private FileChooser fileChooser = new FileChooser();
 
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
 	private Pane controlPane;
-	
+
 	private boolean muted = false;
+	private MediaInfoUpdater infoUpdater;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -93,7 +94,7 @@ public class LibraryScreen extends AbstractScreen {
 
 		controlPane = FXMLController.getInstance().controlPane;
 		lbInfo = FXMLController.getInstance().lbInfo;
-		playTime = FXMLController.getInstance().playTime;		
+		playTime = FXMLController.getInstance().playTime;
 		mainBackground = FXMLController.getInstance().mainBackground;
 		txtPlaylistName = FXMLController.getInstance().txtPlaylistName;
 		timeSlider = FXMLController.getInstance().timeSlider;
@@ -103,42 +104,44 @@ public class LibraryScreen extends AbstractScreen {
 		next = FXMLController.getInstance().next;
 		stop = FXMLController.getInstance().stop;
 		mute = FXMLController.getInstance().mute;
-		
-		Image img_prev=new Image(R.getImage("img_prev.png"));
+
+		Image img_prev = new Image(R.getImage("img_prev.png"));
 		prev.setGraphic(new ImageView(img_prev));
 		prev.setBackground(null);
 		prev.setDisable(true);
 		ButtonEffector.addEffect(prev);
-		ButtonEffector.setGraphic(prev,	R.getImage("img_prev.png"), 
+		ButtonEffector.setGraphic(prev, R.getImage("img_prev.png"),
 				R.getImage("img_prev_hover.png"));
-		
-		Image img_next=new Image(R.getImage("img_next.png"));
+
+		Image img_next = new Image(R.getImage("img_next.png"));
 		next.setGraphic(new ImageView(img_next));
 		next.setBackground(null);
 		next.setDisable(true);
 		ButtonEffector.addEffect(next);
-		ButtonEffector.setGraphic(next,	R.getImage("img_next.png"), 
+		ButtonEffector.setGraphic(next, R.getImage("img_next.png"),
 				R.getImage("img_next_hover.png"));
-		
+
 		play.setBackground(null);
 		ButtonEffector.addEffect(play);
-		ButtonEffector.setGraphic(play,	R.getImage("img_pause.png"), 
+		ButtonEffector.setGraphic(play, R.getImage("img_pause.png"),
 				R.getImage("img_pause_hover.png"));
-		
+
 		img_sound = new ImageView(R.getImage("img_sound.png"));
 		img_mute = new ImageView(R.getImage("img_mute.png"));
 		mute.setGraphic(img_sound);
 		mute.setBackground(null);
 		ButtonEffector.addEffect(mute);
-		
-		Image img_stop=new Image(R.getImage("img_stop.png"));
+
+		Image img_stop = new Image(R.getImage("img_stop.png"));
 		stop.setGraphic(new ImageView(img_stop));
 		stop.setBackground(null);
-		
+		ButtonEffector.addEffect(stop);
+
 		// initialize value and set default button state
 		mediaView = new MediaView();
-		stop.setDisable(true);		
-		
+		stop.setDisable(true);
+		lbInfo.setText("");
+
 		nowPlayingView = new NowPlayingListView();
 		nowPlayingView.setItemList(playingFiles);
 		StackPane nowPlaying = FXMLController.getInstance().nowPlayingPane;
@@ -173,7 +176,7 @@ public class LibraryScreen extends AbstractScreen {
 
 		addEventHandler();
 	}
-	
+
 	@Override
 	public void show() {
 		super.show();
@@ -226,7 +229,7 @@ public class LibraryScreen extends AbstractScreen {
 				String itemValue = item.getValue();
 				if (item.getParent().getValue().equals("Playlist")) {
 					playTable.setPlayList(itemValue);
-				} else if(itemValue.equals("All Music")){
+				} else if (itemValue.equals("All Music")) {
 					playTable.setAllMusic();
 					System.out.println("Set ok");
 				}
@@ -283,26 +286,25 @@ public class LibraryScreen extends AbstractScreen {
 			public void onPlayingItem(MediaInfo item) {
 				onPlaySingleFile(item);
 			}
-			
+
 			@Override
-			public void onPlayNextItem(MediaInfo item){
+			public void onPlayNextItem(MediaInfo item) {
 				onPlayNextFile(item);
 			}
 		});
-		
+
 		playingFiles.addListener(new ListChangeListener<MediaFile>() {
 			@Override
 			public void onChanged(
 					ListChangeListener.Change<? extends MediaFile> change) {
-				if(playingFiles.size() >= 2) {
+				if (playingFiles.size() >= 2) {
 					prev.setDisable(false);
 					next.setDisable(false);
-				}
-				else {
+				} else {
 					prev.setDisable(true);
-					next.setDisable(true);					
+					next.setDisable(true);
 				}
-			}			
+			}
 		});
 	}
 
@@ -313,13 +315,13 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	protected void onVolumeChanged() {
-		if(muted) {
+		if (muted) {
 			muted = false;
 			mute.setGraphic(img_sound);
 		}
-		if(mediaView.getMediaPlayer() != null)
+		if (mediaView.getMediaPlayer() != null)
 			mediaView.getMediaPlayer().setVolume(
-				volumeSlider.getValue() / 100.0);
+					volumeSlider.getValue() / 100.0);
 	}
 
 	protected void onProgressChanged() {
@@ -374,35 +376,35 @@ public class LibraryScreen extends AbstractScreen {
 		});
 		player.setOnReady(new Runnable() {
 			public void run() {
-				duration = player.getMedia().getDuration();
-				updateValues();
+				onMediaReady();
 			}
 		});
 		player.setOnEndOfMedia(new Runnable() {
-
 			@Override
 			public void run() {
-				MediaPlayer curPlayer = mediaView.getMediaPlayer();
-				curPlayer.stop();
-				curPlayer.dispose();
-
-				int index = nowPlayingView.getNextIndex();
-				nowPlayingView.setPlayingIndex(index);
-				MediaPlayer nextPlayer = nowPlayingView.getMediaPlayer();
-				mediaView.setMediaPlayer(nextPlayer);
-				play(nextPlayer);
+				onMediaEnd();
 			}
 		});
-		
+
 		// set the volume
-		if(muted)
+		if (muted)
 			player.setVolume(0);
 		else
 			player.setVolume(volumeSlider.getValue() / 100);
-		
+
+		// update playing info
+		if (infoUpdater != null)
+			infoUpdater.finish();
+		infoUpdater = new MediaInfoUpdater();
+		infoUpdater.start();
+
+		player.play();
+		FXMLController.getInstance().onMediaChanged();
+		if (mode != Mode.Playing)
+			setMode(Mode.Playing);
+
 		// Set View khi play audio
 		player.setAudioSpectrumListener(new AudioSpectrumListener() {
-
 			@Override
 			public void spectrumDataUpdate(double timestamp, double duration,
 					float[] magnitudes, float[] phases) {
@@ -424,27 +426,39 @@ public class LibraryScreen extends AbstractScreen {
 				}
 			}
 		});
+	}
 
-		player.play();
-		FXMLController.getInstance().onMediaChanged();
-		if(mode != Mode.Playing)
-			setMode(Mode.Playing);
+	protected void onMediaEnd() {
+		MediaPlayer curPlayer = mediaView.getMediaPlayer();
+		curPlayer.stop();
+		curPlayer.dispose();
+
+		int index = nowPlayingView.getNextIndex();
+		nowPlayingView.setPlayingIndex(index);
+		MediaPlayer nextPlayer = nowPlayingView.getMediaPlayer();
+		mediaView.setMediaPlayer(nextPlayer);
+		play(nextPlayer);
+	}
+
+	protected void onMediaReady() {
+		duration = mediaView.getMediaPlayer().getMedia().getDuration();
+		updateValues();
 	}
 
 	private void setMode(Mode mode) {
 		this.mode = mode;
 		switch (mode) {
 		case Playing:
-			ButtonEffector.setGraphic(play,	R.getImage("img_pause.png"), 
+			ButtonEffector.setGraphic(play, R.getImage("img_pause.png"),
 					R.getImage("img_pause_hover.png"));
 			stop.setDisable(false);
 			break;
 		case Paused:
-			ButtonEffector.setGraphic(play,	R.getImage("img_play.png"), 
+			ButtonEffector.setGraphic(play, R.getImage("img_play.png"),
 					R.getImage("img_play_hover.png"));
 			break;
-		case Stoped:	
-			ButtonEffector.setGraphic(play,	R.getImage("img_play.png"), 
+		case Stoped:
+			ButtonEffector.setGraphic(play, R.getImage("img_play.png"),
 					R.getImage("img_play_hover.png"));
 			stop.setDisable(true);
 			break;
@@ -455,8 +469,8 @@ public class LibraryScreen extends AbstractScreen {
 		if (event.getClickCount() == 2) {
 			if (mediaView != null && mediaView.getMediaPlayer() != null) {
 				mediaView.getMediaPlayer().stop();
-			}			
-			
+			}
+
 			int index = nowPlayingView.getSelectionModel().getSelectedIndex();
 			nowPlayingView.setPlayingIndex(index);
 			mediaView.setMediaPlayer(nowPlayingView.getMediaPlayer());
@@ -478,18 +492,18 @@ public class LibraryScreen extends AbstractScreen {
 						timeSlider.setValue(currentTime.divide(duration)
 								.toMillis() * 100.0);
 					}
-//					if (!volumeSlider.isValueChanging()) {
-//						volumeSlider.setValue((int) Math.round(mediaView
-//								.getMediaPlayer().getVolume() * 100));
-//						if (volumeSlider.getValue() == 0) {
-//							mute.setGraphic(new ImageView(img_mute));
-//							mute.setBackground(null);
-//						}
-//						if (volumeSlider.getValue() != 0) {
-//							mute.setGraphic(new ImageView(img_sound));
-//							mute.setBackground(null);
-//						}
-//					}
+					// if (!volumeSlider.isValueChanging()) {
+					// volumeSlider.setValue((int) Math.round(mediaView
+					// .getMediaPlayer().getVolume() * 100));
+					// if (volumeSlider.getValue() == 0) {
+					// mute.setGraphic(new ImageView(img_mute));
+					// mute.setBackground(null);
+					// }
+					// if (volumeSlider.getValue() != 0) {
+					// mute.setGraphic(new ImageView(img_sound));
+					// mute.setBackground(null);
+					// }
+					// }
 				}
 			});
 		}
@@ -509,15 +523,15 @@ public class LibraryScreen extends AbstractScreen {
 
 	public void onClickNext() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
-		if(curPlayer != null) {
+		if (curPlayer != null) {
 			curPlayer.stop();
 			curPlayer.dispose();
 		}
 
 		int curIndex = nowPlayingView.getPlayingIndex();
 		if (curIndex >= 0) {
-			int index = nowPlayingView.getNextIndex();			
-			nowPlayingView.setPlayingIndex(index);			
+			int index = nowPlayingView.getNextIndex();
+			nowPlayingView.setPlayingIndex(index);
 			MediaPlayer nextPlayer = nowPlayingView.getMediaPlayer();
 			mediaView.setMediaPlayer(nextPlayer);
 
@@ -530,7 +544,7 @@ public class LibraryScreen extends AbstractScreen {
 
 	public void onClickPrev() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
-		if(curPlayer != null) {
+		if (curPlayer != null) {
 			curPlayer.stop();
 			curPlayer.dispose();
 		}
@@ -539,13 +553,13 @@ public class LibraryScreen extends AbstractScreen {
 			curPlayer.stop();
 
 			int index = nowPlayingView.getPrevIndex();
-			nowPlayingView.setPlayingIndex(index);			
+			nowPlayingView.setPlayingIndex(index);
 			MediaPlayer prevPlayer = nowPlayingView.getMediaPlayer();
 			mediaView.setMediaPlayer(prevPlayer);
 
-			if(mode == Mode.Playing)
+			if (mode == Mode.Playing)
 				play(prevPlayer);
-			else	
+			else
 				FXMLController.getInstance().onMediaChanged();
 		}
 	}
@@ -553,23 +567,22 @@ public class LibraryScreen extends AbstractScreen {
 	public void onClickStop() {
 		MediaPlayer curPlayer = mediaView.getMediaPlayer();
 		curPlayer.stop();
-		
+
 		nowPlayingView.onStop();
 		setMode(Mode.Stoped);
 	}
 
 	public void onClickMute() {
-		if(muted) {
+		if (muted) {
 			muted = false;
 			mute.setGraphic(img_sound);
-			if(mediaView.getMediaPlayer() != null)
+			if (mediaView.getMediaPlayer() != null)
 				mediaView.getMediaPlayer().setVolume(
 						volumeSlider.getValue() / 100);
-		}
-		else {
+		} else {
 			muted = true;
 			mute.setGraphic(img_mute);
-			if(mediaView.getMediaPlayer() != null)
+			if (mediaView.getMediaPlayer() != null)
 				mediaView.getMediaPlayer().setVolume(0);
 		}
 		System.out.println("muted = " + muted);
@@ -593,9 +606,9 @@ public class LibraryScreen extends AbstractScreen {
 			for (int i = 0; i < listFile.size(); i++) {
 				playingFiles.add(new MediaFile(listFile.get(i)));
 			}
-			
+
 			// Luong add nhac vao thu vien
-			Thread thread = new Thread(){
+			Thread thread = new Thread() {
 
 				@Override
 				public void run() {
@@ -605,34 +618,31 @@ public class LibraryScreen extends AbstractScreen {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 				}
-				
+
 			};
 			thread.start();
-					
-			
-			
+
 		}
-		
+
 		nowPlayingView.setPlayingIndex(0);
 		mediaView.setMediaPlayer(nowPlayingView.getMediaPlayer());
 		play(mediaView.getMediaPlayer());
 	}
-	
-	
+
 	// add music to library
-	public void addMusicToLibrary(File dir) throws SQLException{
+	public void addMusicToLibrary(File dir) throws SQLException {
 		ArrayList<File> listMp3 = getMp3FileOnSelectedFolder(dir);
 
-		for(int i = 0;i < listMp3.size();i ++){
-			if(!checkExits(listMp3.get(i))){
+		for (int i = 0; i < listMp3.size(); i++) {
+			if (!checkExits(listMp3.get(i))) {
 				insertMp3FileToDatabase(listMp3.get(i));
 			}
 		}
 	}
-	
-	public void insertMp3FileToDatabase(File file) throws SQLException{
+
+	public void insertMp3FileToDatabase(File file) throws SQLException {
 		MediaFile mdFile = new MediaFile(file);
 		String title = mdFile.getTitle();
 		String length = mdFile.getLength();
@@ -641,34 +651,33 @@ public class LibraryScreen extends AbstractScreen {
 		String url = mdFile.getPath();
 		dbController.insertIntoAllmusic(title, artist, length, url, album);
 	}
-	
-	public ArrayList<File> getMp3FileOnSelectedFolder(File dir){
+
+	public ArrayList<File> getMp3FileOnSelectedFolder(File dir) {
 		ArrayList<File> list = new ArrayList<>();
 		File[] files = dir.listFiles();
 
-	     for(File file : files){
-	    	 String path = file.getPath();
-	         if (path.substring(path.length() -4, path.length()).equals(".mp3")) {
-	             list.add(file);
-	         }
-	    }
-	     return list;
-	}
-	
-	public boolean checkExits(File file){
-		MediaFile mdFile = new MediaFile(file);
-		String mdPath = mdFile.getPath();
-		
-		if(mdPath != null){
-			for(int i = 0; i < allMusicUrl.size(); i ++){
-				if(mdPath.equals(allMusicUrl.get(i))){
-					return true;
-				}
-					
+		for (File file : files) {
+			String path = file.getPath();
+			if (path.substring(path.length() - 4, path.length()).equals(".mp3")) {
+				list.add(file);
 			}
 		}
-		
-		 
+		return list;
+	}
+
+	public boolean checkExits(File file) {
+		MediaFile mdFile = new MediaFile(file);
+		String mdPath = mdFile.getPath();
+
+		if (mdPath != null) {
+			for (int i = 0; i < allMusicUrl.size(); i++) {
+				if (mdPath.equals(allMusicUrl.get(i))) {
+					return true;
+				}
+
+			}
+		}
+
 		return false;
 	}
 
@@ -722,15 +731,68 @@ public class LibraryScreen extends AbstractScreen {
 		playingFiles.add(selected.getMediaFile());
 		nowPlayingView.setPlayingIndex(0);
 		mediaView.setMediaPlayer(nowPlayingView.getMediaPlayer());
-		
+
 		play(mediaView.getMediaPlayer());
 	}
 
 	/**
 	 * get the current playing audio
+	 * 
 	 * @return
 	 */
 	public MediaFile getCurrentMedia() {
 		return nowPlayingView.getPlayingItem();
+	}
+
+	class MediaInfoUpdater extends Thread {
+		private static final long DELAY_TIME = 3000;
+		int infoType = 0;
+		boolean finished = false;
+
+		@Override
+		public void run() {
+			while (!finished) {
+				if (nowPlayingView == null)
+					return;
+
+				infoType++;
+				if (infoType > 2)
+					infoType = 0;
+
+				MediaFile nowPlaying = nowPlayingView.getPlayingItem();
+				if (nowPlaying == null)
+					return;
+
+				String strInfo = "";
+				switch (infoType) {
+				case 0:
+					strInfo = nowPlaying.getTitle();
+					break;
+				case 1:
+					strInfo = nowPlaying.getArtist();
+					break;
+				case 2:
+					strInfo = nowPlaying.getAlbum();
+					break;
+				}
+
+				final String infoText = strInfo;
+				Platform.runLater(new Runnable() {
+					public void run() {
+						lbInfo.setText(infoText);
+					}
+				});
+
+				try {
+					Thread.sleep(DELAY_TIME);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		public void finish() {
+			finished = true;
+		}
 	}
 }
