@@ -90,13 +90,11 @@
                            <children>
                               <SplitPane dividerPositions="0.21018276762402088, 0.7402088772845953" focusTraversable="false" style="-fx-background-color: transparent;">
                                 <items>
-                                  <AnchorPane minWidth="100.0">
+                                    <StackPane>
                                        <children>
-                                          <HBox />
-                                        <Label fx:id="lbInfo" layoutX="4.0" layoutY="24.0" style="-fx-text-fill: #2c2828;" text="Thông tin bài hát" AnchorPane.leftAnchor="4.0" />
-                                         
+                                        <Label fx:id="lbInfo" layoutX="4.0" layoutY="24.0" prefWidth="2000.0" style="-fx-text-fill: #2c2828;" text="Thông tin bài hát" wrapText="true" AnchorPane.leftAnchor="4.0" />
                                        </children>
-                                    </AnchorPane>
+                                    </StackPane>
                                     <StackPane maxHeight="68.0" maxWidth="400.0" minHeight="68.0" minWidth="400.0" SplitPane.resizableWithParent="false">
                                        <children>
                                           <AnchorPane maxHeight="68.0" maxWidth="400.0" style="-fx-background-color: transparent;">
