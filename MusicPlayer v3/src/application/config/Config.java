@@ -2,11 +2,12 @@ package application.config;
 
 import java.io.File;
 
-public class ConfigManager {
+public class Config {
+	public static final String SETTING_VOLUME = "volume";
 	static File configFile;
-	private ConfigManager instance;
+	private static Config instance;
 	
-	ConfigManager() {
+	Config() {
 		instance = this;
 		configFile = new File("setting.cfg");
 	}
@@ -15,9 +16,13 @@ public class ConfigManager {
 		return 0;
 	}
 	
-	public ConfigManager getInstance() {
+	public static Config getInstance() {
 		if(instance == null)
-			return new ConfigManager();
+			return new Config();
 		return instance;
+	}
+
+	public double getDouble(String key) {
+		return 0;
 	}
 }

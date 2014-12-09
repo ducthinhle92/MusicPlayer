@@ -39,6 +39,7 @@ import model.MediaFile;
 import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
+import application.config.Config;
 import application.resource.R;
 import application.utility.Utils;
 import application.view.ButtonEffector;
@@ -141,6 +142,8 @@ public class LibraryScreen extends AbstractScreen {
 		mediaView = new MediaView();
 		stop.setDisable(true);
 		lbInfo.setText("");
+		volumeSlider.setValue(Config.getInstance().getDouble(
+				Config.SETTING_VOLUME));
 
 		nowPlayingView = new NowPlayingListView();
 		nowPlayingView.setItemList(playingFiles);
