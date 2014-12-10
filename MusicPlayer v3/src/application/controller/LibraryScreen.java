@@ -142,8 +142,8 @@ public class LibraryScreen extends AbstractScreen {
 		mediaView = new MediaView();
 		stop.setDisable(true);
 		lbInfo.setText("");
-		volumeSlider.setValue(Config.getInstance().getDouble(
-				Config.SETTING_VOLUME));
+		volumeSlider.setValue(
+				Config.getInstance().getValue(Config.SETTING_VOLUME));
 
 		nowPlayingView = new NowPlayingListView();
 		nowPlayingView.setItemList(playingFiles);
@@ -495,18 +495,6 @@ public class LibraryScreen extends AbstractScreen {
 						timeSlider.setValue(currentTime.divide(duration)
 								.toMillis() * 100.0);
 					}
-					// if (!volumeSlider.isValueChanging()) {
-					// volumeSlider.setValue((int) Math.round(mediaView
-					// .getMediaPlayer().getVolume() * 100));
-					// if (volumeSlider.getValue() == 0) {
-					// mute.setGraphic(new ImageView(img_mute));
-					// mute.setBackground(null);
-					// }
-					// if (volumeSlider.getValue() != 0) {
-					// mute.setGraphic(new ImageView(img_sound));
-					// mute.setBackground(null);
-					// }
-					// }
 				}
 			});
 		}

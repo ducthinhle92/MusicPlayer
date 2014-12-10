@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import model.MediaFile;
 import model.MediaInfo;
 import model.PlayList;
+import application.config.Config;
 import application.controller.LibraryScreen;
 import application.controller.PlayScreen;
 import application.resource.R;
@@ -92,6 +93,7 @@ public class FXMLController {
 
 	@FXML
 	protected void exit(ActionEvent event) {
+		Config.getInstance().dispose();
 		System.exit(0);
 	}
 	
