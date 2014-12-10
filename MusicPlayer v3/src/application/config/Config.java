@@ -27,19 +27,14 @@ public class Config {
 		instance = this;
 		configFile = new File("setting.cfg");
 
-		FileWriter fWriter = null;
-		try {
-			fWriter = new FileWriter(configFile);
-			writer = new BufferedWriter(fWriter);
-
+		try {			
 			if (!configFile.exists()) {
+				FileWriter fWriter = new FileWriter(configFile);
+				writer = new BufferedWriter(fWriter);
 				writer.flush();
+				writer.close();
 			}
-
-			FileReader f = null;
-			f = new FileReader(configFile);
-			reader = new BufferedReader(f);
-
+			
 			loadSetting();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -51,23 +46,38 @@ public class Config {
 		String line;
 		int count = 0;
 		try {			
+			FileReader f = null;
+			f = new FileReader(configFile);
+			reader = new BufferedReader(f);
+			
 			line = reader.readLine();
 			while (line != null) {
 				count++;
-				String[] config = line.split(": ");
+				String[] config = line.split(":");
 				Float value = Float.parseFloat(config[Value]);
 				configs.put(config[Name], value);
+				line = reader.readLine();
 			}
-			
+			System.out.println("count = " + count);
 			if(count == 0) {
 				initSetting();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		try {
+			reader.close();
+			
+			FileWriter fWriter = new FileWriter(configFile);
+			writer = new BufferedWriter(fWriter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void initSetting() {
+		System.out.println("init");
 		setValue(SETTING_VOLUME, defaultVolume);
 	}
 
@@ -83,18 +93,16 @@ public class Config {
 	
 	public void setValue(String key, float value) {
 		Float f = configs.replace(key, value);
-		if(f == null)
+		if(f == null) {
+			System.out.println("put new");
 			configs.put(key, value);
+		}
+		else {
+			System.out.println("update");
+		}
 	}
 
 	public void dispose() {
-		try {
-			if (reader != null)
-				reader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		try {
 			if (writer != null) {
 				saveConfig();
@@ -107,7 +115,7 @@ public class Config {
 
 	private void saveConfig() throws IOException {
 		for(Entry<String, Float> cfg :configs.entrySet()) {
-			writer.write(cfg.getKey() + ":" + cfg.getValue());
+			writer.write(cfg.getKey() + ":" + cfg.getValue() + "\n");
 		}
 		writer.flush();
 	}

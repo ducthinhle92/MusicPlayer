@@ -8,6 +8,7 @@ import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.MediaFile;
 import model.MediaInfo;
 import model.PlayList;
@@ -90,12 +92,6 @@ public class FXMLController {
 			SQLException {
 		libraryScreen.processOpenFile();
 	}
-
-	@FXML
-	protected void exit(ActionEvent event) {
-		Config.getInstance().dispose();
-		System.exit(0);
-	}
 	
 	@FXML
 	protected void onChangeScene(ActionEvent event) {
@@ -144,6 +140,11 @@ public class FXMLController {
 	protected void onClearList(ActionEvent event) {
 		libraryScreen.onClearList();
 	}
+	
+	@FXML
+	protected void onExit() {
+		Config.getInstance().dispose();
+	}
 
 	public void processOpenList(List<MediaInfo> playlist) {
 		libraryScreen.processOpenPlayList(playlist);
@@ -151,8 +152,14 @@ public class FXMLController {
 
 	public void setStage(Stage primaryStage) {
 		stage = primaryStage;
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {			
+			@Override
+			public void handle(WindowEvent event) {
+				onExit();
+			}
+		});
 	}
-	
+
 	public void manageLayout() {
 		try {
 			bodyPane = (StackPane) stage.getScene().lookup("#bodyPane");

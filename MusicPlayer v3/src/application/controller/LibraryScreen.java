@@ -203,12 +203,7 @@ public class LibraryScreen extends AbstractScreen {
 				onProgressChanged();
 			}
 		});
-
-		volumeSlider.valueProperty().addListener(new InvalidationListener() {
-			public void invalidated(Observable ov) {
-				onVolumeChanged();
-			}
-		});
+		
 		volumeSlider.valueProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
@@ -234,7 +229,6 @@ public class LibraryScreen extends AbstractScreen {
 					playTable.setPlayList(itemValue);
 				} else if (itemValue.equals("All Music")) {
 					playTable.setAllMusic();
-					System.out.println("Set ok");
 				}
 			}
 
@@ -325,6 +319,9 @@ public class LibraryScreen extends AbstractScreen {
 		if (mediaView.getMediaPlayer() != null)
 			mediaView.getMediaPlayer().setVolume(
 					volumeSlider.getValue() / 100.0);
+		
+		Config.getInstance().setValue(Config.SETTING_VOLUME, 
+				(float) volumeSlider.getValue());
 	}
 
 	protected void onProgressChanged() {
