@@ -84,6 +84,7 @@ public class LibraryScreen extends AbstractScreen {
 
 	private boolean muted = false;
 	private MediaInfoUpdater infoUpdater;
+	private Button btnChangeScene;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -105,17 +106,19 @@ public class LibraryScreen extends AbstractScreen {
 		next = FXMLController.getInstance().next;
 		stop = FXMLController.getInstance().stop;
 		mute = FXMLController.getInstance().mute;
+		btnChangeScene = FXMLController.getInstance().btnChangeScene;
+		
+		btnChangeScene.setBackground(null);
+		ButtonEffector.addEffect(btnChangeScene);
+		ButtonEffector.setToggleGraphic(btnChangeScene,
+				R.getImage("to_play_screen.png"), R.getImage("to_lib_screen.png"));		
 
-		Image img_prev = new Image(R.getImage("img_prev.png"));
-		prev.setGraphic(new ImageView(img_prev));
 		prev.setBackground(null);
 		prev.setDisable(true);
 		ButtonEffector.addEffect(prev);
 		ButtonEffector.setGraphic(prev, R.getImage("img_prev.png"),
 				R.getImage("img_prev_hover.png"));
 
-		Image img_next = new Image(R.getImage("img_next.png"));
-		next.setGraphic(new ImageView(img_next));
 		next.setBackground(null);
 		next.setDisable(true);
 		ButtonEffector.addEffect(next);
@@ -133,8 +136,7 @@ public class LibraryScreen extends AbstractScreen {
 		mute.setBackground(null);
 		ButtonEffector.addEffect(mute);
 
-		Image img_stop = new Image(R.getImage("img_stop.png"));
-		stop.setGraphic(new ImageView(img_stop));
+		stop.setGraphic(new ImageView(R.getImage("img_stop.png")));
 		stop.setBackground(null);
 		ButtonEffector.addEffect(stop);
 

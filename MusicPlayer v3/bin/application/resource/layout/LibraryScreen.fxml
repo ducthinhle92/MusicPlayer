@@ -112,7 +112,7 @@
                                        </children></StackPane>
                                     <AnchorPane minWidth="100.0">
                                        <children>
-                                          <Button fx:id="btnGoPlayScene" layoutX="160.0" layoutY="18.0" mnemonicParsing="false" onAction="#onChangeScene" text="To Play Screen" AnchorPane.rightAnchor="10.0" />
+                                          <Button fx:id="btnChangeScene" layoutX="160.0" layoutY="18.0" mnemonicParsing="false" onAction="#onChangeScene" prefHeight="30.0" prefWidth="30.0" AnchorPane.rightAnchor="10.0" />
                                        </children>
                                     </AnchorPane>
                                 </items>

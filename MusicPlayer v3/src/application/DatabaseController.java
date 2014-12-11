@@ -26,7 +26,7 @@ public class DatabaseController {
 
 	public DatabaseController() throws ClassNotFoundException, SQLException {
 		Class.forName("org.sqlite.JDBC");
-		c = DriverManager.getConnection("jdbc:sqlite:audio2.db");
+		c = DriverManager.getConnection("jdbc:sqlite:audio.db");
 		Statement stat = c.createStatement();
 		stat.executeUpdate("create table if not exists allmusic(id integer,"
 				+ "title varchar(30),"

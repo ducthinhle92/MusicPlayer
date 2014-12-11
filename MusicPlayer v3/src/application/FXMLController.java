@@ -56,7 +56,7 @@ public class FXMLController {
 	@FXML
 	public Label fileDetail;
 	@FXML
-	public Button play, prev, next, btn_saveList, btn_clearList, btnGoPlayScene,mute,stop;
+	public Button play, prev, next, btn_saveList, btn_clearList, btnChangeScene,mute,stop;
 	@FXML
 	public TextField txtPlaylistName;
 	@FXML
@@ -95,12 +95,10 @@ public class FXMLController {
 	
 	@FXML
 	protected void onChangeScene(ActionEvent event) {
-		if(currentScreen == LIBRARY_SCREEN) {
-			btnGoPlayScene.setText(R.strings.goPlayScene);			
+		if(currentScreen == LIBRARY_SCREEN) {		
 			setScreen(PLAY_SCREEN);
 		}
-		else {
-			btnGoPlayScene.setText(R.strings.goLibraryScene);			
+		else {			
 			setScreen(LIBRARY_SCREEN);
 		}
 	}
