@@ -170,7 +170,7 @@ public class PlaylistTable {
 	public void setPlayList(String playList) {
 		try {
 			setTableData(getTableData(dbController.getPlaylist(playList)));
-		} catch (SQLException e) {
+		} catch (Exception e) {
 		}
 	}
 
@@ -185,7 +185,7 @@ public class PlaylistTable {
 		
 		try{
 			setTableData(getTableData(dbController.getAllMusic()));
-		} catch(SQLException e){
+		} catch(Exception e){
 			
 		}
 		

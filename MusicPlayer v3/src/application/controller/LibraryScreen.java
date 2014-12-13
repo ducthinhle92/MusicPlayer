@@ -1,6 +1,7 @@
 package application.controller;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -245,7 +246,7 @@ public class LibraryScreen extends AbstractScreen {
 						// and show notify on playTable
 						// playTable.setStatus("You are currently playing"
 						// + " this list. You can edit it in the play panel");
-					} catch (SQLException e) {
+					} catch (Exception e) {
 					}
 				} else {
 					System.out.println(itemValue + "is clicked!");
@@ -257,7 +258,7 @@ public class LibraryScreen extends AbstractScreen {
 				try {
 					// don't update playTable here, just playing list
 					processOpenPlayList(dbController.getPlaylist(playList));
-				} catch (SQLException e) {
+				} catch (Exception e) {
 				}
 			}
 

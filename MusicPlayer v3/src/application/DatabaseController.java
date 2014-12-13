@@ -1,5 +1,9 @@
 package application;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,6 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.MediaFile;
 import model.MediaInfo;
 
 public class DatabaseController {
@@ -29,9 +34,7 @@ public class DatabaseController {
 		c = DriverManager.getConnection("jdbc:sqlite:audio.db");
 		Statement stat = c.createStatement();
 		stat.executeUpdate("create table if not exists allmusic(id integer,"
-				+ "title varchar(30),"
-				+ "length varchar(15)," + "album varchar(30),"
-				+ "artist varchar(30)," + "url text," + "primary key (id));");
+				 + "url text," + "primary key (id));");
 		
 		stat.executeUpdate("create table if not exists playlist(listname varchar(30),id integer);");
 	}
@@ -70,7 +73,7 @@ public class DatabaseController {
 
 	}
 
-	public List<MediaInfo> getPlaylist(String select) throws SQLException {
+	public List<MediaInfo> getPlaylist(String select) throws SQLException, URISyntaxException {
 		// TODO Auto-generated method stub
 
 		List<MediaInfo> list = new ArrayList<MediaInfo>();
@@ -86,7 +89,7 @@ public class DatabaseController {
 		return list;
 	}
 	
-	public List<MediaInfo> getAllMusic() throws SQLException {
+	public List<MediaInfo> getAllMusic() throws SQLException, URISyntaxException {
 		// TODO Auto-generated method stub
 
 		List<MediaInfo> list = new ArrayList<MediaInfo>();
@@ -101,12 +104,9 @@ public class DatabaseController {
 		return list;
 	}
 	
-	public MediaInfo getMusic(String musicId) throws SQLException{
-		String title;
-		String artist;
-		String length;
-		String album;
-		String url;
+	public MediaInfo getMusic(String musicId) throws SQLException, URISyntaxException{
+
+		String url = "";
 		MediaInfo info = null;
 		
 		PreparedStatement prep;
@@ -114,13 +114,16 @@ public class DatabaseController {
 		prep.setString(1, musicId);
 		ResultSet res = prep.executeQuery();
 		while(res.next()){
-			title = res.getString("title");
-			length = res.getString("length");
-			album = res.getString("album");
 			url = res.getString("url");
-			artist = res.getString("artist");
-			info = new MediaInfo(musicId, title, artist, length, album, url);
+			
 		}
+		System.out.println(url);
+		
+		URI uri = new URI(url);
+		System.out.println(uri.toString());
+		
+		MediaFile mdFile = new MediaFile(new File(uri));
+		info = new MediaInfo(musicId, mdFile.getTitle(), mdFile.getArtist(), mdFile.getLength(), mdFile.getAlbum(), url );
 		
 		return info;
 		
@@ -138,12 +141,8 @@ public class DatabaseController {
 			prep.setString(2, res.getString("id"));
 			prep.execute();
 		} else{
-			prep = c.prepareStatement("insert into allmusic values(?,?,?,?,?,?);");
-			prep.setString(2, title);
-			prep.setString(3, length);
-			prep.setString(4, album);
-			prep.setString(5, artist);
-			prep.setString(6, url);
+			prep = c.prepareStatement("insert into allmusic values(?,?);");
+			prep.setString(2, url);
 			prep.execute();
 			
 			res = stat.executeQuery("select * from allmusic where url = '" + url +"';");
@@ -159,12 +158,8 @@ public class DatabaseController {
 	public void insertIntoAllmusic(String title, String artist,
 			String length, String url, String album) throws SQLException{
 		PreparedStatement prep;
-		prep = c.prepareStatement("insert into allmusic values(?,?,?,?,?,?);");
-		prep.setString(2, title);
-		prep.setString(3, length);
-		prep.setString(4, album);
-		prep.setString(5, artist);
-		prep.setString(6, url);
+		prep = c.prepareStatement("insert into allmusic values(?,?);");
+		prep.setString(2, url);
 		prep.execute();
 		
 	}

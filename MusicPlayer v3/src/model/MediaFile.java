@@ -28,12 +28,30 @@ public class MediaFile {
 		try {
 			audioFile = AudioFileIO.read(file);
 			
-			title = new SimpleStringProperty(audioFile.getTag().getFirst(
-					FieldKey.TITLE));
-			artist = new SimpleStringProperty(audioFile.getTag().getFirst(
-					FieldKey.ARTIST));
-			album = new SimpleStringProperty(audioFile.getTag().getFirst(
-					FieldKey.ALBUM));
+			if(audioFile.getTag().getFirst(FieldKey.TITLE).equals("")){
+				title = new SimpleStringProperty(file.getName());
+			}
+			else{
+				title = new SimpleStringProperty(audioFile.getTag().getFirst(
+						FieldKey.TITLE));
+			}
+			
+			if(audioFile.getTag().getFirst(FieldKey.ARTIST).equals("")){
+				artist = new SimpleStringProperty("No artist");
+			}
+			else{
+				artist = new SimpleStringProperty(audioFile.getTag().getFirst(
+						FieldKey.ARTIST));
+			}
+			
+			if(audioFile.getTag().getFirst(FieldKey.ALBUM).equals("")){
+				album = new SimpleStringProperty("No album");
+			}
+			else{
+				album = new SimpleStringProperty(audioFile.getTag().getFirst(
+						FieldKey.ALBUM));
+			}
+			
 			rating = new SimpleIntegerProperty(4);
 
 			url = file.toURI().toString();
