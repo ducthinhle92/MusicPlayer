@@ -74,17 +74,25 @@ public class MediaTreeView {
 	public void loadTreeItems(String... rootItems) {
 		TreeItem<String> itemRoot = new TreeItem<>("Root");
 		// TreeItem<String> nodeItem1 = new TreeItem<>("Playlist");
-		TreeItem<String> noteItem2 = new TreeItem<>("All Music");
-
-		itemRoot.getChildren().add(noteItem2);
-
-		
 		TreeItem<String> item = new TreeItem<String>("Playlist");
 		for (String itemString : rootItems) {
 			item.getChildren().add(new BoxTreeItem(itemString));
 		}
 		treeView.setRoot(itemRoot);
 		treeView.getRoot().getChildren().add(item);
+		
+		
+		TreeItem<String> noteItem2 = new TreeItem<>("All Music");
+		
+		TreeItem<String> item2Sub1 = new TreeItem<>("Artist");
+		TreeItem<String> item2Sub2 = new TreeItem<>("Album");
+		TreeItem<String> item2Sub3 = new TreeItem<>("Genre");
+		noteItem2.getChildren().addAll(item2Sub1, item2Sub2, item2Sub3);
+
+		treeView.getRoot().getChildren().add(noteItem2);
+
+		
+		
 
 		// locationTreeView.setRoot(root);
 	}

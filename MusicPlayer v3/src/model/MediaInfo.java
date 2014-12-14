@@ -11,6 +11,8 @@ public class MediaInfo {
 	private String album;
 	private String url;
 	private String id;
+	private String genre;
+	private int duration;
 	
 	public MediaInfo(String id, String tit, String art, String len, String alb, String ur){
 		this.id = id;
@@ -43,6 +45,16 @@ public class MediaInfo {
 
 	public String getUrl() {
 		return url;
+	}
+	
+	public String getGenre(){
+		genre = getMediaFile().getGenre();
+		return genre;
+	}
+	
+	public int getDuration(){
+		duration = getMediaFile().getDuration();
+		return duration;
 	}
 	
 	public MediaFile getMediaFile() {

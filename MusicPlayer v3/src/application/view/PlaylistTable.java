@@ -1,6 +1,7 @@
 package application.view;
 
 
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -26,34 +27,40 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
 
-public class PlaylistTable {
+public class PlaylistTable extends TableView {
 
 	private TableView playTable;
 	private TableColumn titleColumn;
 	private TableColumn lengthColoumn;
 	private TableColumn artistColumn;
 	private TableColumn albumColumn;
+	private TableColumn genreColumn;
 	private DatabaseController dbController;
 	private FXMLController fxmlController;
 	private TableListener listener;
+	public static PlaylistTable instance;
+	private String name;
 
-	public PlaylistTable() throws ClassNotFoundException, SQLException {
-
+	public PlaylistTable(String playlistSelected) throws ClassNotFoundException, SQLException, URISyntaxException {
+		super();
+		instance = this;
+		name = playlistSelected;
 		this.fxmlController = FXMLController.getInstance();
 		dbController = DatabaseController.getInstance();
-		playTable = new TableView();
 		titleColumn = new TableColumn("Title");
 		lengthColoumn = new TableColumn("Length");
 		artistColumn = new TableColumn("Artist");
 		albumColumn = new TableColumn("Album");
-		playTable.getColumns().addAll(titleColumn, lengthColoumn, artistColumn,
-				albumColumn);
+		genreColumn = new TableColumn("Genre");
+		this.getColumns().addAll(titleColumn, lengthColoumn, artistColumn,
+				albumColumn, genreColumn);
 		
-		
-		
-
-
+		this.setItems(getTableData(dbController.getPlaylist(name)));
 		setTableFactory();
+	}
+	
+	public String getName(){
+		return name;
 	}
 
 	public TableView getTable() {
@@ -65,7 +72,7 @@ public class PlaylistTable {
 	}
 
 	public ObservableList<MediaInfo> getTableData(List<MediaInfo> lt) {
-		System.out.println("This ok 2");
+		
 		ObservableList<MediaInfo> mediaFiles = FXCollections
 				.observableArrayList();
 		if (lt != null) {
@@ -91,7 +98,12 @@ public class PlaylistTable {
 		albumColumn
 				.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
 						"album"));
-		playTable
+		
+		genreColumn
+				.setCellValueFactory(new PropertyValueFactory<MediaInfo, String>(
+						"genre"));
+		
+		this
 				.setRowFactory(new Callback<TableView<MediaInfo>, TableRow<MediaInfo>>() {
 
 					@Override
@@ -127,7 +139,7 @@ public class PlaylistTable {
 									public void handle(ActionEvent event) {
 										String id = row.getItem().getId();
 										listener.onRemoveItem(id);
-										playTable.getItems().remove(
+										instance.getItems().remove(
 												row.getItem());
 									}
 								});

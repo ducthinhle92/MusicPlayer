@@ -36,14 +36,22 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.AlbumInfo;
+import model.ArtistInfo;
+import model.GenreInfo;
 import model.MediaFile;
 import model.MediaInfo;
 import application.DatabaseController;
 import application.FXMLController;
+import application.Launcher;
 import application.config.Config;
 import application.resource.R;
 import application.utility.Utils;
+import application.view.AlbumTable;
+import application.view.AllmusicTable;
+import application.view.ArtistTable;
 import application.view.ButtonEffector;
+import application.view.GenreTable;
 import application.view.MediaTreeView;
 import application.view.NowPlayingListView;
 import application.view.PlaylistTable;
@@ -59,6 +67,8 @@ public class LibraryScreen extends AbstractScreen {
 
 	private DatabaseController dbController;
 	private File dir;
+	
+	private Launcher launcher;
 
 	// FXML component
 	private MediaTreeView menuTreeView;
@@ -81,11 +91,16 @@ public class LibraryScreen extends AbstractScreen {
 
 	private Mode mode = Mode.Stoped;
 	private PlaylistTable playTable;
+	private AlbumTable albumTable;
+	private ArtistTable artistTable;
+	private GenreTable genreTable;
+	private AllmusicTable allMusicTable;
 	private Pane controlPane;
 
 	private boolean muted = false;
 	private MediaInfoUpdater infoUpdater;
 	private Button btnChangeScene;
+	private StackPane tablePane;
 
 	public LibraryScreen(Stage primaryStage) {
 		super(primaryStage);
@@ -94,6 +109,8 @@ public class LibraryScreen extends AbstractScreen {
 	@Override
 	protected void initialize() {
 		super.initialize();
+		
+		launcher = Launcher.getInstance();
 
 		controlPane = FXMLController.getInstance().controlPane;
 		lbInfo = FXMLController.getInstance().lbInfo;
@@ -155,21 +172,35 @@ public class LibraryScreen extends AbstractScreen {
 
 		try {
 			dbController = DatabaseController.getInstance();
+			
 			allMusicUrl = dbController.getAllMusicUrl();
 			System.out.println(allMusicUrl.size());
+			
 
 			// initialize library table
-			playTable = new PlaylistTable();
-			StackPane tablePane = (StackPane) findNodeById("tablePane");
-			tablePane.getChildren().add(playTable.getTable());
+			
+			tablePane = (StackPane) findNodeById("tablePane");
+//			tablePane.getChildren().add(playTable.getTable());
+			
+			albumTable = new AlbumTable();
+			artistTable = new ArtistTable();
+			genreTable = new GenreTable();
+			allMusicTable = new AllmusicTable();
+			tablePane.getChildren().add(allMusicTable);
+			System.out.println("ok hhehe");
+			
 
 			// initialize tree menu
 			Pane treeViewPane = (Pane) findNodeById("treeViewPane");
+			
 			menuTreeView = new MediaTreeView();
+			
 			treeViewPane.getChildren().add(menuTreeView.getTreeView());
+			
 			int listSize = dbController.getListNames().size();
 			String[] listNames = new String[listSize];
 			for (int i = 0; i < listSize; i++) {
+//				System.out.println(listNames[i]);
 				listNames[i] = dbController.getListNames().get(i);
 			}
 			menuTreeView.loadTreeItems(listNames);
@@ -178,6 +209,8 @@ public class LibraryScreen extends AbstractScreen {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch(Exception e){
+			
 		}
 
 		addEventHandler();
@@ -228,10 +261,55 @@ public class LibraryScreen extends AbstractScreen {
 			public void onItemSingleClicked(MouseEvent event,
 					TreeItem<String> item) {
 				String itemValue = item.getValue();
-				if (item.getParent().getValue().equals("Playlist")) {
-					playTable.setPlayList(itemValue);
+				if (itemValue.equals("Playlist")) {
+//					playTable.setPlayList(itemValue);
 				} else if (itemValue.equals("All Music")) {
-					playTable.setAllMusic();
+//					playTable.setAllMusic();
+					tablePane.getChildren().remove(0);
+					tablePane.getChildren().add(allMusicTable);
+				} else if(itemValue.equals("Album")){
+					System.out.println("album selected");
+					tablePane.getChildren().remove(0);
+					tablePane.getChildren().add(albumTable);
+				} else if(itemValue.equals("Artist")){
+					System.out.println("artist selected");
+					tablePane.getChildren().remove(0);
+					tablePane.getChildren().add(artistTable);
+				} else if(itemValue.equals("Genre")){
+					System.out.println("genre selected");
+					tablePane.getChildren().remove(0);
+					tablePane.getChildren().add(genreTable);
+				} else {
+					System.out.println(itemValue);
+					try {
+						playTable = new PlaylistTable(itemValue);
+						tablePane.getChildren().remove(0);
+						tablePane.getChildren().add(playTable);
+						playTable.setTableListener(new TableListener(){
+
+							@Override
+							public void onRemoveItem(String id) {
+								try {
+									dbController.deleteData(id);
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+							}
+
+							@Override
+							public void onPlayingItem(MediaInfo item) {
+								onPlaySingleFile(item);
+							}
+
+							@Override
+							public void onPlayNextItem(MediaInfo item) {
+								onPlayNextFile(item);
+							}
+							
+						});
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 				}
 			}
 
@@ -242,14 +320,14 @@ public class LibraryScreen extends AbstractScreen {
 				if (item.getParent().getValue().equals("Playlist")) {
 					try {
 						// update playing list
+						System.out.println("double click");
+						playTable.setPlayList(itemValue);
 						processOpenPlayList(dbController.getPlaylist(itemValue));
 						// and show notify on playTable
 						// playTable.setStatus("You are currently playing"
 						// + " this list. You can edit it in the play panel");
 					} catch (Exception e) {
 					}
-				} else {
-					System.out.println(itemValue + "is clicked!");
 				}
 			}
 
@@ -272,11 +350,16 @@ public class LibraryScreen extends AbstractScreen {
 			}
 		});
 
-		playTable.setTableListener(new TableListener() {
+		
+		
+		
+		allMusicTable.setTableListener(new TableListener(){
+			
 			@Override
 			public void onRemoveItem(String id) {
 				try {
-					dbController.deleteData(id);
+					System.out.println("delete item all music");
+					dbController.deleteAllMusicData(id);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -291,6 +374,49 @@ public class LibraryScreen extends AbstractScreen {
 			public void onPlayNextItem(MediaInfo item) {
 				onPlayNextFile(item);
 			}
+			
+		});
+		albumTable.setTableListener(new TableListener(){
+
+			@Override
+			public void onPlayingAlbumItem(AlbumInfo item) {
+				// TODO Auto-generated method stub
+				try {
+					processOpenPlayList(dbController.getAlbumByName(item.getName()));
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				
+			}
+			
+		});
+		
+		artistTable.setTableListener(new TableListener(){
+
+			@Override
+			public void onPlayingArtistItem(ArtistInfo item) {
+				// TODO Auto-generated method stub
+				try {
+					processOpenPlayList(dbController.getArtistByName(item.getName()));
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+			
+		});
+		
+		genreTable.setTableListener(new TableListener(){
+
+			@Override
+			public void onPlayingGenreItem(GenreInfo item) {
+				// TODO Auto-generated method stub
+				try {
+					processOpenPlayList(dbController.getGenreByName(item.getName()));
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+			}
+			
 		});
 
 		playingFiles.addListener(new ListChangeListener<MediaFile>() {
@@ -335,13 +461,14 @@ public class LibraryScreen extends AbstractScreen {
 		timeSlider.setValueChanging(false);
 	}
 
-	public void onSaveList() {
+	public void onSaveList() throws URISyntaxException {
 		String title;
 		String artist;
 		String length;
 		String album;
 		String listName;
 		String url;
+		String genre;
 		MediaFile file;
 
 		try {
@@ -355,8 +482,10 @@ public class LibraryScreen extends AbstractScreen {
 					album = file.getAlbum();
 					length = file.getLength();
 					url = file.getPath();
+					genre = file.getGenre();
+					
 					dbController.insertData(listName, title, artist, length,
-							url, album);
+							url, album, genre);
 				}
 			}
 
@@ -585,7 +714,7 @@ public class LibraryScreen extends AbstractScreen {
 		FXMLController.getInstance().onMediaChanged();
 	}
 
-	public void processOpenFile() throws SQLException {
+	public void processOpenFile() throws Exception {
 		configureFileChooser(fileChooser);
 		List<File> listFile = fileChooser.showOpenMultipleDialog(stage);
 		dir = null;
@@ -605,7 +734,7 @@ public class LibraryScreen extends AbstractScreen {
 				public void run() {
 					try {
 						addMusicToLibrary(dir);
-					} catch (SQLException e) {
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -614,6 +743,7 @@ public class LibraryScreen extends AbstractScreen {
 
 			};
 			thread.start();
+		
 
 		}
 
@@ -623,7 +753,7 @@ public class LibraryScreen extends AbstractScreen {
 	}
 
 	// add music to library
-	public void addMusicToLibrary(File dir) throws SQLException {
+	public void addMusicToLibrary(File dir) throws Exception {
 		ArrayList<File> listMp3 = getMp3FileOnSelectedFolder(dir);
 
 		for (int i = 0; i < listMp3.size(); i++) {
@@ -633,14 +763,15 @@ public class LibraryScreen extends AbstractScreen {
 		}
 	}
 
-	public void insertMp3FileToDatabase(File file) throws SQLException {
+	public void insertMp3FileToDatabase(File file) throws Exception {
 		MediaFile mdFile = new MediaFile(file);
 		String title = mdFile.getTitle();
 		String length = mdFile.getLength();
 		String artist = mdFile.getArtist();
 		String album = mdFile.getAlbum();
 		String url = mdFile.getPath();
-		dbController.insertIntoAllmusic(title, artist, length, url, album);
+		String genre = mdFile.getGenre();
+		dbController.insertIntoAllmusic(title, artist, length, url, album, genre);
 	}
 
 	public ArrayList<File> getMp3FileOnSelectedFolder(File dir) {

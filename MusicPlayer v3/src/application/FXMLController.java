@@ -1,6 +1,7 @@
 package application;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,7 +91,12 @@ public class FXMLController {
 	@FXML
 	protected void openFile(ActionEvent event) throws ClassNotFoundException,
 			SQLException {
-		libraryScreen.processOpenFile();
+		try {
+			libraryScreen.processOpenFile();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@FXML
@@ -131,7 +137,12 @@ public class FXMLController {
 	@FXML
 	protected void onSaveList(ActionEvent event) throws ClassNotFoundException,
 			SQLException {
-		libraryScreen.onSaveList();
+		try {
+			libraryScreen.onSaveList();
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@FXML

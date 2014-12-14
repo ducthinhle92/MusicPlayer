@@ -1,5 +1,8 @@
 package application.view.listener;
 
+import model.AlbumInfo;
+import model.ArtistInfo;
+import model.GenreInfo;
 import model.MediaInfo;
 
 public class TableListener {
@@ -13,6 +16,18 @@ public class TableListener {
 
 
 	public void onPlayingItem(MediaInfo item) {
+	}
+	
+	public void onPlayingAlbumItem(AlbumInfo item){
+		
+	}
+	
+	public void onPlayingArtistItem(ArtistInfo item){
+		
+	}
+	
+	public void onPlayingGenreItem(GenreInfo item){
+		
 	}
 
 

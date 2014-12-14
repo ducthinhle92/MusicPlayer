@@ -20,6 +20,8 @@ public class MediaFile {
 	private SimpleStringProperty length;
 	private SimpleStringProperty album;
 	private SimpleIntegerProperty rating;
+	private String genre;
+	private int duration;
 
 	private String url;
 	private AudioFile audioFile;
@@ -52,11 +54,19 @@ public class MediaFile {
 						FieldKey.ALBUM));
 			}
 			
+			if(audioFile.getTag().getFirst(FieldKey.GENRE).equals("")){
+				genre = "No Genre";
+			}
+			else{
+				genre = audioFile.getTag().getFirst(
+						FieldKey.GENRE);
+			}
+			
 			rating = new SimpleIntegerProperty(4);
 
 			url = file.toURI().toString();
 
-			int duration = audioFile.getAudioHeader().getTrackLength();
+			duration = audioFile.getAudioHeader().getTrackLength();
 
 			length = new SimpleStringProperty(duration / 60 + ":"
 					+ (duration - 60 * (int) (duration / 60)));
@@ -64,6 +74,10 @@ public class MediaFile {
 		} catch (Exception e) {
 			
 		}
+	}
+	
+	public int getDuration(){
+		return duration;
 	}
 
 	public MediaFile(URI uri) {
@@ -108,6 +122,10 @@ public class MediaFile {
 	
 	public void setArtist(String text) {
 		artist.set(text);
+	}
+	
+	public String getGenre(){
+		return genre;
 	}
 	
 	public void setLyric(String lyric) {
