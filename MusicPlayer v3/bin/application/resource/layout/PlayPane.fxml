@@ -41,7 +41,7 @@
                         <Image url="@../image/album_art.png" />
                      </image>
                   </ImageView>
-                  <Button fx:id="btnShowLyric" alignment="CENTER" contentDisplay="CENTER" layoutX="-5.0" layoutY="188.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Lyric" AnchorPane.leftAnchor="-5.0" />
+                  <Button fx:id="btnShowLyric" alignment="CENTER" contentDisplay="CENTER" layoutX="-5.0" layoutY="188.0" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-opacity: 0.8; -fx-background-radius: 0;" text="Lyric" textFill="WHITE" AnchorPane.leftAnchor="-5.0" />
                </children>
             </AnchorPane>
         </items>

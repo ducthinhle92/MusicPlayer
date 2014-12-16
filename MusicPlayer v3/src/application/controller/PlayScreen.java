@@ -29,6 +29,7 @@ import org.jaudiotagger.audio.exceptions.CannotWriteException;
 import application.FXMLController;
 import application.resource.R;
 import application.utility.LyricGatherService;
+import application.view.ButtonEffector;
 import application.view.listener.MediaListener;
 
 @SuppressWarnings({ "unchecked" })
@@ -135,7 +136,8 @@ public class PlayScreen extends AbstractScreen implements MediaListener {
 		btnEdit = (Button) findNodeById("btnEdit");
 		btnUpdateLyric = (Button) findNodeById("btnUpdateLyric");
 		btnShowLyric = (Button) findNodeById("btnShowLyric");
-
+		
+		ButtonEffector.addEffect(btnShowLyric);		
 		txtAreaLyric = new TextArea();
 
 		listViewLyric.setItems(lyric);
